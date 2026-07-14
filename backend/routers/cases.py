@@ -35,10 +35,10 @@ async def search_cases_endpoint(
             q, filters={"court": court, "year_from": year_from, "year_to": year_to, "subject": subject}
         )
         results: List[CaseResponse] = []
-        for c in external_cases:
+        for c in external_cases[:limit]:
             case = Case(
                 id=str(uuid.uuid4()),
-                title=c.get("title", ""),
+                title=c.get("title", "Untitled"),
                 citation=c.get("citation", ""),
                 court=c.get("court", ""),
                 year=int(c.get("year", 0)) if c.get("year") else 0,
@@ -51,7 +51,7 @@ async def search_cases_endpoint(
             results.append(CaseResponse(
                 id=case.id,
                 title=case.title,
-                citation=case.citation,
+                citation=case.citation if isinstance(case.citation, str) else str(case.citation),
                 court=case.court,
                 year=case.year,
                 subject_tags=case.subject_tags,
@@ -62,7 +62,7 @@ async def search_cases_endpoint(
         return results
     except Exception as e:
         logger.error(f"search_cases error: {e}")
-        raise HTTPException(status_code=500, detail="Search service temporarily unavailable")
+        raise HTTPException(status_code=500, detail=f"Search service temporarily unavailable: {str(e)}")
 
 
 @router.get("/recent", response_model=List[CaseResponse])
@@ -71,6 +71,30 @@ async def get_recent_cases(limit: int = 10, session: AsyncSession = Depends(get_
         select(Case).order_by(Case.created_at.desc()).limit(limit)
     )
     cases = result.scalars().all()
+    if not cases:
+        # Return demo cases if DB is empty
+        from services.scraper import DEMO_CASES
+        demo_results = []
+        for c in DEMO_CASES[:limit]:
+            case = Case(
+                id=str(uuid.uuid4()),
+                title=c["title"],
+                citation=str(c["citation"]),
+                court=c["court"],
+                year=c["year"],
+                subject_tags=c.get("subject_tags"),
+                full_text=c["full_text"],
+                judges=c.get("judges"),
+            )
+            session.add(case)
+            await session.flush()
+            demo_results.append(CaseResponse(
+                id=case.id, title=case.title, citation=case.citation, court=case.court,
+                year=case.year, subject_tags=case.subject_tags,
+                judges=case.judges, created_at=case.created_at,
+            ))
+        await session.commit()
+        return demo_results
     return [
         CaseResponse(
             id=c.id, title=c.title, citation=c.citation, court=c.court,
@@ -88,13 +112,13 @@ async def get_case(case_id: str, session: AsyncSession = Depends(get_session)):
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
     return CaseResponse(
-        id=case.id, title=case.title, citation=case.citation, court=case.court,
-        year=case.year, subject_tags=case.subject_tags, summary=case.summary,
-        ratio=case.ratio, judges=case.judges, created_at=case.created_at,
+        id=case.id, title=case.title, citation=case.citation if isinstance(case.citation, str) else str(case.citation),
+        court=case.court, year=case.year, subject_tags=case.subject_tags,
+        summary=case.summary, ratio=case.ratio, judges=case.judges, created_at=case.created_at,
     )
 
 
-@router.get("/{case_id}/summary", response_model=Dict[str, Any])
+@router.get("/{case_id}/summary")
 async def get_case_summary(case_id: str, session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(Case).where(Case.id == case_id))
     case = result.scalar_one_or_none()
@@ -102,11 +126,15 @@ async def get_case_summary(case_id: str, session: AsyncSession = Depends(get_ses
         raise HTTPException(status_code=404, detail="Case not found")
     if case.summary:
         return case.summary
-    summary = generate_case_summary(case.full_text)
-    case.summary = summary
-    case.updated_at = datetime.utcnow()
-    await session.commit()
-    return summary
+    try:
+        summary = generate_case_summary(case.full_text)
+        case.summary = summary
+        case.updated_at = datetime.utcnow()
+        await session.commit()
+        return summary
+    except Exception as e:
+        logger.error(f"Summary generation failed: {e}")
+        return {"facts": "Summary generation is temporarily unavailable.", "issues": [], "holdings": [], "ratio": "", "obiter": "", "cases_cited": []}
 
 
 @router.post("/{case_id}/save")

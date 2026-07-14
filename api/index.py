@@ -1,24 +1,69 @@
 import sys
 import os
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("juriscore")
 
 # Add backend to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+backend_path = os.path.join(os.path.dirname(__file__), '..', 'backend')
+sys.path.insert(0, os.path.abspath(backend_path))
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from contextlib import asynccontextmanager
-from models.database import engine, Base
-from routers import cases, statutes, constitution, notebook, flashcards, study, export
-from services import ai_service
+logger.info(f"API starting. Backend path: {os.path.abspath(backend_path)}")
+logger.info(f"Python version: {sys.version}")
+logger.info(f"NVIDIA_API_KEY set: {bool(os.getenv('NVIDIA_API_KEY'))}")
+
+try:
+    from fastapi import FastAPI
+    from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.responses import JSONResponse
+    from contextlib import asynccontextmanager
+    logger.info("FastAPI imports OK")
+except Exception as e:
+    logger.error(f"FastAPI import failed: {e}")
+    raise
+
+try:
+    from models.database import engine, Base
+    logger.info("Database module imported OK")
+except Exception as e:
+    logger.error(f"Database import failed: {e}")
+    raise
+
+try:
+    from routers import cases, statutes, constitution, notebook, flashcards, study, export
+    logger.info("All routers imported OK")
+except Exception as e:
+    logger.error(f"Router import failed: {e}")
+    raise
+
+try:
+    from services import ai_service
+    logger.info("AI service imported OK")
+except Exception as e:
+    logger.error(f"AI service import failed: {e}")
+    raise
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    ai_service.init_backend()
+    logger.info("Lifespan startup...")
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Database tables created OK")
+    except Exception as e:
+        logger.error(f"Database init failed: {e}")
+
+    try:
+        ai_service.init_backend()
+        logger.info("AI service initialized OK")
+    except Exception as e:
+        logger.error(f"AI init failed: {e}")
+
+    logger.info("Juriscore API ready")
     yield
+    logger.info("Juriscore API shutting down")
 
 
 app = FastAPI(
