@@ -1,388 +1,808 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Juriscore — Legal Research Companion</title>
-<meta name="description" content="Smart legal research for Kenyan law students" />
-<link rel="stylesheet" href="/css/style.css" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Juriscore - Legal Research Platform</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      "colors": {
+        "on-surface": "#151c27",
+        "surface-container": "#e7eefe",
+        "tertiary-fixed-dim": "#ffb4a1",
+        "surface-container-low": "#f0f3ff",
+        "tertiary-fixed": "#ffdbd2",
+        "on-primary-container": "#dfe3ff",
+        "on-secondary-container": "#5c6274",
+        "on-surface-variant": "#434656",
+        "secondary-fixed-dim": "#c0c6db",
+        "surface-bright": "#f9f9ff",
+        "secondary-fixed": "#dce2f7",
+        "error-container": "#ffdad6",
+        "surface-variant": "#dce2f3",
+        "secondary-container": "#d9dff5",
+        "surface-container-lowest": "#ffffff",
+        "on-secondary-fixed": "#141b2b",
+        "surface-dim": "#d3daea",
+        "on-tertiary-container": "#ffddd5",
+        "surface-container-high": "#e2e8f8",
+        "on-secondary": "#ffffff",
+        "background": "#f9f9ff",
+        "tertiary": "#952200",
+        "surface-container-highest": "#dce2f3",
+        "on-tertiary-fixed-variant": "#891e00",
+        "on-secondary-fixed-variant": "#404758",
+        "outline-variant": "#c3c5d9",
+        "inverse-primary": "#b7c4ff",
+        "error": "#ba1a1a",
+        "primary-fixed-dim": "#b7c4ff",
+        "on-primary": "#ffffff",
+        "on-primary-fixed-variant": "#0038b6",
+        "on-background": "#151c27",
+        "on-tertiary-fixed": "#3c0800",
+        "surface": "#f9f9ff",
+        "inverse-on-surface": "#ebf1ff",
+        "on-tertiary": "#ffffff",
+        "outline": "#737688",
+        "on-error-container": "#93000a",
+        "primary": "#003ec7",
+        "primary-container": "#0052ff",
+        "tertiary-container": "#bf3003",
+        "primary-fixed": "#dde1ff",
+        "on-primary-fixed": "#001452",
+        "secondary": "#575e70",
+        "inverse-surface": "#2a313d",
+        "surface-tint": "#004ced",
+        "on-error": "#ffffff"
+      },
+      "borderRadius": {
+        "DEFAULT": "0.25rem",
+        "lg": "0.5rem",
+        "xl": "0.75rem",
+        "full": "9999px"
+      },
+      "spacing": {
+        "stack-lg": "32px",
+        "stack-sm": "8px",
+        "stack-md": "16px",
+        "gutter": "24px",
+        "unit": "8px",
+        "container-max": "1280px",
+        "margin-desktop": "40px",
+        "margin-mobile": "16px"
+      },
+      "fontFamily": {
+        "body-lg": ["Inter"],
+        "display-lg": ["Geist"],
+        "display-lg-mobile": ["Geist"],
+        "headline-md": ["Geist"],
+        "code-snippet": ["Geist"],
+        "body-md": ["Inter"],
+        "label-md": ["Geist"],
+        "body-sm": ["Inter"],
+        "title-lg": ["Geist"]
+      },
+      "fontSize": {
+        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+        "code-snippet": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+      }
+    }
+  }
+}
+</script>
+<style>
+  body { min-height: max(884px, 100dvh); background-color: #f9f9ff; color: #151c27; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeInUpShort { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-fade-in-up { animation: fadeInUpShort 0.4s ease-out forwards; }
+  .glass-card { background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.18); }
+  .glass-card-solid { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid #E5E7EB; }
+  .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; }
+  .progress-ring__circle { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+  .article-content { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
+  .article-expanded .article-content { max-height: 1000px; opacity: 1; }
+  .article-expanded .expand-icon { transform: rotate(180deg); }
+  .expand-icon { transition: transform 0.3s ease; }
+  .level-2-shadow { box-shadow: 0px 4px 12px rgba(0,0,0,0.05); }
+</style>
 </head>
-<body>
-<div id="app">
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col">
 
-  <div id="loading-screen" class="screen active">
-    <div class="loading-content">
-      <div class="loading-icon">⚖️</div>
-      <h1 class="loading-title">Juriscore</h1>
-      <p class="loading-subtitle">Your legal research companion</p>
-      <div class="loading-spinner"></div>
+<!-- ======================== TOP APP BAR ======================== -->
+<header id="app-header" class="w-full top-0 sticky z-40 bg-surface border-b border-outline-variant hidden">
+  <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-stack-md max-w-container-max mx-auto">
+    <div class="flex items-center gap-4 cursor-pointer active:opacity-80 hover:bg-surface-container transition-colors p-2 rounded-lg" onclick="navigate('home')">
+      <span class="material-symbols-outlined text-primary font-headline-md text-headline-md">menu</span>
+      <span class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg font-bold text-on-surface">Juriscore</span>
+    </div>
+    <div class="cursor-pointer active:opacity-80 hover:bg-surface-container transition-colors p-2 rounded-lg" onclick="navigate('profile')">
+      <span class="material-symbols-outlined text-primary font-headline-md text-headline-md">account_circle</span>
     </div>
   </div>
+</header>
 
-  <div id="onboarding-screen" class="screen">
-    <div class="onboarding-slides" id="onboardingSlides">
-      <div class="slide active">
-        <div class="slide-icon">🔍</div>
-        <h2>Find cases instantly</h2>
-        <p>Search thousands of Kenyan cases and statutes by keyword, subject, or court.</p>
+<!-- ======================== SCREEN: SPLASH ======================== -->
+<section id="screen-splash" class="screen active">
+  <div class="min-h-screen flex flex-col items-center justify-center relative px-margin-mobile md:px-margin-desktop overflow-hidden bg-surface-container-lowest">
+    <main class="w-full max-w-sm mx-auto flex flex-col items-center text-center z-10">
+      <div class="mb-stack-lg flex flex-col items-center fade-in-up">
+        <span class="material-symbols-outlined text-primary-container" style="font-size: 64px; font-variation-settings: 'FILL' 0, 'wght' 300;">balance</span>
+        <h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-on-surface mt-stack-sm">Juriscore</h1>
+        <p class="font-body-lg text-body-lg text-secondary mt-unit">Your legal research companion.</p>
       </div>
-      <div class="slide">
-        <div class="slide-icon">📚</div>
-        <h2>Study smarter, not harder</h2>
-        <p>Get structured case briefs, AI summaries, and study notes in one click.</p>
+      <div class="w-full flex flex-col gap-stack-sm fade-in-up delay-100">
+        <button onclick="navigate('home')" class="w-full bg-primary-container text-on-primary font-label-md text-label-md py-3 px-4 rounded-lg flex items-center justify-center transition-all hover:bg-primary hover:shadow-lg active:scale-[0.98]">Sign Up</button>
+        <button onclick="navigate('home')" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface font-label-md text-label-md py-3 px-4 rounded-lg flex items-center justify-center transition-all hover:bg-surface-container-low hover:border-outline hover:shadow-lg active:scale-[0.98]">Log In</button>
       </div>
-      <div class="slide">
-        <div class="slide-icon">📁</div>
-        <h2>Research, organized</h2>
-        <p>Save cases, build your notebook, and create flashcards — all in one place.</p>
-      </div>
-    </div>
-    <div class="onboarding-dots" id="onboardingDots">
-      <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
-    </div>
-    <button class="onboarding-btn" id="onboardingNextBtn">Get Started</button>
-    <button class="onboarding-skip" id="onboardingSkipBtn">Skip</button>
-  </div>
-
-  <div id="login-screen" class="screen auth-screen">
-    <div class="auth-container">
-      <div class="auth-header">
-        <div class="auth-logo">⚖️</div>
-        <h1>Juriscore</h1>
-        <p>Your legal research companion</p>
-      </div>
-      <form id="loginForm" class="auth-form">
-        <div class="input-group">
-          <label for="loginEmail">Email</label>
-          <input type="email" id="loginEmail" placeholder="your@email.com" required autocomplete="email" />
-        </div>
-        <div class="input-group">
-          <label for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" placeholder="Enter password" required autocomplete="current-password" />
-        </div>
-        <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
-          <span class="btn-text">Log In</span>
-          <span class="btn-spinner" style="display:none"></span>
-        </button>
-      </form>
-      <div class="auth-divider"><span>or</span></div>
-      <button class="btn btn-google" id="googleLoginBtn">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.3v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.08z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Continue with Google
-      </button>
-      <p class="auth-link">Don't have an account? <a href="#" id="goToSignup">Sign Up</a></p>
-    </div>
-  </div>
-
-  <div id="signup-screen" class="screen auth-screen">
-    <div class="auth-container">
-      <div class="auth-header">
-        <div class="auth-logo">⚖️</div>
-        <h1>Juriscore</h1>
-        <p>Create your account</p>
-      </div>
-      <form id="signupForm" class="auth-form">
-        <div class="input-group">
-          <label for="signupName">Full Name</label>
-          <input type="text" id="signupName" placeholder="John Doe" required autocomplete="name" />
-        </div>
-        <div class="input-group">
-          <label>University</label>
-          <div class="uni-chips" id="uniChips">
-            <button type="button" class="uni-chip active" data-uni="Kabarak University">Kabarak</button>
-            <button type="button" class="uni-chip" data-uni="Strathmore University">Strathmore</button>
-            <button type="button" class="uni-chip" data-uni="University of Nairobi">UoN</button>
-            <button type="button" class="uni-chip" data-uni="JKUAT">JKUAT</button>
-            <button type="button" class="uni-chip" data-uni="Moi University">Moi</button>
-            <button type="button" class="uni-chip" data-uni="Others">Others</button>
-          </div>
-        </div>
-        <div class="input-group">
-          <label for="signupEmail">University Email</label>
-          <input type="email" id="signupEmail" placeholder="your@university.ac.ke" required autocomplete="email" />
-        </div>
-        <div class="input-group">
-          <label for="signupPassword">Password</label>
-          <input type="password" id="signupPassword" placeholder="Min. 6 characters" required minlength="6" autocomplete="new-password" />
-        </div>
-        <div class="input-group">
-          <label for="signupConfirm">Confirm Password</label>
-          <input type="password" id="signupConfirm" placeholder="Confirm password" required autocomplete="new-password" />
-        </div>
-        <button type="submit" class="btn btn-primary btn-full" id="signupBtn">
-          <span class="btn-text">Create Account</span>
-          <span class="btn-spinner" style="display:none"></span>
-        </button>
-      </form>
-      <div class="auth-divider"><span>or</span></div>
-      <button class="btn btn-google" id="googleSignupBtn">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.3v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.08z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Continue with Google
-      </button>
-      <p class="auth-link">Already have an account? <a href="#" id="goToLogin">Log In</a></p>
-    </div>
-  </div>
-
-  <div id="main-app" class="screen">
-    <header class="top-bar" id="topBar">
-      <h1 id="topBarTitle">Juriscore</h1>
-      <div class="top-bar-actions">
-        <button class="icon-btn" id="logoutBtn" title="Log out">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        </button>
-      </div>
-    </header>
-
-    <nav class="bottom-nav" id="bottomNav">
-      <button class="nav-item active" data-route="home">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-        <span>Home</span>
-      </button>
-      <button class="nav-item" data-route="search">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <span>Search</span>
-      </button>
-      <button class="nav-item" data-route="constitution">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="13" x2="8" y2="13" stroke="#fff" stroke-width="2"/><line x1="16" y1="17" x2="8" y2="17" stroke="#fff" stroke-width="2"/></svg>
-        <span>Constitution</span>
-      </button>
-      <button class="nav-item" data-route="notebook">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        <span>Notebook</span>
-      </button>
-      <button class="nav-item" data-route="flashcards">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="12" y1="6" x2="12" y2="18" stroke="var(--accent)" stroke-width="2"/></svg>
-        <span>Flashcards</span>
-      </button>
-      <button class="nav-item" data-route="profile">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Profile</span>
-      </button>
-    </nav>
-
-    <main class="content" id="contentArea">
-      <section class="page active" id="page-home">
-        <div class="container">
-          <div class="greeting-section">
-            <h2 id="greetingText">Good morning, Student</h2>
-            <div class="search-bar" id="homeSearchBar">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" placeholder="Search cases, statutes, topics..." id="homeSearchInput" />
-            </div>
-          </div>
-          <div class="section">
-            <h3 class="section-title">Quick Actions</h3>
-            <div class="quick-actions">
-              <button class="quick-action" data-route="search">
-                <div class="quick-icon" style="background:#E8EEF5;color:var(--primary)">🕐</div>
-                <span>Recent Cases</span>
-              </button>
-              <button class="quick-action" data-route="notebook">
-                <div class="quick-icon" style="background:#F0E6D3;color:var(--accent)">📁</div>
-                <span>My Notebook</span>
-              </button>
-              <button class="quick-action" data-route="flashcards">
-                <div class="quick-icon" style="background:#FEF3C7;color:#F59E0B">💡</div>
-                <span>Flashcards</span>
-              </button>
-              <button class="quick-action" data-route="constitution">
-                <div class="quick-icon" style="background:#D1FAE5;color:#10B981">📄</div>
-                <span>Constitution</span>
-              </button>
-            </div>
-          </div>
-          <div class="section">
-            <h3 class="section-title">Continue Studying</h3>
-            <div class="horizontal-scroll" id="recentCasesScroll"></div>
-          </div>
-          <div class="section">
-            <h3 class="section-title">Recommended for You</h3>
-            <div class="vertical-list" id="recommendedList"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="page" id="page-search">
-        <div class="container">
-          <div class="search-header">
-            <div class="search-wrap">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" placeholder="Search cases, statutes..." id="searchInput" />
-              <button class="clear-btn" id="searchClear" style="display:none">✕</button>
-            </div>
-            <button class="sort-toggle" id="sortToggle">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="9" y2="18"/></svg>
-            </button>
-          </div>
-          <div class="sort-panel" id="sortPanel" style="display:none">
-            <button class="sort-chip active" data-sort="relevance">Relevance</button>
-            <button class="sort-chip" data-sort="newest">Newest First</button>
-            <button class="sort-chip" data-sort="oldest">Oldest First</button>
-          </div>
-          <div class="filter-chips" id="filterChips">
-            <button class="filter-chip active" data-court="All">All</button>
-            <button class="filter-chip" data-court="Supreme Court">Supreme Court</button>
-            <button class="filter-chip" data-court="Court of Appeal">Court of Appeal</button>
-            <button class="filter-chip" data-court="High Court">High Court</button>
-            <button class="filter-chip" data-court="Statutes">Statutes</button>
-          </div>
-          <div class="loading-indicator" id="searchLoading" style="display:none"><div class="spinner"></div><p>Searching...</p></div>
-          <div class="results-list" id="searchResults"></div>
-          <div class="empty-state" id="searchEmpty" style="display:none"><div class="empty-icon">🔍</div><p>No cases found. Try different keywords.</p></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-constitution">
-        <div class="container">
-          <h2 class="page-title">Constitution of Kenya, 2010</h2>
-          <p class="page-subtitle">The supreme law of the Republic</p>
-          <div class="chapter-scroll" id="chapterChips"></div>
-          <div class="loading-indicator" id="constLoading" style="display:none"><div class="spinner"></div></div>
-          <div class="article-list" id="articleList"></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-notebook">
-        <div class="container">
-          <div class="page-header">
-            <h2>My Notebook</h2>
-            <button class="btn btn-primary btn-sm" id="newFolderBtn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              New Folder
-            </button>
-          </div>
-          <div class="loading-indicator" id="notebookLoading" style="display:none"><div class="spinner"></div></div>
-          <div class="empty-state" id="notebookEmpty" style="display:none">
-            <div class="empty-icon">📁</div><p>No folders yet</p><span>Tap "New Folder" to create your first study folder</span>
-          </div>
-          <div class="folders-list" id="foldersList"></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-flashcards">
-        <div class="container">
-          <div class="page-header">
-            <h2>Flashcards</h2>
-            <button class="btn btn-primary btn-sm" id="newDeckBtn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              New Deck
-            </button>
-          </div>
-          <div class="loading-indicator" id="flashcardsLoading" style="display:none"><div class="spinner"></div></div>
-          <div class="empty-state" id="flashcardsEmpty" style="display:none">
-            <div class="empty-icon">💡</div><p>No decks yet</p><span>Create one to start studying</span>
-          </div>
-          <div class="decks-list" id="decksList"></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-profile">
-        <div class="container">
-          <div class="profile-header">
-            <div class="avatar" id="profileAvatar">S</div>
-            <h2 id="profileName">Student</h2>
-            <span class="uni-badge" id="profileUni">University</span>
-          </div>
-          <div class="stats-row">
-            <div class="stat-card"><span class="stat-num" id="statSaved">0</span><span class="stat-label">Cases Saved</span></div>
-            <div class="stat-card"><span class="stat-num" id="statDecks">0</span><span class="stat-label">Flashcards</span></div>
-            <div class="stat-card"><span class="stat-num" id="statNotes">0</span><span class="stat-label">Notes</span></div>
-          </div>
-          <div class="settings-list">
-            <button class="setting-item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              Edit Profile
-            </button>
-            <button class="setting-item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-              Notifications
-            </button>
-            <button class="setting-item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Offline Storage
-            </button>
-            <button class="setting-item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-              About Juriscore
-            </button>
-            <button class="setting-item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              Terms of Service
-            </button>
-            <button class="setting-item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              Privacy Policy
-            </button>
-          </div>
-          <button class="btn btn-logout" id="logoutBtn2">Log Out</button>
-          <p class="version-text">Juriscore v1.0.0</p>
-        </div>
-      </section>
     </main>
+    <footer class="absolute bottom-10 w-full text-center fade-in-up delay-300">
+      <p class="font-body-sm text-body-sm text-secondary opacity-80">Happy reading from kenyalaw.org</p>
+    </footer>
+  </div>
+</section>
 
-    <div id="caseDetailOverlay" class="overlay" style="display:none">
-      <div class="overlay-header">
-        <button class="icon-btn" id="caseDetailBack">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <h3>Case Detail</h3>
-        <div style="width:36px"></div>
+<!-- ======================== SCREEN: HOME ======================== -->
+<section id="screen-home" class="screen">
+  <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg">
+    <section class="mb-stack-lg">
+      <h1 class="font-headline-md text-headline-md text-on-surface mb-stack-sm">Good morning, Alexandra</h1>
+      <p class="font-body-md text-body-md text-on-surface-variant">Ready to dive back into research?</p>
+    </section>
+    <section class="mb-stack-lg">
+      <div class="relative w-full max-w-2xl">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-outline">search</span></div>
+        <input onclick="navigate('search')" class="block w-full pl-10 pr-3 py-3 border border-outline-variant rounded-lg leading-5 bg-surface-container-lowest placeholder-outline focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition font-body-md text-body-md" placeholder="Search cases, statutes, topics..." type="text" readonly/>
       </div>
-      <div class="overlay-content" id="caseDetailContent"></div>
-      <div class="overlay-actions-bar">
-        <button class="overlay-action" id="saveCaseBtn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>Save
+    </section>
+    <section class="mb-stack-lg">
+      <h2 class="font-title-lg text-title-lg text-on-surface mb-stack-md">Quick Actions</h2>
+      <div class="bento-grid">
+        <button onclick="navigate('search')" class="flex flex-col items-center justify-center p-stack-md bg-surface-container-lowest border border-outline-variant rounded-lg hover:border-outline hover:shadow-lg transition-all cursor-pointer">
+          <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mb-stack-sm"><span class="material-symbols-outlined text-primary">gavel</span></div>
+          <span class="font-label-md text-label-md text-on-surface">Recent Cases</span>
         </button>
-        <button class="overlay-action" id="cardsCaseBtn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>Cards
+        <button onclick="navigate('notebook')" class="flex flex-col items-center justify-center p-stack-md bg-surface-container-lowest border border-outline-variant rounded-lg hover:border-outline hover:shadow-lg transition-all cursor-pointer">
+          <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mb-stack-sm"><span class="material-symbols-outlined text-primary">book</span></div>
+          <span class="font-label-md text-label-md text-on-surface">My Notebook</span>
         </button>
-        <button class="overlay-action" id="exportCaseBtn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export
+        <button onclick="navigate('flashcards')" class="flex flex-col items-center justify-center p-stack-md bg-surface-container-lowest border border-outline-variant rounded-lg hover:border-outline hover:shadow-lg transition-all cursor-pointer">
+          <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mb-stack-sm"><span class="material-symbols-outlined text-primary">style</span></div>
+          <span class="font-label-md text-label-md text-on-surface">Flashcards</span>
+        </button>
+        <button onclick="navigate('constitution')" class="flex flex-col items-center justify-center p-stack-md bg-surface-container-lowest border border-outline-variant rounded-lg hover:border-outline hover:shadow-lg transition-all cursor-pointer">
+          <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mb-stack-sm"><span class="material-symbols-outlined text-primary">account_balance</span></div>
+          <span class="font-label-md text-label-md text-on-surface">Constitution</span>
         </button>
       </div>
-    </div>
-
-    <div id="studyOverlay" class="overlay study-overlay" style="display:none">
-      <div class="study-header">
-        <button class="icon-btn" id="studyBackBtn">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-        <h3 id="studyTitle">Study Session</h3>
-        <span class="study-counter" id="studyCounter">1/10</span>
-      </div>
-      <div class="study-progress-bar"><div class="study-progress-fill" id="studyProgressFill"></div></div>
-      <div class="study-content">
-        <div id="studyEmptyState" class="empty-state" style="display:none">
-          <div class="empty-icon">✅</div><p>All caught up!</p><span>No cards due for review.</span>
-          <button class="btn btn-primary" id="studyDoneBtn">Go Back</button>
+    </section>
+    <section class="mb-stack-lg">
+      <h2 class="font-title-lg text-title-lg text-on-surface mb-stack-md">Continue Studying</h2>
+      <div onclick="navigate('case-detail')" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md hover:border-outline hover:shadow-lg transition-all cursor-pointer group flex flex-col md:flex-row gap-stack-md items-start md:items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2 py-1 bg-surface-container text-primary font-label-md text-label-md rounded">Constitutional Law</span>
+            <span class="font-body-sm text-body-sm text-on-surface-variant">Module 3</span>
+          </div>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Marbury v. Madison (1803)</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Judicial review establishes the Supreme Court's power to strike down unconstitutional acts of Congress.</p>
         </div>
-        <div id="studyLoadingState" class="empty-state"><div class="spinner"></div><p>Loading cards...</p></div>
-        <div id="studyCardArea" style="display:none">
-          <div class="flashcard" id="studyFlashcard">
-            <div class="flashcard-inner" id="flashcardInner">
-              <div class="flashcard-front">
-                <span class="flashcard-label">Question</span>
-                <p class="flashcard-text" id="flashcardFrontText">Loading...</p>
-              </div>
-              <div class="flashcard-back">
-                <span class="flashcard-label" style="color:var(--accent)">Answer</span>
-                <p class="flashcard-text" id="flashcardBackText">Loading...</p>
+        <div class="w-full md:w-48 flex flex-col gap-2">
+          <div class="flex justify-between font-label-md text-label-md text-on-surface-variant"><span>Progress</span><span>65%</span></div>
+          <div class="w-full bg-surface-variant rounded-full h-2"><div class="bg-primary h-2 rounded-full" style="width: 65%"></div></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2 class="font-title-lg text-title-lg text-on-surface mb-stack-md">Recommended for You</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-stack-md">
+        <div onclick="navigate('case-detail')" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md hover:border-outline hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between h-full">
+          <div>
+            <div class="mb-stack-sm flex items-center justify-between">
+              <span class="px-2 py-1 bg-surface-container text-primary font-label-md text-label-md rounded">Contracts</span>
+              <span class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors">bookmark_border</span>
+            </div>
+            <h3 class="font-title-lg text-title-lg text-on-surface mb-2">Hawkins v. McGee</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-md">Expectation damages calculation in breach of contract regarding a surgical guarantee.</p>
+          </div>
+          <div class="flex items-center gap-2 mt-auto"><span class="material-symbols-outlined text-secondary text-sm">schedule</span><span class="font-label-md text-label-md text-secondary">10 min read</span></div>
+        </div>
+        <div onclick="navigate('case-detail')" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md hover:border-outline hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between h-full">
+          <div>
+            <div class="mb-stack-sm flex items-center justify-between">
+              <span class="px-2 py-1 bg-surface-container text-primary font-label-md text-label-md rounded">Torts</span>
+              <span class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors">bookmark_border</span>
+            </div>
+            <h3 class="font-title-lg text-title-lg text-on-surface mb-2">Palsgraf v. Long Island R.R.</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-md">Foreseeability and proximate cause in negligence claims involving unexpected chain reactions.</p>
+          </div>
+          <div class="flex items-center gap-2 mt-auto"><span class="material-symbols-outlined text-secondary text-sm">schedule</span><span class="font-label-md text-label-md text-secondary">15 min read</span></div>
+        </div>
+        <div onclick="navigate('case-detail')" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md hover:border-outline hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between h-full">
+          <div>
+            <div class="mb-stack-sm flex items-center justify-between">
+              <span class="px-2 py-1 bg-surface-container text-primary font-label-md text-label-md rounded">Property</span>
+              <span class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors">bookmark_border</span>
+            </div>
+            <h3 class="font-title-lg text-title-lg text-on-surface mb-2">Pierson v. Post</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-md">The rule of capture establishing initial ownership rights over wild animals.</p>
+          </div>
+          <div class="flex items-center gap-2 mt-auto"><span class="material-symbols-outlined text-secondary text-sm">schedule</span><span class="font-label-md text-label-md text-secondary">8 min read</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</section>
+
+<!-- ======================== SCREEN: SEARCH ======================== -->
+<section id="screen-search" class="screen">
+  <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg">
+    <section class="mb-stack-lg">
+      <div class="font-headline-md text-headline-md mb-stack-md text-on-surface">Search & Browse Cases</div>
+      <div class="relative max-w-2xl">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">search</span>
+        <input class="w-full pl-12 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all shadow-sm" placeholder="Search by keyword, citation, or party name..." type="text"/>
+      </div>
+    </section>
+    <section class="mb-stack-lg">
+      <div class="flex flex-col gap-stack-md">
+        <div>
+          <div class="font-label-md text-label-md text-secondary mb-stack-sm">COURT</div>
+          <div class="flex overflow-x-auto hide-scrollbar gap-unit pb-2">
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-inverse-on-surface text-primary-container border border-primary-container/20">All Courts</button>
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Supreme Court</button>
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Federal Circuit</button>
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">State Appellate</button>
+          </div>
+        </div>
+        <div>
+          <div class="font-label-md text-label-md text-secondary mb-stack-sm">YEAR</div>
+          <div class="flex overflow-x-auto hide-scrollbar gap-unit pb-2">
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-inverse-on-surface text-primary-container border border-primary-container/20">Any Time</button>
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Past Year</button>
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Past 5 Years</button>
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">2010 - 2020</button>
+          </div>
+        </div>
+        <div>
+          <div class="font-label-md text-label-md text-secondary mb-stack-sm">TOPIC</div>
+          <div class="flex overflow-x-auto hide-scrollbar gap-unit pb-2">
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Constitutional Law</button>
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-inverse-on-surface text-primary-container border border-primary-container/20">Intellectual Property</button>
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Contract Law</button>
+            <button class="whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Criminal Law</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="flex justify-between items-center mb-stack-md border-b border-outline-variant pb-2">
+        <div class="font-body-md text-secondary">Showing 42 results</div>
+        <button class="flex items-center gap-1 text-primary-container font-label-md text-label-md hover:opacity-80 transition-opacity"><span class="material-symbols-outlined text-sm">sort</span>SORT: RELEVANCE</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+        <div onclick="navigate('case-detail')" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md hover:border-secondary hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start mb-2">
+              <span class="font-label-md text-label-md text-secondary bg-surface-container-low px-2 py-1 rounded">SUPREME COURT</span>
+              <button aria-label="Save" class="text-secondary hover:text-primary-container transition-colors p-1"><span class="material-symbols-outlined">bookmark_add</span></button>
+            </div>
+            <h3 class="font-title-lg text-title-lg text-on-surface mb-1 group-hover:text-primary-container transition-colors">Alice Corp. v. CLS Bank International</h3>
+            <p class="font-code-snippet text-code-snippet text-secondary mb-stack-sm">573 U.S. 208 (2014)</p>
+            <p class="font-body-sm text-on-surface-variant line-clamp-3 mb-stack-md">A landmark United States Supreme Court decision concerning patentable subject matter.</p>
+          </div>
+          <div class="flex gap-2 mt-auto">
+            <span class="text-[10px] uppercase font-semibold text-secondary bg-surface-variant px-2 py-1 rounded-sm">Patents</span>
+            <span class="text-[10px] uppercase font-semibold text-secondary bg-surface-variant px-2 py-1 rounded-sm">Software</span>
+          </div>
+        </div>
+        <div onclick="navigate('case-detail')" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md hover:border-secondary hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start mb-2">
+              <span class="font-label-md text-label-md text-secondary bg-surface-container-low px-2 py-1 rounded">FEDERAL CIRCUIT</span>
+              <button aria-label="Saved" class="text-primary-container transition-colors p-1"><span class="material-symbols-outlined fill">bookmark_added</span></button>
+            </div>
+            <h3 class="font-title-lg text-title-lg text-on-surface mb-1 group-hover:text-primary-container transition-colors">Enfish, LLC v. Microsoft Corp.</h3>
+            <p class="font-code-snippet text-code-snippet text-secondary mb-stack-sm">822 F.3d 1327 (Fed. Cir. 2016)</p>
+            <p class="font-body-sm text-on-surface-variant line-clamp-3 mb-stack-md">The Federal Circuit reversed a district court's grant of summary judgment that Enfish's patents were invalid.</p>
+          </div>
+          <div class="flex gap-2 mt-auto">
+            <span class="text-[10px] uppercase font-semibold text-secondary bg-surface-variant px-2 py-1 rounded-sm">Patents</span>
+            <span class="text-[10px] uppercase font-semibold text-secondary bg-surface-variant px-2 py-1 rounded-sm">Section 101</span>
+          </div>
+        </div>
+        <div onclick="navigate('case-detail')" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md hover:border-secondary hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start mb-2">
+              <span class="font-label-md text-label-md text-secondary bg-surface-container-low px-2 py-1 rounded">SUPREME COURT</span>
+              <button aria-label="Save" class="text-secondary hover:text-primary-container transition-colors p-1"><span class="material-symbols-outlined">bookmark_add</span></button>
+            </div>
+            <h3 class="font-title-lg text-title-lg text-on-surface mb-1 group-hover:text-primary-container transition-colors">Mayo Collaborative Services v. Prometheus Laboratories</h3>
+            <p class="font-code-snippet text-code-snippet text-secondary mb-stack-sm">566 U.S. 66 (2012)</p>
+            <p class="font-body-sm text-on-surface-variant line-clamp-3 mb-stack-md">A unanimous Supreme Court decision holding claims directed to a method of giving a drug were not patent-eligible.</p>
+          </div>
+          <div class="flex gap-2 mt-auto">
+            <span class="text-[10px] uppercase font-semibold text-secondary bg-surface-variant px-2 py-1 rounded-sm">Patents</span>
+            <span class="text-[10px] uppercase font-semibold text-secondary bg-surface-variant px-2 py-1 rounded-sm">Biotech</span>
+          </div>
+        </div>
+      </div>
+      <div class="mt-stack-lg flex justify-center">
+        <button class="px-6 py-2 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-variant transition-colors">LOAD MORE</button>
+      </div>
+    </section>
+  </main>
+</section>
+
+<!-- ======================== SCREEN: CASE DETAIL ======================== -->
+<section id="screen-case-detail" class="screen">
+  <header class="bg-surface w-full top-0 sticky z-40 border-b border-outline-variant">
+    <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-stack-md max-w-container-max mx-auto h-16 md:h-auto">
+      <button onclick="history.back()" class="text-secondary hover:bg-surface-container transition-colors p-2 rounded-full cursor-pointer active:opacity-80 flex items-center justify-center"><span class="material-symbols-outlined">arrow_back</span></button>
+      <div class="font-headline-md text-headline-md text-primary truncate flex-1 text-center">Case Detail</div>
+      <button class="text-secondary hover:bg-surface-container transition-colors p-2 rounded-full cursor-pointer active:opacity-80 flex items-center justify-center"><span class="material-symbols-outlined">more_vert</span></button>
+    </div>
+  </header>
+  <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pb-32 pt-stack-lg">
+    <article class="max-w-[720px] mx-auto">
+      <header class="mb-stack-lg">
+        <div class="flex items-center gap-3 mb-stack-sm flex-wrap">
+          <span class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md px-3 py-1 rounded-full">Constitutional Law</span>
+          <span class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md px-3 py-1 rounded-full">Supreme Court</span>
+          <span class="text-secondary font-label-md text-label-md">2023 SCC 14</span>
+        </div>
+        <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-stack-md">R. v. Morrison</h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant">A landmark decision clarifying the scope of reasonable expectation of privacy in digital communications accessed through third-party servers.</p>
+      </header>
+      <nav class="flex border-b border-outline-variant mb-stack-lg overflow-x-auto hide-scrollbar">
+        <button class="px-4 py-3 font-title-lg text-title-lg text-primary border-b-2 border-primary whitespace-nowrap">Summary</button>
+        <button class="px-4 py-3 font-title-lg text-title-lg text-secondary hover:text-on-surface transition-colors whitespace-nowrap">Full Judgment</button>
+        <button class="px-4 py-3 font-title-lg text-title-lg text-secondary hover:text-on-surface transition-colors whitespace-nowrap">Notes</button>
+        <button class="px-4 py-3 font-title-lg text-title-lg text-secondary hover:text-on-surface transition-colors whitespace-nowrap">Related</button>
+      </nav>
+      <div class="space-y-stack-lg font-body-lg text-body-lg text-on-surface leading-relaxed">
+        <section>
+          <h2 class="font-headline-md text-headline-md mb-stack-sm text-on-surface">Facts</h2>
+          <p class="mb-4">The respondent, Morrison, was investigated for alleged involvement in a narcotics trafficking ring. During the investigation, law enforcement intercepted textual communications stored on a secure, encrypted third-party server located outside the immediate jurisdiction.</p>
+          <p>The primary contention arose when the police accessed these records without a specific warrant targeting the server, relying instead on a general production order issued to the telecommunications provider. Morrison argued this constituted an unreasonable search and seizure under s. 8 of the Charter.</p>
+        </section>
+        <section>
+          <h2 class="font-headline-md text-headline-md mb-stack-sm text-on-surface">Issues</h2>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>Did the accused possess a reasonable expectation of privacy in text messages stored on a third-party server after transmission?</li>
+            <li>Did the general production order provide sufficient lawful authority for the search and seizure of these specific records?</li>
+          </ul>
+        </section>
+        <section class="bg-surface-container-low border border-primary-fixed-dim rounded-lg p-stack-md md:p-gutter relative overflow-hidden shadow-lg">
+          <div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+          <div class="flex items-center gap-2 mb-stack-sm">
+            <span class="material-symbols-outlined text-primary-container">lightbulb</span>
+            <h3 class="font-title-lg text-title-lg text-primary-container">Ratio Decidendi</h3>
+          </div>
+          <p class="font-body-md text-body-md text-on-surface-variant italic">"An individual retains a reasonable expectation of privacy in digital communications stored on third-party servers, provided they have taken reasonable steps to ensure confidentiality (e.g., encryption). A general production order is insufficient to authorize the seizure of such deeply personal electronic records; specific judicial authorization targeting the server is required."</p>
+        </section>
+        <section>
+          <h2 class="font-headline-md text-headline-md mb-stack-sm text-on-surface">Holding</h2>
+          <p>Appeal dismissed. The evidence obtained from the third-party server was excluded under s. 24(2) of the Charter, as its admission would bring the administration of justice into disrepute.</p>
+        </section>
+      </div>
+    </article>
+  </main>
+  <div class="fixed bottom-0 left-0 w-full bg-surface border-t border-outline-variant shadow-[0px_-4px_12px_rgba(0,0,0,0.05)] z-50">
+    <div class="max-w-[720px] mx-auto px-margin-mobile md:px-0 py-stack-sm md:py-stack-md flex justify-end gap-4 items-center h-16">
+      <button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container transition-colors shadow-lg"><span class="material-symbols-outlined text-[18px]">ios_share</span>Export</button>
+      <button onclick="navigate('notebook')" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-colors shadow-lg"><span class="material-symbols-outlined text-[18px]">bookmark_add</span>Add to Notebook</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SCREEN: CONSTITUTION HUB ======================== -->
+<section id="screen-constitution" class="screen">
+  <main class="flex-grow flex justify-center w-full px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto pb-24 md:pb-stack-lg">
+    <div class="w-full max-w-[720px] flex flex-col gap-stack-lg">
+      <nav aria-label="Breadcrumb" class="flex items-center text-secondary font-label-md text-label-md gap-2">
+        <a class="hover:text-primary transition-colors" href="#" onclick="navigate('home')">Library</a>
+        <span class="material-symbols-outlined" style="font-size: 16px;">chevron_right</span>
+        <a class="hover:text-primary transition-colors" href="#">National Law</a>
+        <span class="material-symbols-outlined" style="font-size: 16px;">chevron_right</span>
+        <span class="text-on-surface">Constitution Hub</span>
+      </nav>
+      <div class="flex flex-col gap-stack-md">
+        <h1 class="font-headline-md text-headline-md text-on-surface">Constitution of the United States</h1>
+        <div class="relative w-full">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary">search</span>
+          <input class="w-full pl-10 pr-4 py-3 border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-surface-container transition-all font-body-md text-body-md placeholder:text-secondary" placeholder="Search articles, amendments, or keywords..." type="text"/>
+        </div>
+      </div>
+      <div class="w-full overflow-x-auto hide-scrollbar border-b border-outline-variant pb-2">
+        <div class="flex gap-4 min-w-max px-1">
+          <button class="px-4 py-2 rounded-full bg-surface-container text-primary font-label-md text-label-md transition-colors border border-transparent">Preamble & Articles</button>
+          <button class="px-4 py-2 rounded-full bg-surface text-secondary hover:bg-surface-container-low font-label-md text-label-md transition-colors border border-outline-variant">Bill of Rights</button>
+          <button class="px-4 py-2 rounded-full bg-surface text-secondary hover:bg-surface-container-low font-label-md text-label-md transition-colors border border-outline-variant">Amendments 11-27</button>
+          <button class="px-4 py-2 rounded-full bg-surface text-secondary hover:bg-surface-container-low font-label-md text-label-md transition-colors border border-outline-variant">Historical Context</button>
+          <button class="px-4 py-2 rounded-full bg-surface text-secondary hover:bg-surface-container-low font-label-md text-label-md transition-colors border border-outline-variant">Annotations</button>
+        </div>
+      </div>
+      <div class="flex flex-col gap-stack-md">
+        <div class="border border-outline-variant rounded-lg bg-surface-container-lowest overflow-hidden transition-all hover:border-outline article-expanded" onclick="this.classList.toggle('article-expanded')">
+          <div class="flex justify-between items-center p-4 cursor-pointer hover:bg-surface-container-low transition-colors">
+            <div class="flex items-center gap-4"><span class="font-title-lg text-title-lg text-primary w-8">I</span><span class="font-headline-md text-headline-md text-on-surface">The Legislative Branch</span></div>
+            <span class="material-symbols-outlined text-secondary expand-icon">expand_more</span>
+          </div>
+          <div class="article-content border-t border-outline-variant bg-surface-bright">
+            <div class="p-6 flex flex-col gap-4 font-body-md text-body-md text-on-surface-variant">
+              <p><strong>Section 1.</strong> All legislative Powers herein granted shall be vested in a Congress of the United States, which shall consist of a Senate and House of Representatives.</p>
+              <p><strong>Section 2.</strong> The House of Representatives shall be composed of Members chosen every second Year by the People of the several States, and the Electors in each State shall have the Qualifications requisite for Electors of the most numerous Branch of the State Legislature.</p>
+              <div class="flex gap-2 mt-2">
+                <button class="text-primary hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors"><span class="material-symbols-outlined" style="font-size: 16px;">bookmark_add</span> Save</button>
+                <button class="text-primary hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors ml-4"><span class="material-symbols-outlined" style="font-size: 16px;">content_copy</span> Copy Citation</button>
               </div>
             </div>
-            <p class="tap-hint" id="tapHint">Tap card to reveal answer</p>
           </div>
-          <div class="study-actions" id="studyActions" style="display:none">
-            <button class="study-btn study-btn-hard" data-quality="1"><span>Hard</span></button>
-            <button class="study-btn study-btn-good" data-quality="3"><span>Good</span></button>
-            <button class="study-btn study-btn-easy" data-quality="5"><span>Easy</span></button>
+        </div>
+        <div class="border border-outline-variant rounded-lg bg-surface-container-lowest overflow-hidden transition-all hover:border-outline" onclick="this.classList.toggle('article-expanded')">
+          <div class="flex justify-between items-center p-4 cursor-pointer hover:bg-surface-container-low transition-colors">
+            <div class="flex items-center gap-4"><span class="font-title-lg text-title-lg text-secondary w-8">II</span><span class="font-headline-md text-headline-md text-on-surface">The Executive Branch</span></div>
+            <span class="material-symbols-outlined text-secondary expand-icon">expand_more</span>
+          </div>
+          <div class="article-content border-t border-outline-variant bg-surface-bright">
+            <div class="p-6 flex flex-col gap-4 font-body-md text-body-md text-on-surface-variant">
+              <p><strong>Section 1.</strong> The executive Power shall be vested in a President of the United States of America. He shall hold his Office during the Term of four Years, and, together with the Vice President, chosen for the same Term, be elected, as follows</p>
+              <div class="flex gap-2 mt-2">
+                <button class="text-primary hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors"><span class="material-symbols-outlined" style="font-size: 16px;">bookmark_add</span> Save</button>
+                <button class="text-primary hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors ml-4"><span class="material-symbols-outlined" style="font-size: 16px;">content_copy</span> Copy Citation</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="border border-outline-variant rounded-lg bg-surface-container-lowest overflow-hidden transition-all hover:border-outline" onclick="this.classList.toggle('article-expanded')">
+          <div class="flex justify-between items-center p-4 cursor-pointer hover:bg-surface-container-low transition-colors">
+            <div class="flex items-center gap-4"><span class="font-title-lg text-title-lg text-secondary w-8">III</span><span class="font-headline-md text-headline-md text-on-surface">The Judicial Branch</span></div>
+            <span class="material-symbols-outlined text-secondary expand-icon">expand_more</span>
+          </div>
+          <div class="article-content border-t border-outline-variant bg-surface-bright">
+            <div class="p-6 flex flex-col gap-4 font-body-md text-body-md text-on-surface-variant">
+              <p><strong>Section 1.</strong> The judicial Power of the United States, shall be vested in one supreme Court, and in such inferior Courts as the Congress may from time to time ordain and establish.</p>
+              <div class="flex gap-2 mt-2">
+                <button class="text-primary hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors"><span class="material-symbols-outlined" style="font-size: 16px;">bookmark_add</span> Save</button>
+                <button class="text-primary hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors ml-4"><span class="material-symbols-outlined" style="font-size: 16px;">content_copy</span> Copy Citation</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="border border-outline-variant rounded-lg bg-surface-container-lowest overflow-hidden transition-all hover:border-outline" onclick="this.classList.toggle('article-expanded')">
+          <div class="flex justify-between items-center p-4 cursor-pointer hover:bg-surface-container-low transition-colors">
+            <div class="flex items-center gap-4"><span class="font-title-lg text-title-lg text-secondary w-8">IV</span><span class="font-headline-md text-headline-md text-on-surface">State Relations</span></div>
+            <span class="material-symbols-outlined text-secondary expand-icon">expand_more</span>
+          </div>
+          <div class="article-content border-t border-outline-variant bg-surface-bright">
+            <div class="p-6 flex flex-col gap-4 font-body-md text-body-md text-on-surface-variant">
+              <p><strong>Section 1.</strong> Full Faith and Credit shall be given in each State to the public Acts, Records, and judicial Proceedings of every other State.</p>
+              <div class="flex gap-2 mt-2">
+                <button class="text-primary hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors"><span class="material-symbols-outlined" style="font-size: 16px;">bookmark_add</span> Save</button>
+                <button class="text-primary hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors ml-4"><span class="material-symbols-outlined" style="font-size: 16px;">content_copy</span> Copy Citation</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+  </main>
+</section>
 
-    <div class="toast-container" id="toastContainer"></div>
+<!-- ======================== SCREEN: FLASHCARDS ======================== -->
+<section id="screen-flashcards" class="screen">
+  <main class="flex-1 p-margin-mobile md:p-margin-desktop max-w-container-max mx-auto w-full pb-24 md:pb-stack-lg">
+    <div class="flex justify-between items-center mb-stack-lg">
+      <h1 class="font-headline-md text-headline-md text-on-surface">Study Decks</h1>
+      <button class="bg-primary-container text-white px-4 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 hover:bg-primary transition-colors cursor-pointer shadow-sm"><span class="material-symbols-outlined text-[18px]">add</span>New Set</button>
+    </div>
+    <div class="flex gap-stack-sm mb-stack-lg overflow-x-auto pb-2 hide-scrollbar">
+      <button class="px-4 py-2 rounded-full font-body-sm text-body-sm bg-[#EFF6FF] text-[#0052FF] whitespace-nowrap cursor-pointer">All Subjects</button>
+      <button class="px-4 py-2 rounded-full font-body-sm text-body-sm bg-[#F3F4F6] text-[#000000] whitespace-nowrap cursor-pointer hover:bg-surface-container transition-colors">Constitutional Law</button>
+      <button class="px-4 py-2 rounded-full font-body-sm text-body-sm bg-[#F3F4F6] text-[#000000] whitespace-nowrap cursor-pointer hover:bg-surface-container transition-colors">Contracts</button>
+      <button class="px-4 py-2 rounded-full font-body-sm text-body-sm bg-[#F3F4F6] text-[#000000] whitespace-nowrap cursor-pointer hover:bg-surface-container transition-colors">Torts</button>
+      <button class="px-4 py-2 rounded-full font-body-sm text-body-sm bg-[#F3F4F6] text-[#000000] whitespace-nowrap cursor-pointer hover:bg-surface-container transition-colors">Criminal Law</button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+      <div class="bg-surface-container-lowest border border-[#E5E7EB] rounded-xl p-stack-md hover:border-[#D1D5DB] hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-start mb-stack-sm">
+            <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Constitutional Law</span>
+            <span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors">more_vert</span>
+          </div>
+          <h3 class="font-title-lg text-title-lg text-on-surface mb-2">First Amendment Doctrines</h3>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-md line-clamp-2">Key cases regarding free speech, establishment clause, and free exercise.</p>
+        </div>
+        <div class="flex items-center justify-between border-t border-[#E5E7EB] pt-stack-sm mt-auto">
+          <div class="flex items-center gap-3">
+            <div class="relative w-10 h-10">
+              <svg class="w-10 h-10" viewBox="0 0 100 100"><circle class="text-surface-variant stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-width="8"></circle><circle class="text-primary-container progress-ring__circle stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-dasharray="251.2" stroke-dashoffset="62.8" stroke-linecap="round" stroke-width="8"></circle></svg>
+              <span class="absolute inset-0 flex items-center justify-center font-label-md text-label-md text-primary-container">75%</span>
+            </div>
+            <span class="font-body-sm text-body-sm text-secondary">120 Cards</span>
+          </div>
+          <button class="bg-[#EFF6FF] text-[#0052FF] px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-primary-container hover:text-white transition-colors">Study</button>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest border border-[#E5E7EB] rounded-xl p-stack-md hover:border-[#D1D5DB] hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-start mb-stack-sm">
+            <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Contracts</span>
+            <span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors">more_vert</span>
+          </div>
+          <h3 class="font-title-lg text-title-lg text-on-surface mb-2">Formation & Defenses</h3>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-md line-clamp-2">Offer, acceptance, consideration, and defenses to formation like fraud or duress.</p>
+        </div>
+        <div class="flex items-center justify-between border-t border-[#E5E7EB] pt-stack-sm mt-auto">
+          <div class="flex items-center gap-3">
+            <div class="relative w-10 h-10">
+              <svg class="w-10 h-10" viewBox="0 0 100 100"><circle class="text-surface-variant stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-width="8"></circle><circle class="text-primary-container progress-ring__circle stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-dasharray="251.2" stroke-dashoffset="150.72" stroke-linecap="round" stroke-width="8"></circle></svg>
+              <span class="absolute inset-0 flex items-center justify-center font-label-md text-label-md text-primary-container">40%</span>
+            </div>
+            <span class="font-body-sm text-body-sm text-secondary">85 Cards</span>
+          </div>
+          <button class="bg-[#EFF6FF] text-[#0052FF] px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-primary-container hover:text-white transition-colors">Study</button>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest border border-[#E5E7EB] rounded-xl p-stack-md hover:border-[#D1D5DB] hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between opacity-90">
+        <div>
+          <div class="flex justify-between items-start mb-stack-sm">
+            <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Torts</span>
+            <span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors">more_vert</span>
+          </div>
+          <h3 class="font-title-lg text-title-lg text-on-surface mb-2">Intentional Torts</h3>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-md line-clamp-2">Battery, assault, false imprisonment, IIED, and trespass.</p>
+        </div>
+        <div class="flex items-center justify-between border-t border-[#E5E7EB] pt-stack-sm mt-auto">
+          <div class="flex items-center gap-3">
+            <div class="relative w-10 h-10">
+              <svg class="w-10 h-10" viewBox="0 0 100 100"><circle class="text-surface-variant stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-width="8"></circle><circle class="text-primary-container progress-ring__circle stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-dasharray="251.2" stroke-dashoffset="0" stroke-linecap="round" stroke-width="8"></circle></svg>
+              <span class="absolute inset-0 flex items-center justify-center font-label-md text-label-md text-primary-container">100%</span>
+            </div>
+            <span class="font-body-sm text-body-sm text-secondary">42 Cards</span>
+          </div>
+          <button class="border border-[#E5E7EB] text-[#000000] px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors">Review</button>
+        </div>
+      </div>
+    </div>
+    <div class="mt-stack-lg border-t border-outline-variant pt-stack-lg">
+      <h2 class="font-headline-md text-headline-md text-on-surface mb-stack-md">Active Study Session Preview</h2>
+      <div class="max-w-[720px] mx-auto bg-surface-container-lowest border border-[#E5E7EB] rounded-xl p-stack-lg shadow-lg text-center relative overflow-hidden min-h-[300px] flex flex-col justify-center cursor-pointer">
+        <span class="absolute top-4 left-4 font-label-md text-label-md text-secondary">Card 12 / 120</span>
+        <span class="absolute top-4 right-4 material-symbols-outlined text-secondary">lightbulb</span>
+        <div class="font-title-lg text-title-lg text-on-surface px-margin-desktop">What is the "Strict Scrutiny" test and when is it applied?</div>
+        <div class="mt-stack-lg text-on-surface-variant text-body-sm">Tap to reveal answer</div>
+      </div>
+      <div class="max-w-[720px] mx-auto flex justify-center gap-stack-md mt-stack-md opacity-50 pointer-events-none">
+        <button class="flex-1 max-w-[120px] border border-outline bg-surface text-secondary py-2 rounded-lg font-label-md text-label-md">Again</button>
+        <button class="flex-1 max-w-[120px] bg-primary-container text-white py-2 rounded-lg font-label-md text-label-md">Good</button>
+        <button class="flex-1 max-w-[120px] bg-[#EFF6FF] text-[#0052FF] py-2 rounded-lg font-label-md text-label-md">Easy</button>
+      </div>
+    </div>
+  </main>
+</section>
+
+<!-- ======================== SCREEN: NOTEBOOK ======================== -->
+<section id="screen-notebook" class="screen">
+  <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg flex flex-col md:flex-row gap-gutter pb-24 md:pb-stack-lg">
+    <aside class="hidden md:block w-[280px] shrink-0 border-r border-outline-variant pr-gutter">
+      <div class="sticky top-[100px]">
+        <h2 class="font-headline-md text-headline-md mb-stack-md text-on-surface">Folders</h2>
+        <ul class="space-y-2">
+          <li><button class="w-full flex items-center justify-between p-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors text-primary-container font-label-md text-label-md"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-primary-container">folder_open</span><span>Contract Law</span></div><span class="bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded-full text-xs">42</span></button></li>
+          <li><button class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-surface-container transition-colors text-secondary font-label-md text-label-md"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary">folder</span><span>Tort</span></div><span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full text-xs">18</span></button></li>
+          <li><button class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-surface-container transition-colors text-secondary font-label-md text-label-md"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary">folder</span><span>Constitutional Law</span></div><span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full text-xs">8</span></button></li>
+        </ul>
+        <button class="mt-stack-md w-full py-2 border border-outline-variant rounded-lg flex items-center justify-center gap-2 text-primary-container hover:bg-surface-container-low transition-colors font-label-md text-label-md"><span class="material-symbols-outlined text-sm">add</span> New Folder</button>
+      </div>
+    </aside>
+    <section class="flex-1">
+      <div class="flex justify-between items-end mb-stack-lg border-b border-outline-variant pb-stack-sm">
+        <div>
+          <h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">Contract Law</h2>
+          <p class="font-body-md text-body-md text-secondary mt-1">42 Saved Items</p>
+        </div>
+        <div class="flex gap-2">
+          <button class="p-2 rounded-lg border border-outline-variant hover:bg-surface-container-low text-secondary transition-colors" title="Filter"><span class="material-symbols-outlined">filter_list</span></button>
+          <button class="p-2 rounded-lg border border-outline-variant hover:bg-surface-container-low text-secondary transition-colors" title="Sort"><span class="material-symbols-outlined">sort</span></button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+        <article onclick="navigate('case-detail')" class="p-stack-md rounded-xl border border-outline-variant bg-surface hover:shadow-lg hover:border-outline transition-all cursor-pointer group">
+          <div class="flex justify-between items-start mb-3">
+            <span class="inline-block px-2 py-1 bg-surface-container text-primary-container rounded font-label-md text-[10px] uppercase tracking-wider">Case Law</span>
+            <button class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary-container"><span class="material-symbols-outlined text-sm">more_vert</span></button>
+          </div>
+          <h3 class="font-title-lg text-title-lg text-on-surface mb-2">Carlill v Carbolic Smoke Ball Co</h3>
+          <p class="font-body-sm text-body-sm text-secondary mb-4 line-clamp-2">A landmark decision regarding the requirements of contract formation, specifically concerning unilateral contracts and the intention to create legal relations.</p>
+          <div class="flex justify-between items-center border-t border-outline-variant pt-3">
+            <span class="font-code-snippet text-code-snippet text-on-surface-variant bg-surface-container-low px-2 py-1 rounded">[1893] 1 QB 256</span>
+            <div class="flex gap-2">
+              <span class="material-symbols-outlined text-secondary text-sm" title="Notes added">sticky_note_2</span>
+              <span class="material-symbols-outlined text-primary-container text-sm" title="Highlighted">border_color</span>
+            </div>
+          </div>
+        </article>
+        <article class="p-stack-md rounded-xl border border-outline-variant bg-surface hover:shadow-lg hover:border-outline transition-all cursor-pointer group">
+          <div class="flex justify-between items-start mb-3">
+            <span class="inline-block px-2 py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded font-label-md text-[10px] uppercase tracking-wider">Statute</span>
+            <button class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary-container"><span class="material-symbols-outlined text-sm">more_vert</span></button>
+          </div>
+          <h3 class="font-title-lg text-title-lg text-on-surface mb-2">Sale of Goods Act 1979</h3>
+          <p class="font-body-sm text-body-sm text-secondary mb-4 line-clamp-2">An Act to consolidate the law relating to the sale of goods. Implies certain terms into contracts for the sale of goods.</p>
+          <div class="flex justify-between items-center border-t border-outline-variant pt-3">
+            <span class="font-code-snippet text-code-snippet text-on-surface-variant bg-surface-container-low px-2 py-1 rounded">1979 c. 54</span>
+            <div class="flex gap-2"><span class="material-symbols-outlined text-secondary text-sm">sticky_note_2</span></div>
+          </div>
+        </article>
+        <article onclick="navigate('case-detail')" class="p-stack-md rounded-xl border border-outline-variant bg-surface hover:shadow-lg hover:border-outline transition-all cursor-pointer group">
+          <div class="flex justify-between items-start mb-3">
+            <span class="inline-block px-2 py-1 bg-surface-container text-primary-container rounded font-label-md text-[10px] uppercase tracking-wider">Case Law</span>
+            <button class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary-container"><span class="material-symbols-outlined text-sm">more_vert</span></button>
+          </div>
+          <h3 class="font-title-lg text-title-lg text-on-surface mb-2">Williams v Roffey Bros & Nicholls (Contractors) Ltd</h3>
+          <p class="font-body-sm text-body-sm text-secondary mb-4 line-clamp-2">Leading English contract law case. It decided that in varying a contract, a promise to perform a pre-existing contractual obligation will constitute good consideration.</p>
+          <div class="flex justify-between items-center border-t border-outline-variant pt-3">
+            <span class="font-code-snippet text-code-snippet text-on-surface-variant bg-surface-container-low px-2 py-1 rounded">[1991] 1 QB 1</span>
+            <div class="flex gap-2"><span class="material-symbols-outlined text-primary-container text-sm">border_color</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+  <div class="hidden md:flex fixed bottom-0 left-0 w-full bg-inverse-surface text-inverse-on-surface py-2 px-margin-desktop justify-between items-center z-40 border-t border-outline">
+    <div class="font-body-sm text-body-sm flex gap-6"><span>Total Saved: <strong class="text-inverse-primary">124</strong></span><span>Unread Notes: <strong class="text-tertiary-fixed-dim">3</strong></span></div>
+    <div class="font-body-sm text-body-sm text-secondary-fixed-dim">Last synced: 2 mins ago</div>
   </div>
-</div>
-<script src="/js/app.js"></script>
+</section>
+
+<!-- ======================== SCREEN: PROFILE ======================== -->
+<section id="screen-profile" class="screen">
+  <main class="flex-grow max-w-container-max mx-auto w-full px-margin-mobile md:px-margin-desktop py-stack-lg flex flex-col gap-gutter pb-24 md:pb-stack-lg">
+    <div class="max-w-[720px] mx-auto w-full space-y-stack-lg">
+      <section class="flex flex-col items-center text-center space-y-stack-sm mb-stack-lg animate-fade-in-up">
+        <div class="relative group cursor-pointer inline-block">
+          <img alt="User Avatar" class="w-24 h-24 rounded-full object-cover border-2 border-surface-container-high level-2-shadow transition-transform duration-200 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtC1tpjNeFNpTVpM8gATZXccuVvAYmRIXG_D1Tl73ljM6WbhXufY-iDkyjGO2jw9UD3SPWu5d3sD6TlwqDOisZKz59bOSeaIVesX1dbCG5aiAtNf9u_LnFIFV5GMs8pDeNWnIlcT0mCjv15bXG4Tc7LI1MBYYIanlPQOz-wW1s4I7IVSCxAzpzzF9ZfsTLKOxN9T0RDsKkifMWf1tAcV7yfvp78VOoIzwptFzEJWPmF3CCpwUkCYdlPgSYnKQJp8PjpYLXNtbosL8k"/>
+          <div class="absolute bottom-0 right-0 bg-primary-container text-white p-1.5 rounded-full border-2 border-surface shadow-sm hover:bg-primary transition-colors"><span class="material-symbols-outlined text-[16px]">edit</span></div>
+        </div>
+        <div class="space-y-1 mt-stack-md">
+          <h2 class="font-headline-md text-headline-md text-on-surface">Alex Mercer</h2>
+          <p class="font-body-md text-body-md text-secondary">Harvard Law School &bull; J.D. Candidate '25</p>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 mt-2 bg-surface-container-low text-primary-container rounded-full font-label-md text-label-md border border-surface-container-high"><span class="material-symbols-outlined text-[14px]">workspace_premium</span>Premium Scholar</div>
+        </div>
+      </section>
+      <section class="grid grid-cols-2 md:grid-cols-4 gap-unit">
+        <div class="glass-card-solid rounded-lg p-stack-md flex flex-col items-center justify-center text-center hover:bg-surface-container-low transition-colors duration-200 cursor-default"><span class="font-headline-md text-headline-md text-on-surface">342</span><span class="font-label-md text-label-md text-secondary mt-1 uppercase tracking-wider">Saved Cases</span></div>
+        <div class="glass-card-solid rounded-lg p-stack-md flex flex-col items-center justify-center text-center hover:bg-surface-container-low transition-colors duration-200 cursor-default"><span class="font-headline-md text-headline-md text-on-surface">18</span><span class="font-label-md text-label-md text-secondary mt-1 uppercase tracking-wider">Notebooks</span></div>
+        <div class="glass-card-solid rounded-lg p-stack-md flex flex-col items-center justify-center text-center hover:bg-surface-container-low transition-colors duration-200 cursor-default"><span class="font-headline-md text-headline-md text-on-surface">1.2k</span><span class="font-label-md text-label-md text-secondary mt-1 uppercase tracking-wider">Citations</span></div>
+        <div class="glass-card-solid rounded-lg p-stack-md flex flex-col items-center justify-center text-center hover:bg-surface-container-low transition-colors duration-200 cursor-default"><span class="font-headline-md text-headline-md text-on-surface">45h</span><span class="font-label-md text-label-md text-secondary mt-1 uppercase tracking-wider">Study Time</span></div>
+      </section>
+      <section class="glass-card-solid rounded-xl overflow-hidden mt-stack-lg shadow-sm border border-outline-variant">
+        <div class="divide-y divide-outline-variant">
+          <a class="flex items-center justify-between p-stack-md hover:bg-surface-container-low transition-colors group" href="#"><div class="flex items-center gap-stack-md"><div class="p-2 rounded-lg bg-surface-variant text-on-surface-variant group-hover:bg-primary-fixed group-hover:text-primary transition-colors"><span class="material-symbols-outlined">person</span></div><div><h3 class="font-title-lg text-title-lg text-on-surface">Account</h3><p class="font-body-sm text-body-sm text-secondary">Email, Password, Personal details</p></div></div><span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span></a>
+          <a class="flex items-center justify-between p-stack-md hover:bg-surface-container-low transition-colors group" href="#"><div class="flex items-center gap-stack-md"><div class="p-2 rounded-lg bg-surface-variant text-on-surface-variant group-hover:bg-primary-fixed group-hover:text-primary transition-colors"><span class="material-symbols-outlined">credit_card</span></div><div><h3 class="font-title-lg text-title-lg text-on-surface">Subscription</h3><p class="font-body-sm text-body-sm text-secondary">Plan details, Billing history</p></div></div><span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span></a>
+          <a class="flex items-center justify-between p-stack-md hover:bg-surface-container-low transition-colors group" href="#"><div class="flex items-center gap-stack-md"><div class="p-2 rounded-lg bg-surface-variant text-on-surface-variant group-hover:bg-primary-fixed group-hover:text-primary transition-colors"><span class="material-symbols-outlined">format_quote</span></div><div><h3 class="font-title-lg text-title-lg text-on-surface">Citation Style</h3><p class="font-body-sm text-body-sm text-secondary">Bluebook, ALWD, OSCOLA</p></div></div><span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span></a>
+          <a class="flex items-center justify-between p-stack-md hover:bg-surface-container-low transition-colors group" href="#"><div class="flex items-center gap-stack-md"><div class="p-2 rounded-lg bg-surface-variant text-on-surface-variant group-hover:bg-primary-fixed group-hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></div><div><h3 class="font-title-lg text-title-lg text-on-surface">Notifications</h3><p class="font-body-sm text-body-sm text-secondary">Alerts, Weekly digests</p></div></div><span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span></a>
+          <a class="flex items-center justify-between p-stack-md hover:bg-surface-container-low transition-colors group" href="#"><div class="flex items-center gap-stack-md"><div class="p-2 rounded-lg bg-surface-variant text-on-surface-variant group-hover:bg-primary-fixed group-hover:text-primary transition-colors"><span class="material-symbols-outlined">help</span></div><div><h3 class="font-title-lg text-title-lg text-on-surface">Help & Support</h3><p class="font-body-sm text-body-sm text-secondary">FAQs, Contact support, Legal guides</p></div></div><span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span></a>
+        </div>
+      </section>
+      <section class="mt-stack-lg pt-stack-md pb-stack-lg">
+        <button onclick="navigate('splash')" class="w-full bg-surface border border-error-container text-error hover:bg-error-container hover:border-error transition-all duration-200 rounded-lg p-stack-sm flex items-center justify-center gap-2 font-headline-md text-body-lg"><span class="material-symbols-outlined">logout</span>Log Out</button>
+      </section>
+    </div>
+  </main>
+</section>
+
+<!-- ======================== BOTTOM NAV BAR ======================== -->
+<nav id="app-bottom-nav" class="md:hidden fixed bottom-0 w-full z-50 bg-surface border-t border-outline-variant hidden">
+  <div class="flex justify-around items-center h-16 px-margin-mobile">
+    <button onclick="navigate('home')" class="flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-all active:scale-95 duration-100" data-nav="home">
+      <span class="material-symbols-outlined">home</span>
+      <span class="font-label-md text-label-md mt-1">Home</span>
+    </button>
+    <button onclick="navigate('search')" class="flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-all active:scale-95 duration-100" data-nav="search">
+      <span class="material-symbols-outlined">search</span>
+      <span class="font-label-md text-label-md mt-1">Search</span>
+    </button>
+    <button onclick="navigate('notebook')" class="flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-all active:scale-95 duration-100" data-nav="notebook">
+      <span class="material-symbols-outlined">book</span>
+      <span class="font-label-md text-label-md mt-1">Notebook</span>
+    </button>
+    <button onclick="navigate('flashcards')" class="flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-all active:scale-95 duration-100" data-nav="flashcards">
+      <span class="material-symbols-outlined">school</span>
+      <span class="font-label-md text-label-md mt-1">Study</span>
+    </button>
+    <button onclick="navigate('profile')" class="flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-all active:scale-95 duration-100" data-nav="profile">
+      <span class="material-symbols-outlined">person</span>
+      <span class="font-label-md text-label-md mt-1">Profile</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ======================== ROUTING JS ======================== -->
+<script>
+(function() {
+  const screens = ['splash','home','search','case-detail','constitution','flashcards','notebook','profile'];
+  const mainScreens = ['home','search','case-detail','constitution','flashcards','notebook','profile'];
+  const headerEl = document.getElementById('app-header');
+  const bottomNav = document.getElementById('app-bottom-nav');
+
+  function navigate(route) {
+    screens.forEach(s => {
+      const el = document.getElementById('screen-' + s);
+      if (el) el.classList.remove('active');
+    });
+    const target = document.getElementById('screen-' + route);
+    if (target) target.classList.add('active');
+
+    if (route === 'splash') {
+      headerEl.classList.add('hidden');
+      bottomNav.classList.add('hidden');
+    } else {
+      headerEl.classList.remove('hidden');
+      bottomNav.classList.remove('hidden');
+    }
+
+    bottomNav.querySelectorAll('[data-nav]').forEach(btn => {
+      btn.classList.remove('text-primary','font-bold');
+      btn.classList.add('text-secondary');
+    });
+    const activeBtn = bottomNav.querySelector('[data-nav="' + route + '"]');
+    if (activeBtn) {
+      activeBtn.classList.remove('text-secondary');
+      activeBtn.classList.add('text-primary','font-bold');
+      activeBtn.querySelector('.material-symbols-outlined').classList.add('fill');
+    }
+    bottomNav.querySelectorAll('[data-nav]').forEach(btn => {
+      if (btn !== activeBtn) {
+        btn.querySelector('.material-symbols-outlined').classList.remove('fill');
+      }
+    });
+
+    window.location.hash = route;
+    window.scrollTo(0, 0);
+  }
+
+  window.navigate = navigate;
+
+  function handleRoute() {
+    const hash = window.location.hash.replace('#','') || 'splash';
+    if (screens.includes(hash)) {
+      navigate(hash);
+    } else {
+      navigate('splash');
+    }
+  }
+
+  window.addEventListener('hashchange', handleRoute);
+  handleRoute();
+})();
+</script>
+
 </body>
 </html>
