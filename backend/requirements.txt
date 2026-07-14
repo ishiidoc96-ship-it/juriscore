@@ -13,4 +13,3 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 openai==1.12.0
 reportlab==4.1.0
-supabase==2.3.4

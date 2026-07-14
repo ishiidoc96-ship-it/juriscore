@@ -12,10 +12,20 @@ from models.database import engine, Base
 from routers import cases, statutes, constitution, notebook, flashcards, study, export
 from services import ai_service
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    ai_service.init_backend()
+    yield
+
+
 app = FastAPI(
     title="Juriscore API",
     description="Legal research companion for Kenyan law students.",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -26,19 +36,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.on_event("startup")
-async def startup():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    ai_service.init_backend()
 
 @app.get("/api/health")
 async def health():
     return {"status": "healthy", "service": "juriscore-api", "version": "1.0.0"}
 
+
 @app.get("/api")
 async def root():
     return JSONResponse({"message": "Welcome to Juriscore API", "docs": "/docs"})
+
 
 app.include_router(cases.router, prefix="/api/cases", tags=["Cases"])
 app.include_router(statutes.router, prefix="/api/statutes", tags=["Statutes"])

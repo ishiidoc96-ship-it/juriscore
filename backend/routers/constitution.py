@@ -60,8 +60,23 @@ async def get_chapter(chapter_num: int):
         data = await scrape_constitution()
     except Exception as e:
         logger.error(f"Failed to scrape constitution: {e}")
-        return {"chapter_num": chapter_num, "content": "Content unavailable."}
-    return {"chapter_num": chapter_num, "content": data.get("full_text", "")}
+        return {"chapter_num": chapter_num, "title": "", "content": "Content unavailable."}
+    full_text = data.get("full_text", "")
+    lines = full_text.split("\n")
+    capture = False
+    chapter_lines = []
+    chapter_title = ""
+    for line in lines:
+        stripped = line.strip()
+        if stripped.upper().startswith(f"CHAPTER {chapter_num}") or stripped.upper().startswith(f"CHAPTER {chapter_num} "):
+            capture = True
+            chapter_title = stripped
+            continue
+        if capture and stripped.upper().startswith("CHAPTER") and stripped != chapter_title:
+            break
+        if capture:
+            chapter_lines.append(line)
+    return {"chapter_num": chapter_num, "title": chapter_title, "content": "\n".join(chapter_lines) if chapter_lines else "Chapter not found."}
 
 
 @router.get("/articles/{article_num}")
@@ -70,8 +85,20 @@ async def get_article(article_num: int):
         data = await scrape_constitution()
     except Exception as e:
         logger.error(f"Failed to scrape constitution: {e}")
-        return {"article_num": article_num, "content": "Content unavailable."}
-    return {"article_num": article_num, "content": data.get("full_text", "")}
+        return {"article_num": article_num, "title": "", "content": "Content unavailable."}
+    full_text = data.get("full_text", "")
+    paragraphs = full_text.split("\n\n")
+    for i, para in enumerate(paragraphs):
+        stripped = para.strip()
+        if stripped.upper().startswith(f"ARTICLE {article_num}") or stripped.upper().startswith(f"ARTICLE {article_num} "):
+            article_content = [stripped]
+            for j in range(i + 1, len(paragraphs)):
+                next_para = paragraphs[j].strip()
+                if next_para.upper().startswith("ARTICLE "):
+                    break
+                article_content.append(next_para)
+            return {"article_num": article_num, "title": stripped, "content": "\n\n".join(article_content)}
+    return {"article_num": article_num, "title": "", "content": "Article not found."}
 
 
 @router.get("/search")
