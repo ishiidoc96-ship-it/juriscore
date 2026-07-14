@@ -33,7 +33,7 @@ DEMO_CASES = [
     },
     {
         "title": "Donoghue v Stevenson",
-        "citation": [1932] AC 562,
+        "citation": "[1932] AC 562",
         "court": "House of Lords",
         "year": 1932,
         "subject_tags": ["Tort Law", "Negligence"],
