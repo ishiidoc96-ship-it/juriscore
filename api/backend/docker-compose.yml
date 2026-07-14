@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://juriscore:juriscore@db:5432/juriscore
+      - SUPABASE_URL=
+      - SUPABASE_KEY=
+      - OPENAI_API_KEY=
+      - KENYALAW_BASE=
+    depends_on:
+      - db
+    volumes:
+      - ./:/app
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=juriscore
+      - POSTGRES_PASSWORD=juriscore
+      - POSTGRES_DB=juriscore
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+
+volumes:
+  pgdata:

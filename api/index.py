@@ -5,8 +5,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("juriscore")
 
-# Add backend to path
-backend_path = os.path.join(os.path.dirname(__file__), '..', 'backend')
+# Add api/backend to path so imports like 'models.database' work
+backend_path = os.path.join(os.path.dirname(__file__), 'backend')
 sys.path.insert(0, os.path.abspath(backend_path))
 
 logger.info(f"API starting. Backend path: {os.path.abspath(backend_path)}")
