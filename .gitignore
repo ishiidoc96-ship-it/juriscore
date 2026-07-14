@@ -1,51 +1,26 @@
-# Dependencies
-node_modules/
-__pycache__/
-*.pyc
-.pnp.*
-.yarn/*
-
-# Environment
-.env
-.env.local
-.env.*.local
-frontend/.env
-
-# Expo
-.expo/
-dist/
-web-build/
-
-# Python
-venv/
-.venv/
-*.egg-info/
-*.db
-
-# Supabase
-.supabase/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Build artifacts
-*.apk
-*.aab
-*.ipa
-
-# Cache
-.cache/
-.python-version
-
-# Logs
-*.log
+**/node_modules/
+**/__pycache__/
+**/*.pyc
+**/.env
+**/.env.local
+**/.env.*.local
+**/.expo/
+**/dist/
+**/web-build/
+**/venv/
+**/.venv/
+**/*.egg-info/
+**/*.db
+**/.supabase/
+**/.idea/
+**/.vscode/
+**/*.swp
+**/*.swo
+**/.DS_Store
+**/Thumbs.db
+**/*.apk
+**/*.aab
+**/*.ipa
+**/.cache/
+**/*.log
 npm-debug.log*
-
-.vercel

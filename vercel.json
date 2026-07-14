@@ -12,9 +12,10 @@
       "dest": "/api/index.py"
     },
     {
-      "src": "/(.*\\.(js|css|png|jpg|svg|ico|json))",
-      "dest": "/api/index.py"
+      "src": "/(.*)",
+      "dest": "/$1",
+      "continue": true
     }
   ],
-  "outputDirectory": null
+  "outputDirectory": "."
 }
