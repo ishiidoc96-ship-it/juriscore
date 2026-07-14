@@ -1,581 +1,716 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Juriscore - Legal Research Platform</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist:wght@400;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script>
-tailwind.config = {
-  darkMode: "class",
-  theme: {
-    extend: {
-      "colors": {
-        "on-surface": "#151c27",
-        "surface-container": "#e7eefe",
-        "tertiary-fixed-dim": "#ffb4a1",
-        "surface-container-low": "#f0f3ff",
-        "tertiary-fixed": "#ffdbd2",
-        "on-primary-container": "#dfe3ff",
-        "on-secondary-container": "#5c6274",
-        "on-surface-variant": "#434656",
-        "secondary-fixed-dim": "#c0c6db",
-        "surface-bright": "#f9f9ff",
-        "secondary-fixed": "#dce2f7",
-        "error-container": "#ffdad6",
-        "surface-variant": "#dce2f3",
-        "secondary-container": "#d9dff5",
-        "surface-container-lowest": "#ffffff",
-        "on-secondary-fixed": "#141b2b",
-        "surface-dim": "#d3daea",
-        "on-tertiary-container": "#ffddd5",
-        "surface-container-high": "#e2e8f8",
-        "on-secondary": "#ffffff",
-        "background": "#f9f9ff",
-        "tertiary": "#952200",
-        "surface-container-highest": "#dce2f3",
-        "on-tertiary-fixed-variant": "#891e00",
-        "on-secondary-fixed-variant": "#404758",
-        "outline-variant": "#c3c5d9",
-        "inverse-primary": "#b7c4ff",
-        "error": "#ba1a1a",
-        "primary-fixed-dim": "#b7c4ff",
-        "on-primary": "#ffffff",
-        "on-primary-fixed-variant": "#0038b6",
-        "on-background": "#151c27",
-        "on-tertiary-fixed": "#3c0800",
-        "surface": "#f9f9ff",
-        "inverse-on-surface": "#ebf1ff",
-        "on-tertiary": "#ffffff",
-        "outline": "#737688",
-        "on-error-container": "#93000a",
-        "primary": "#003ec7",
-        "primary-container": "#0052ff",
-        "tertiary-container": "#bf3003",
-        "primary-fixed": "#dde1ff",
-        "on-primary-fixed": "#001452",
-        "secondary": "#575e70",
-        "inverse-surface": "#2a313d",
-        "surface-tint": "#004ced",
-        "on-error": "#ffffff"
-      },
-      "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
-      "spacing": { "stack-lg": "32px", "stack-sm": "8px", "stack-md": "16px", "gutter": "24px", "unit": "8px", "container-max": "1280px", "margin-desktop": "40px", "margin-mobile": "16px" },
-      "fontFamily": { "body-lg": ["Inter"], "display-lg": ["Geist"], "display-lg-mobile": ["Geist"], "headline-md": ["Geist"], "code-snippet": ["Geist"], "body-md": ["Inter"], "label-md": ["Geist"], "body-sm": ["Inter"], "title-lg": ["Geist"] },
-      "fontSize": {
-        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-        "code-snippet": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
-        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Juriscore — Kenya's Legal Research Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT:'#003ec7', container:'#425ef5', light:'#dde1ff', dark:'#001b91' },
+            tertiary: { DEFAULT:'#952200', container:'#ff8970', light:'#ffdad1', dark:'#641500' },
+            surface: { DEFAULT:'#f9f9ff', container:'#f0f0f8', 'container-low':'#ebedf5', 'container-lowest':'#f4f4fc', 'container-high':'#dbdbe3', bright:'#ffffff' },
+            'on-surface': '#1a1b20', 'on-surface-variant': '#44464f', secondary: '#737688',
+            outline: '#74777f', 'outline-variant': '#c4c5cf',
+            error: '#ba1a1a', 'error-container': '#ffdad6',
+            success: '#166534', 'success-container': '#dcfce7',
+            'on-primary': '#ffffff',
+          },
+          fontFamily: { sans:['Inter','system-ui','sans-serif'], display:['Geist','Inter','sans-serif'] },
+          borderRadius: { 'card':'14px', 'chip':'100px', 'btn':'12px', 'input':'12px', 'modal':'20px' },
+          boxShadow: {
+            'card':'0 1px 3px rgba(0,62,199,0.04), 0 2px 8px rgba(0,0,0,0.04)',
+            'card-hover':'0 4px 16px rgba(0,62,199,0.08), 0 2px 8px rgba(0,0,0,0.06)',
+            'float':'0 8px 32px rgba(0,62,199,0.10), 0 2px 8px rgba(0,0,0,0.06)',
+            'glow':'0 0 0 3px rgba(66,94,245,0.15)',
+            'nav':'0 -1px 8px rgba(0,0,0,0.06)',
+          },
+          keyframes: {
+            'fade-in': { '0%':{ opacity:'0' }, '100%':{ opacity:'1' } },
+            'fade-in-up': { '0%':{ opacity:'0', transform:'translateY(12px)' }, '100%':{ opacity:'1', transform:'translateY(0)' } },
+            'slide-up': { '0%':{ transform:'translateY(100%)' }, '100%':{ transform:'translateY(0)' } },
+            'scale-in': { '0%':{ opacity:'0', transform:'scale(0.95)' }, '100%':{ opacity:'1', transform:'scale(1)' } },
+            'pulse-soft': { '0%,100%':{ opacity:'1' }, '50%':{ opacity:'0.6' } },
+            'shimmer': { '0%':{ backgroundPosition:'-200% 0' }, '100%':{ backgroundPosition:'200% 0' } },
+            'float': { '0%,100%':{ transform:'translateY(0)' }, '50%':{ transform:'translateY(-6px)' } },
+            'glow-pulse': { '0%,100%':{ boxShadow:'0 0 20px rgba(0,62,199,0.15)' }, '50%':{ boxShadow:'0 0 40px rgba(0,62,199,0.25)' } },
+            'toast-in': { '0%':{ transform:'translateY(16px) scale(0.95)', opacity:'0' }, '100%':{ transform:'translateY(0) scale(1)', opacity:'1' } },
+          },
+          animation: {
+            'fade-in':'fade-in 0.3s ease-out',
+            'fade-in-up':'fade-in-up 0.4s cubic-bezier(0.16,1,0.3,1)',
+            'slide-up':'slide-up 0.35s cubic-bezier(0.16,1,0.3,1)',
+            'scale-in':'scale-in 0.2s cubic-bezier(0.16,1,0.3,1)',
+            'pulse-soft':'pulse-soft 2s ease-in-out infinite',
+            'shimmer':'shimmer 1.5s linear infinite',
+            'float':'float 3s ease-in-out infinite',
+            'glow-pulse':'glow-pulse 2s ease-in-out infinite',
+            'toast-in':'toast-in 0.3s cubic-bezier(0.16,1,0.3,1)',
+          },
+        }
       }
     }
-  }
-}
-</script>
-<style>
-  body { min-height: max(884px, 100dvh); background-color: #f9f9ff; color: #151c27; }
-  .screen { display: none; }
-  .screen.active { display: block; }
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-  .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
-  .hide-scrollbar::-webkit-scrollbar { display: none; }
-  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
-  .delay-100 { animation-delay: 100ms; }
-  .delay-200 { animation-delay: 200ms; }
-  .delay-300 { animation-delay: 300ms; }
-  @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeInUpShort { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  .animate-fade-in-up { animation: fadeInUpShort 0.4s ease-out forwards; }
-  .glass-card-solid { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid #E5E7EB; }
-  .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; }
-  .progress-ring__circle { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
-  .article-content { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
-  .article-expanded .article-content { max-height: 2000px; opacity: 1; }
-  .article-expanded .expand-icon { transform: rotate(180deg); }
-  .expand-icon { transition: transform 0.3s ease; }
-  .level-2-shadow { box-shadow: 0px 4px 12px rgba(0,0,0,0.05); }
-  .toast { position: fixed; top: 20px; right: 20px; z-index: 9999; padding: 12px 24px; border-radius: 8px; font-family: Geist; font-size: 14px; font-weight: 600; animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards; }
-  .toast-success { background: #003ec7; color: white; }
-  .toast-error { background: #ba1a1a; color: white; }
-  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-  @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
-  .spinner { border: 3px solid #e7eefe; border-top: 3px solid #003ec7; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; display: inline-block; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin:0; font-family:'Inter',system-ui,sans-serif; background:#f9f9ff; color:#1a1b20; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 
-  /* Search redesign */
-  .search-hero { background: linear-gradient(135deg, #003ec7 0%, #0052ff 100%); border-radius: 24px; padding: 48px 32px 40px; margin-bottom: 32px; position: relative; overflow: hidden; }
-  .search-hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
-  .search-hero::after { content: ''; position: absolute; bottom: -40px; left: 20%; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%; }
-  .search-input-hero { width: 100%; padding: 18px 24px 18px 56px; border: none; border-radius: 16px; font-size: 17px; font-family: Inter; background: white; color: #151c27; box-shadow: 0 4px 24px rgba(0,0,0,0.15); outline: none; transition: box-shadow 0.2s; }
-  .search-input-hero:focus { box-shadow: 0 4px 32px rgba(0,0,0,0.25); }
-  .search-input-hero::placeholder { color: #9ca3af; }
+    /* Screen system */
+    .screen { display:none; min-height:100dvh; position:relative; }
+    .screen.active { display:flex; flex-direction:column; }
 
-  .filter-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; -ms-overflow-style: none; scrollbar-width: none; }
-  .filter-row::-webkit-scrollbar { display: none; }
-  .filter-chip { flex-shrink: 0; padding: 8px 18px; border-radius: 100px; font-size: 13px; font-weight: 600; font-family: Geist; border: 1.5px solid #dce2f3; background: white; color: #434656; cursor: pointer; transition: all 0.15s ease; white-space: nowrap; }
-  .filter-chip:hover { border-color: #003ec7; color: #003ec7; background: #f0f3ff; }
-  .filter-chip.active { background: #003ec7; color: white; border-color: #003ec7; box-shadow: 0 2px 8px rgba(0,62,199,0.3); }
-  .filter-chip.active:hover { background: #0044e0; }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width:6px; height:6px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:#c4c5cf; border-radius:3px; }
+    ::-webkit-scrollbar-thumb:hover { background:#74777f; }
 
-  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0 12px; border-bottom: 2px solid #e7eefe; margin-bottom: 16px; }
-  .section-header h2 { font-family: Geist; font-size: 18px; font-weight: 700; color: #151c27; display: flex; align-items: center; gap: 10px; }
-  .section-count { font-size: 12px; font-weight: 600; color: #003ec7; background: #dde1ff; padding: 2px 10px; border-radius: 100px; }
-  .section-view-more { font-size: 13px; font-weight: 600; color: #003ec7; cursor: pointer; transition: color 0.15s; text-decoration: none; }
-  .section-view-more:hover { color: #001452; }
+    /* Skeleton */
+    .skeleton { background:linear-gradient(90deg, #ebedf5 25%, #f0f0f8 50%, #ebedf5 75%); background-size:200% 100%; animation:shimmer 1.5s linear infinite; border-radius:8px; }
 
-  .result-card { background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s ease; position: relative; overflow: hidden; }
-  .result-card:hover { border-color: #003ec7; box-shadow: 0 8px 32px rgba(0,62,199,0.12); transform: translateY(-2px); }
-  .result-card:active { transform: translateY(0); }
-  .result-card .card-type-badge { position: absolute; top: 0; left: 0; padding: 4px 14px 4px 12px; border-radius: 0 0 12px 0; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
-  .result-card .card-title { font-family: Geist; font-size: 16px; font-weight: 600; line-height: 1.4; color: #151c27; margin: 8px 0 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-  .result-card:hover .card-title { color: #003ec7; }
-  .result-card .card-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-  .result-card .card-meta .meta-chip { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 6px; background: #f0f3ff; color: #434656; }
-  .result-card .card-excerpt { font-size: 13px; line-height: 1.5; color: #737688; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 8px; }
-  .result-card .card-excerpt mark { background: #dde1ff; color: #003ec7; padding: 0 2px; border-radius: 2px; }
-  .result-card .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f3ff; }
-  .result-card .card-footer .source-link { font-size: 12px; font-weight: 600; color: #003ec7; display: flex; align-items: center; gap: 4px; }
+    /* Spinner */
+    .spinner { width:28px; height:28px; border:3px solid #c4c5cf; border-top-color:#003ec7; border-radius:50%; animation:spin 0.7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
 
-  .skeleton-card { background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; }
-  .skeleton-line { height: 12px; background: linear-gradient(90deg, #f0f3ff 25%, #e7eefe 50%, #f0f3ff 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
-  .skeleton-line.w-30 { width: 30%; }
-  .skeleton-line.w-50 { width: 50%; }
-  .skeleton-line.w-80 { width: 80%; }
-  .skeleton-line.w-full { width: 100%; }
-  .skeleton-line.h-4 { height: 4px; }
-  .skeleton-line.h-5 { height: 5px; }
-  @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    /* Glass */
+    .glass { background:rgba(255,255,255,0.72); backdrop-filter:blur(20px) saturate(1.8); -webkit-backdrop-filter:blur(20px) saturate(1.8); border:1px solid rgba(255,255,255,0.5); }
+    .glass-card { background:rgba(255,255,255,0.65); backdrop-filter:blur(16px) saturate(1.5); border:1px solid rgba(255,255,255,0.4); }
 
-  .results-summary { display: flex; align-items: center; gap: 12px; padding: 16px 0; flex-wrap: wrap; }
-  .results-summary .query-badge { font-family: Geist; font-size: 14px; font-weight: 600; color: #003ec7; background: #dde1ff; padding: 4px 14px; border-radius: 100px; }
-  .results-summary .total-text { font-size: 14px; color: #737688; }
+    /* Focus ring */
+    .focus-ring:focus-visible { outline:none; box-shadow:0 0 0 3px rgba(66,94,245,0.25); }
+    button:focus-visible, input:focus-visible, textarea:focus-visible { outline:none; box-shadow:0 0 0 3px rgba(66,94,245,0.25); }
 
-  /* Modal */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
-  .modal-content { background: white; border-radius: 20px; max-width: 640px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 32px; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
-  .modal-close { position: absolute; top: 16px; right: 16px; background: #f0f3ff; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
-  .modal-close:hover { background: #dde1ff; }
-  .modal-title { font-family: Geist; font-size: 20px; font-weight: 700; color: #151c27; margin-bottom: 8px; padding-right: 40px; }
-  .modal-meta { font-size: 13px; color: #737688; margin-bottom: 20px; }
-  .modal-body { font-size: 15px; line-height: 1.7; color: #434656; white-space: pre-wrap; }
-  .modal-body p { margin-bottom: 12px; }
-  .modal-loading { text-align: center; padding: 40px 0; }
-  .modal-loading .spinner { width: 32px; height: 32px; border-width: 4px; }
-</style>
+    /* Toast */
+    .toast-wrap { position:fixed; bottom:88px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+    .toast { padding:12px 20px; border-radius:12px; font-size:13px; font-weight:600; color:#fff; pointer-events:auto; animation:toast-in 0.3s cubic-bezier(0.16,1,0.3,1); box-shadow:0 4px 16px rgba(0,0,0,0.12); white-space:nowrap; }
+    .toast-success { background:#166534; }
+    .toast-error { background:#ba1a1a; }
+    .toast-info { background:#003ec7; }
+
+    /* Modal */
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); z-index:1000; display:flex; align-items:center; justify-content:center; padding:16px; animation:fade-in 0.2s ease-out; }
+    .modal-box { background:#fff; border-radius:20px; width:100%; max-width:560px; max-height:85vh; overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,0.16); animation:scale-in 0.25s cubic-bezier(0.16,1,0.3,1); display:flex; flex-direction:column; }
+    .modal-header { padding:20px 24px 0; display:flex; justify-content:space-between; align-items:flex-start; }
+    .modal-title { font-size:17px; font-weight:700; color:#1a1b20; line-height:1.35; padding-right:32px; }
+    .modal-meta { font-size:12px; color:#737688; margin-top:4px; }
+    .modal-close { position:absolute; top:16px; right:16px; width:32px; height:32px; border-radius:8px; border:none; background:#f0f0f8; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#737688; transition:all 0.15s; }
+    .modal-close:hover { background:#dbdbe3; color:#1a1b20; }
+    .modal-body { padding:16px 24px 24px; overflow-y:auto; flex:1; font-size:14px; line-height:1.7; color:#44464f; }
+    .modal-body p { margin-bottom:12px; }
+    .modal-body p:last-child { margin-bottom:0; }
+
+    /* Result card */
+    .result-card { background:#fff; border:1px solid #ebedf5; border-radius:14px; padding:20px; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); position:relative; overflow:hidden; }
+    .result-card:hover { border-color:#c4c5cf; box-shadow:0 4px 16px rgba(0,62,199,0.06), 0 1px 4px rgba(0,0,0,0.04); transform:translateY(-1px); }
+    .card-badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:100px; font-size:11px; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; }
+    .card-title { font-size:15px; font-weight:650; color:#1a1b20; line-height:1.45; margin-bottom:6px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .card-citation { font-size:12px; color:#737688; font-family:'Geist',monospace; margin-bottom:8px; }
+    .card-meta { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+    .meta-chip { display:inline-flex; align-items:center; gap:3px; padding:3px 8px; border-radius:6px; font-size:11px; color:#737688; background:#f0f0f8; }
+    .card-excerpt { font-size:13px; color:#737688; line-height:1.6; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:12px; }
+    .card-actions { display:flex; align-items:center; justify-content:space-between; padding-top:12px; border-top:1px solid #f0f0f8; }
+    .btn-primary-sm { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:10px; font-size:12px; font-weight:700; background:#003ec7; color:#fff; border:none; cursor:pointer; transition:all 0.15s; }
+    .btn-primary-sm:hover { background:#001b91; box-shadow:0 2px 8px rgba(0,62,199,0.2); }
+    .btn-outline-sm { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:10px; font-size:12px; font-weight:700; background:transparent; color:#003ec7; border:1.5px solid #dde1ff; cursor:pointer; transition:all 0.15s; }
+    .btn-outline-sm:hover { background:#dde1ff; }
+
+    /* Section header */
+    .section-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .section-hdr h2 { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:700; color:#1a1b20; }
+    .section-count { display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:22px; padding:0 6px; border-radius:100px; font-size:11px; font-weight:700; background:#dde1ff; color:#003ec7; }
+    .section-more { font-size:13px; font-weight:600; color:#003ec7; cursor:pointer; transition:color 0.15s; }
+    .section-more:hover { color:#001b91; }
+
+    /* Filter chips */
+    .filter-row { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .filter-row::-webkit-scrollbar { display:none; }
+    .filter-chip { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:100px; font-size:12px; font-weight:600; white-space:nowrap; border:1.5px solid #ebedf5; background:#fff; color:#737688; cursor:pointer; transition:all 0.15s; flex-shrink:0; }
+    .filter-chip:hover { border-color:#c4c5cf; color:#1a1b20; }
+    .filter-chip.active { border-color:#003ec7; background:#dde1ff; color:#003ec7; }
+
+    /* Tab bar */
+    .tab-bar { display:flex; gap:0; border-bottom:2px solid #ebedf5; }
+    .tab-item { padding:12px 20px; font-size:13px; font-weight:600; color:#737688; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.15s; white-space:nowrap; }
+    .tab-item:hover { color:#1a1b20; }
+    .tab-item.active { color:#003ec7; border-bottom-color:#003ec7; }
+
+    /* Progress bar */
+    .progress-track { height:4px; background:#ebedf5; border-radius:2px; overflow:hidden; }
+    .progress-fill { height:100%; background:linear-gradient(90deg,#003ec7,#425ef5); border-radius:2px; transition:width 0.4s cubic-bezier(0.16,1,0.3,1); }
+
+    /* Study card */
+    .study-card { perspective:1000px; cursor:pointer; }
+    .study-card-inner { min-height:240px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; background:#fff; border-radius:20px; border:1.5px solid #ebedf5; transition:all 0.3s cubic-bezier(0.16,1,0.3,1); text-align:center; }
+    .study-card:hover .study-card-inner { border-color:#dde1ff; box-shadow:0 4px 20px rgba(0,62,199,0.06); }
+    .study-card-front { font-size:18px; font-weight:650; color:#1a1b20; line-height:1.5; }
+    .study-card-back { font-size:15px; color:#44464f; line-height:1.65; }
+
+    /* Bottom nav */
+    #app-bottom-nav { background:rgba(255,255,255,0.88); backdrop-filter:blur(24px) saturate(1.8); -webkit-backdrop-filter:blur(24px) saturate(1.8); border-top:1px solid rgba(228,229,235,0.6); }
+    .nav-btn { position:relative; padding:6px 0; min-width:56px; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); -webkit-tap-highlight-color:transparent; }
+    .nav-btn .material-symbols-outlined { font-size:24px; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); }
+    .nav-btn .nav-label { font-size:10px; font-weight:600; margin-top:2px; transition:all 0.15s; }
+    .nav-btn.active { color:#003ec7; }
+    .nav-btn.active .material-symbols-outlined { font-variation-settings:'FILL' 1; }
+    .nav-btn.active .nav-label { font-weight:700; }
+    .nav-btn.active::after { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:24px; height:3px; background:#003ec7; border-radius:0 0 3px 3px; }
+    .nav-btn:not(.active) { color:#737688; }
+
+    /* Header */
+    #app-header { background:rgba(255,255,255,0.88); backdrop-filter:blur(24px) saturate(1.8); -webkit-backdrop-filter:blur(24px) saturate(1.8); border-bottom:1px solid rgba(228,229,235,0.6); }
+
+    /* Quick action */
+    .qa-card { display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px 8px; border-radius:14px; background:#fff; border:1px solid #ebedf5; cursor:pointer; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); text-align:center; }
+    .qa-card:hover { border-color:#dde1ff; box-shadow:0 2px 12px rgba(0,62,199,0.06); transform:translateY(-1px); }
+    .qa-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
+
+    /* Case detail */
+    .case-hero { background:linear-gradient(135deg, #f0f0f8 0%, #dde1ff 100%); }
+
+    /* Notebook mobile drawer */
+    .nb-drawer { position:fixed; inset:0; z-index:200; display:none; }
+    .nb-drawer.open { display:block; }
+    .nb-drawer-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.3); backdrop-filter:blur(2px); }
+    .nb-drawer-panel { position:absolute; left:0; top:0; bottom:0; width:280px; background:#fff; box-shadow:8px 0 32px rgba(0,0,0,0.1); animation:slide-right 0.3s cubic-bezier(0.16,1,0.3,1); overflow-y:auto; }
+    @keyframes slide-right { from { transform:translateX(-100%); } to { transform:translateX(0); } }
+
+    /* Constitution chapter */
+    .ch-card { border:1px solid #ebedf5; border-radius:14px; overflow:hidden; transition:all 0.2s; background:#fff; }
+    .ch-card:hover { border-color:#c4c5cf; }
+    .ch-card.expanded { border-color:#dde1ff; box-shadow:0 2px 12px rgba(0,62,199,0.06); }
+    .ch-header { display:flex; align-items:center; justify-content:space-between; padding:16px; cursor:pointer; transition:background 0.15s; }
+    .ch-header:hover { background:#f9f9ff; }
+    .ch-body { max-height:0; overflow:hidden; transition:max-height 0.35s cubic-bezier(0.16,1,0.3,1); border-top:0 solid #ebedf5; }
+    .ch-card.expanded .ch-body { max-height:500px; border-top-width:1px; }
+    .ch-card.expanded .expand-icon { transform:rotate(180deg); }
+    .expand-icon { transition:transform 0.25s cubic-bezier(0.16,1,0.3,1); color:#737688; }
+
+    /* Profile stat */
+    .stat-card { display:flex; flex-direction:column; align-items:center; padding:16px; border-radius:14px; background:#fff; border:1px solid #ebedf5; text-align:center; }
+    .stat-val { font-size:22px; font-weight:800; color:#1a1b20; }
+    .stat-label { font-size:10px; font-weight:700; color:#737688; text-transform:uppercase; letter-spacing:0.06em; margin-top:4px; }
+
+    /* Settings row */
+    .settings-row { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid #f0f0f8; transition:background 0.15s; cursor:pointer; }
+    .settings-row:last-child { border-bottom:none; }
+    .settings-row:hover { background:#f9f9ff; }
+
+    /* Skeleton cards */
+    .skel-card { height:160px; border-radius:14px; }
+    .skel-line { height:14px; border-radius:7px; }
+    .skel-line.w60 { width:60%; }
+    .skel-line.w40 { width:40%; }
+    .skel-line.w80 { width:80%; }
+
+    /* Splash bg */
+    .splash-bg { background:linear-gradient(160deg, #001b91 0%, #003ec7 40%, #425ef5 100%); position:relative; overflow:hidden; }
+    .splash-bg::before { content:''; position:absolute; top:-40%; right:-20%; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); animation:float 6s ease-in-out infinite; }
+    .splash-bg::after { content:''; position:absolute; bottom:-30%; left:-10%; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle, rgba(66,94,245,0.2) 0%, transparent 70%); animation:float 8s ease-in-out infinite reverse; }
+
+    /* Input focus */
+    .input-premium { border:1.5px solid #ebedf5; border-radius:12px; padding:12px 16px; font-size:14px; width:100%; transition:all 0.2s; background:#fff; color:#1a1b20; font-family:'Inter',sans-serif; }
+    .input-premium::placeholder { color:#b0b1b9; }
+    .input-premium:focus { outline:none; border-color:#003ec7; box-shadow:0 0 0 3px rgba(66,94,245,0.12); }
+
+    /* Button primary */
+    .btn-primary { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 24px; border-radius:12px; font-size:14px; font-weight:700; background:#003ec7; color:#fff; border:none; cursor:pointer; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); font-family:'Inter',sans-serif; }
+    .btn-primary:hover { background:#001b91; box-shadow:0 4px 12px rgba(0,62,199,0.2); transform:translateY(-1px); }
+    .btn-primary:active { transform:translateY(0); }
+    .btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+
+    .btn-ghost { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 24px; border-radius:12px; font-size:14px; font-weight:700; background:transparent; color:#003ec7; border:1.5px solid #dde1ff; cursor:pointer; transition:all 0.15s; font-family:'Inter',sans-serif; }
+    .btn-ghost:hover { background:#dde1ff; }
+
+    /* Search input */
+    .search-hero { position:relative; }
+    .search-hero input { padding:16px 20px 16px 52px; border-radius:16px; font-size:16px; border:2px solid #ebedf5; background:#fff; width:100%; transition:all 0.25s cubic-bezier(0.16,1,0.3,1); font-family:'Inter',sans-serif; color:#1a1b20; box-shadow:0 2px 12px rgba(0,0,0,0.03); }
+    .search-hero input::placeholder { color:#b0b1b9; }
+    .search-hero input:focus { outline:none; border-color:#003ec7; box-shadow:0 0 0 4px rgba(66,94,245,0.1), 0 4px 16px rgba(0,62,199,0.08); }
+    .search-hero .search-icon { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:#737688; pointer-events:none; transition:color 0.2s; }
+    .search-hero input:focus ~ .search-icon { color:#003ec7; }
+
+    /* Stagger animation */
+    .stagger > * { animation:fade-in-up 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+    .stagger > *:nth-child(1) { animation-delay:0.05s; }
+    .stagger > *:nth-child(2) { animation-delay:0.1s; }
+    .stagger > *:nth-child(3) { animation-delay:0.15s; }
+    .stagger > *:nth-child(4) { animation-delay:0.2s; }
+    .stagger > *:nth-child(5) { animation-delay:0.25s; }
+    .stagger > *:nth-child(6) { animation-delay:0.3s; }
+
+    @media (min-width:768px) {
+      .toast-wrap { bottom:24px; }
+    }
+  </style>
 </head>
-<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<body>
 
-<div id="toast-container"></div>
+<!-- ======================== SPLASH ======================== -->
+<section id="screen-splash" class="screen active splash-bg">
+  <div class="relative z-10 flex flex-col items-center justify-center min-h-dvh px-6 text-center">
+    <div class="mb-8 animate-float">
+      <div class="w-20 h-20 rounded-[22px] bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-lg mx-auto">
+        <span class="material-symbols-outlined filled text-white" style="font-size:36px;">balance</span>
+      </div>
+    </div>
+    <h1 class="text-white font-display text-4xl md:text-5xl font-800 tracking-tight mb-3 animate-fade-in-up" style="animation-delay:0.1s">Juriscore</h1>
+    <p class="text-white/70 text-base md:text-lg font-500 mb-10 animate-fade-in-up" style="animation-delay:0.2s">Kenya's Legal Research Companion</p>
 
-<!-- ======================== TOP APP BAR ======================== -->
-<header id="app-header" class="w-full top-0 sticky z-40 bg-surface border-b border-outline-variant hidden">
-  <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-stack-md max-w-container-max mx-auto">
-    <div class="flex items-center gap-4 cursor-pointer active:opacity-80 hover:bg-surface-container transition-colors p-2 rounded-lg" onclick="navigate('home')">
-      <span class="material-symbols-outlined text-primary font-headline-md text-headline-md">menu</span>
-      <span class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg font-bold text-on-surface">Juriscore</span>
+    <div id="splash-auth-buttons" class="w-full max-w-[320px] space-y-3 animate-fade-in-up" style="animation-delay:0.3s">
+      <button onclick="showLogin()" class="btn-primary w-full !bg-white !text-primary hover:!bg-white/90 !shadow-float text-[15px] !py-3.5">
+        <span class="material-symbols-outlined" style="font-size:20px;">login</span> Sign In
+      </button>
+      <button onclick="showSignup()" class="btn-ghost w-full !border-white/25 !text-white hover:!bg-white/10 text-[15px] !py-3.5">
+        Create Account
+      </button>
     </div>
-    <div class="cursor-pointer active:opacity-80 hover:bg-surface-container transition-colors p-2 rounded-lg" onclick="navigate('profile')">
-      <span class="material-symbols-outlined text-primary font-headline-md text-headline-md">account_circle</span>
+
+    <!-- Login Form -->
+    <div id="splash-login-form" class="hidden w-full max-w-[320px] animate-fade-in-up">
+      <div class="space-y-3">
+        <input id="login-email" type="email" placeholder="Email address" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50" autocomplete="email">
+        <input id="login-password" type="password" placeholder="Password" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50" autocomplete="current-password">
+        <button onclick="doLogin()" class="btn-primary w-full !bg-white !text-primary hover:!bg-white/90 !shadow-float text-[15px] !py-3.5">Sign In</button>
+        <button onclick="hideAuthForms()" class="w-full text-white/60 text-sm font-500 hover:text-white transition-colors py-2">Back</button>
+      </div>
     </div>
+
+    <!-- Signup Form -->
+    <div id="splash-signup-form" class="hidden w-full max-w-[320px] animate-fade-in-up">
+      <div class="space-y-3">
+        <input id="signup-name" type="text" placeholder="Full name" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50" autocomplete="name">
+        <input id="signup-email" type="email" placeholder="Email address" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50" autocomplete="email">
+        <input id="signup-password" type="password" placeholder="Password" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50" autocomplete="new-password">
+        <input id="signup-university" type="text" placeholder="University (optional)" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50">
+        <button onclick="doSignup()" class="btn-primary w-full !bg-white !text-primary hover:!bg-white/90 !shadow-float text-[15px] !py-3.5">Create Account</button>
+        <button onclick="hideAuthForms()" class="w-full text-white/60 text-sm font-500 hover:text-white transition-colors py-2">Back</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== HEADER ======================== -->
+<header id="app-header" class="hidden sticky top-0 z-40">
+  <div class="max-w-5xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
+    <div class="flex items-center gap-2.5 cursor-pointer" onclick="navigate('home')">
+      <div class="w-8 h-8 rounded-[10px] bg-primary flex items-center justify-center">
+        <span class="material-symbols-outlined filled text-white" style="font-size:18px;">balance</span>
+      </div>
+      <span class="font-display text-lg font-700 text-on-surface tracking-tight hidden sm:block">Juriscore</span>
+    </div>
+    <nav class="hidden md:flex items-center gap-1">
+      <button onclick="navigate('home')" class="hdr-nav px-3.5 py-2 rounded-lg text-sm font-600 text-secondary hover:text-on-surface hover:bg-surface-container transition-all" data-hdr="home">Home</button>
+      <button onclick="navigate('search')" class="hdr-nav px-3.5 py-2 rounded-lg text-sm font-600 text-secondary hover:text-on-surface hover:bg-surface-container transition-all" data-hdr="search">Search</button>
+      <button onclick="navigate('constitution')" class="hdr-nav px-3.5 py-2 rounded-lg text-sm font-600 text-secondary hover:text-on-surface hover:bg-surface-container transition-all" data-hdr="constitution">Constitution</button>
+      <button onclick="navigate('notebook')" class="hdr-nav px-3.5 py-2 rounded-lg text-sm font-600 text-secondary hover:text-on-surface hover:bg-surface-container transition-all" data-hdr="notebook">Notebook</button>
+      <button onclick="navigate('flashcards')" class="hdr-nav px-3.5 py-2 rounded-lg text-sm font-600 text-secondary hover:text-on-surface hover:bg-surface-container transition-all" data-hdr="flashcards">Study</button>
+      <button onclick="navigate('profile')" class="hdr-nav px-3.5 py-2 rounded-lg text-sm font-600 text-secondary hover:text-on-surface hover:bg-surface-container transition-all" data-hdr="profile">Profile</button>
+    </nav>
+    <button onclick="doLogout()" class="hidden md:flex items-center gap-1.5 text-sm font-600 text-secondary hover:text-error transition-colors px-3 py-2 rounded-lg hover:bg-error-container/30">
+      <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
+    </button>
   </div>
 </header>
 
-<!-- ======================== SCREEN: SPLASH ======================== -->
-<section id="screen-splash" class="screen active">
-  <div class="min-h-screen flex flex-col items-center justify-center relative px-margin-mobile md:px-margin-desktop overflow-hidden bg-surface-container-lowest">
-    <main class="w-full max-w-sm mx-auto flex flex-col items-center text-center z-10">
-      <div class="mb-stack-lg flex flex-col items-center fade-in-up">
-        <span class="material-symbols-outlined text-primary-container" style="font-size: 64px; font-variation-settings: 'FILL' 0, 'wght' 300;">balance</span>
-        <h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-on-surface mt-stack-sm">Juriscore</h1>
-        <p class="font-body-lg text-body-lg text-secondary mt-unit">Your legal research companion.</p>
-      </div>
-      <div id="splash-auth-buttons" class="w-full flex flex-col gap-stack-sm fade-in-up delay-100">
-        <button onclick="showSignup()" class="w-full bg-primary-container text-on-primary font-label-md text-label-md py-3 px-4 rounded-lg flex items-center justify-center transition-all hover:bg-primary hover:shadow-lg active:scale-[0.98]">Sign Up</button>
-        <button onclick="showLogin()" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface font-label-md text-label-md py-3 px-4 rounded-lg flex items-center justify-center transition-all hover:bg-surface-container-low hover:border-outline hover:shadow-lg active:scale-[0.98]">Log In</button>
-      </div>
-      <div id="splash-login-form" class="w-full hidden fade-in-up">
-        <div class="flex flex-col gap-stack-sm">
-          <input id="login-email" type="email" placeholder="Email" class="w-full px-4 py-3 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
-          <input id="login-password" type="password" placeholder="Password" class="w-full px-4 py-3 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
-          <button onclick="doLogin()" class="w-full bg-primary-container text-on-primary font-label-md text-label-md py-3 px-4 rounded-lg flex items-center justify-center transition-all hover:bg-primary hover:shadow-lg active:scale-[0.98]">Log In</button>
-          <button onclick="hideAuthForms()" class="text-secondary font-label-md text-label-md hover:text-primary transition-colors">Back</button>
-        </div>
-      </div>
-      <div id="splash-signup-form" class="w-full hidden fade-in-up">
-        <div class="flex flex-col gap-stack-sm">
-          <input id="signup-name" type="text" placeholder="Full Name" class="w-full px-4 py-3 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
-          <input id="signup-email" type="email" placeholder="Email" class="w-full px-4 py-3 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
-          <input id="signup-password" type="password" placeholder="Password" class="w-full px-4 py-3 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
-          <input id="signup-university" type="text" placeholder="University (optional)" class="w-full px-4 py-3 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
-          <button onclick="doSignup()" class="w-full bg-primary-container text-on-primary font-label-md text-label-md py-3 px-4 rounded-lg flex items-center justify-center transition-all hover:bg-primary hover:shadow-lg active:scale-[0.98]">Create Account</button>
-          <button onclick="hideAuthForms()" class="text-secondary font-label-md text-label-md hover:text-primary transition-colors">Back</button>
-        </div>
-      </div>
-    </main>
-    <footer class="absolute bottom-10 w-full text-center fade-in-up delay-300">
-      <p class="font-body-sm text-body-sm text-secondary opacity-80">Happy reading from kenyalaw.org</p>
-    </footer>
-  </div>
-</section>
-
-<!-- ======================== SCREEN: HOME ======================== -->
+<!-- ======================== HOME ======================== -->
 <section id="screen-home" class="screen">
-  <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg">
-    <section class="mb-stack-lg">
-      <h1 id="home-greeting" class="font-headline-md text-headline-md text-on-surface mb-stack-sm">Good morning</h1>
-      <p class="font-body-md text-body-md text-on-surface-variant">Ready to dive back into research?</p>
-    </section>
-    <section class="mb-stack-lg">
-      <div class="relative w-full max-w-2xl">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-outline">search</span></div>
-        <input id="home-search-input" onkeydown="if(event.key==='Enter'){navigate('search');document.getElementById('search-input').value=this.value;doSearch()}" class="block w-full pl-10 pr-3 py-3 border border-outline-variant rounded-lg leading-5 bg-surface-container-lowest placeholder-outline focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition font-body-md text-body-md" placeholder="Search cases, statutes, topics..." type="text"/>
+  <main class="flex-1 max-w-5xl mx-auto w-full px-4 md:px-6 py-6 pb-24 md:pb-10">
+    <div class="mb-8 animate-fade-in-up">
+      <h1 id="home-greeting" class="font-display text-2xl md:text-3xl font-800 text-on-surface tracking-tight"></h1>
+      <p class="text-secondary text-sm mt-1 font-500">What would you like to research today?</p>
+    </div>
+
+    <div class="mb-8 animate-fade-in-up" style="animation-delay:0.05s">
+      <div class="search-hero">
+        <input id="home-search-input" type="text" placeholder="Search cases, statutes, regulations..." class="!text-base" onkeydown="if(event.key==='Enter'){homeSearch()}">
+        <span class="material-symbols-outlined search-icon" style="font-size:22px;">search</span>
       </div>
-    </section>
-    <section class="mb-stack-lg">
-      <h2 class="font-title-lg text-title-lg text-on-surface mb-stack-md">Quick Actions</h2>
-      <div class="bento-grid">
-        <button onclick="navigate('search')" class="flex flex-col items-center justify-center p-stack-md bg-surface-container-lowest border border-outline-variant rounded-lg hover:border-outline hover:shadow-lg transition-all cursor-pointer">
-          <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mb-stack-sm"><span class="material-symbols-outlined text-primary">gavel</span></div>
-          <span class="font-label-md text-label-md text-on-surface">Recent Cases</span>
-        </button>
-        <button onclick="navigate('notebook')" class="flex flex-col items-center justify-center p-stack-md bg-surface-container-lowest border border-outline-variant rounded-lg hover:border-outline hover:shadow-lg transition-all cursor-pointer">
-          <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mb-stack-sm"><span class="material-symbols-outlined text-primary">book</span></div>
-          <span class="font-label-md text-label-md text-on-surface">My Notebook</span>
-        </button>
-        <button onclick="navigate('flashcards')" class="flex flex-col items-center justify-center p-stack-md bg-surface-container-lowest border border-outline-variant rounded-lg hover:border-outline hover:shadow-lg transition-all cursor-pointer">
-          <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mb-stack-sm"><span class="material-symbols-outlined text-primary">style</span></div>
-          <span class="font-label-md text-label-md text-on-surface">Flashcards</span>
-        </button>
-        <button onclick="navigate('constitution')" class="flex flex-col items-center justify-center p-stack-md bg-surface-container-lowest border border-outline-variant rounded-lg hover:border-outline hover:shadow-lg transition-all cursor-pointer">
-          <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mb-stack-sm"><span class="material-symbols-outlined text-primary">account_balance</span></div>
-          <span class="font-label-md text-label-md text-on-surface">Constitution</span>
-        </button>
+      <button onclick="homeSearch()" class="btn-primary w-full mt-3 !py-3.5 text-[15px]">
+        <span class="material-symbols-outlined" style="font-size:20px;">search</span> Search KenyaLaw
+      </button>
+    </div>
+
+    <div class="mb-8 animate-fade-in-up" style="animation-delay:0.1s">
+      <h2 class="text-sm font-700 text-secondary uppercase tracking-wider mb-3">Quick Actions</h2>
+      <div class="grid grid-cols-4 gap-2.5">
+        <div class="qa-card" onclick="navigate('constitution')">
+          <div class="qa-icon" style="background:#dde1ff;"><span class="material-symbols-outlined text-primary" style="font-size:22px;">balance</span></div>
+          <span class="text-xs font-600 text-on-surface">Constitution</span>
+        </div>
+        <div class="qa-card" onclick="navigate('flashcards')">
+          <div class="qa-icon" style="background:#f3e8ff;"><span class="material-symbols-outlined" style="font-size:22px;color:#6b21a8;">school</span></div>
+          <span class="text-xs font-600 text-on-surface">Flashcards</span>
+        </div>
+        <div class="qa-card" onclick="navigate('notebook')">
+          <div class="qa-icon" style="background:#dcfce7;"><span class="material-symbols-outlined" style="font-size:22px;color:#166534;">book</span></div>
+          <span class="text-xs font-600 text-on-surface">Notebook</span>
+        </div>
+        <div class="qa-card" onclick="quickRecent()">
+          <div class="qa-icon" style="background:#ffdad1;"><span class="material-symbols-outlined" style="font-size:22px;color:#952200;">history</span></div>
+          <span class="text-xs font-600 text-on-surface">Recent</span>
+        </div>
       </div>
-    </section>
-    <section class="mb-stack-lg">
-      <h2 class="font-title-lg text-title-lg text-on-surface mb-stack-md">Recent Cases</h2>
-      <div id="home-recent-cases" class="space-y-stack-sm">
-        <div class="flex items-center justify-center py-stack-lg text-secondary"><span class="spinner"></span></div>
+    </div>
+
+    <div class="animate-fade-in-up" style="animation-delay:0.15s">
+      <div class="section-hdr">
+        <h2><span class="material-symbols-outlined text-primary" style="font-size:20px;">history</span> Recent Cases</h2>
       </div>
-    </section>
+      <div id="home-recent-cases" class="space-y-2.5">
+        <div class="skel-card skeleton"></div>
+        <div class="skel-card skeleton" style="height:80px"></div>
+        <div class="skel-card skeleton" style="height:80px"></div>
+      </div>
+    </div>
   </main>
 </section>
 
-<!-- ======================== SCREEN: SEARCH ======================== -->
+<!-- ======================== SEARCH ======================== -->
 <section id="screen-search" class="screen">
-  <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg">
-    <!-- Hero search -->
-    <div class="search-hero">
-      <div class="relative z-10">
-        <h1 class="font-display-lg-mobile md:font-display-lg text-white mb-stack-md" style="font-size:28px;line-height:1.2;">Search Kenya Law</h1>
-        <p class="text-blue-100 font-body-md mb-stack-md" style="opacity:0.85;">Cases, legislation, gazettes, bills, and publications</p>
-        <div class="relative">
-          <span class="material-symbols-outlined absolute left-5 top-1/2 transform -translate-y-1/2" style="color:#9ca3af;font-size:22px;">search</span>
-          <input id="search-input" onkeydown="if(event.key==='Enter')doSearch()" class="search-input-hero" placeholder="Try &quot;murder conviction&quot;, &quot;sale of goods act&quot;, &quot;constitutional law&quot;..." type="text"/>
-          <button onclick="doSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors" style="font-family:Geist;">Search</button>
-        </div>
+  <main class="flex-1 max-w-5xl mx-auto w-full px-4 md:px-6 py-6 pb-24 md:pb-10">
+    <div class="mb-6">
+      <div class="search-hero">
+        <input id="search-input" type="text" placeholder="Search cases, legislation, gazettes..." onkeydown="if(event.key==='Enter')doSearch()" class="!text-base">
+        <span class="material-symbols-outlined search-icon" style="font-size:22px;">search</span>
       </div>
     </div>
 
-    <!-- Filter chips -->
-    <div class="space-y-4 mb-stack-lg">
-      <div>
-        <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:#737688;">Content Type</div>
-        <div class="filter-row" id="filter-doc-types">
-          <button onclick="setFilter('doc_type','')" class="filter-chip active" data-filter="doc_type" data-value="">All Types</button>
-          <button onclick="setFilter('doc_type','judgment')" class="filter-chip" data-filter="doc_type" data-value="judgment">Case Law</button>
-          <button onclick="setFilter('doc_type','legislation')" class="filter-chip" data-filter="doc_type" data-value="legislation">Legislation</button>
-          <button onclick="setFilter('doc_type','gazette')" class="filter-chip" data-filter="doc_type" data-value="gazette">Gazette</button>
-          <button onclick="setFilter('doc_type','bill')" class="filter-chip" data-filter="doc_type" data-value="bill">Bills</button>
-          <button onclick="setFilter('doc_type','generic_document')" class="filter-chip" data-filter="doc_type" data-value="generic_document">Publications</button>
-        </div>
-      </div>
-      <div>
-        <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:#737688;">Court</div>
-        <div class="filter-row" id="filter-courts">
-          <button onclick="setFilter('court','')" class="filter-chip active" data-filter="court" data-value="">All Courts</button>
-          <button onclick="setFilter('court','Supreme Court')" class="filter-chip" data-filter="court" data-value="Supreme Court">Supreme Court</button>
-          <button onclick="setFilter('court','High Court')" class="filter-chip" data-filter="court" data-value="High Court">High Court</button>
-          <button onclick="setFilter('court','Court of Appeal')" class="filter-chip" data-filter="court" data-value="Court of Appeal">Court of Appeal</button>
-          <button onclick="setFilter('court','Employment and Labour Relations Court')" class="filter-chip" data-filter="court" data-value="Employment and Labour Relations Court">Employment Court</button>
-          <button onclick="setFilter('court','Environment and Land Court')" class="filter-chip" data-filter="court" data-value="Environment and Land Court">Environment & Land</button>
-          <button onclick="setFilter('court','Magistrate')" class="filter-chip" data-filter="court" data-value="Magistrate">Magistrate's Court</button>
-        </div>
-      </div>
+    <div id="filter-doc-types" class="filter-row mb-4">
+      <button class="filter-chip active" data-value="" onclick="setFilter('doc_type','')"><span class="material-symbols-outlined" style="font-size:16px;">apps</span> All</button>
+      <button class="filter-chip" data-value="judgment" onclick="setFilter('doc_type','judgment')"><span class="material-symbols-outlined" style="font-size:16px;">gavel</span> Cases</button>
+      <button class="filter-chip" data-value="legislation" onclick="setFilter('doc_type','legislation')"><span class="material-symbols-outlined" style="font-size:16px;">policy</span> Legislation</button>
+      <button class="filter-chip" data-value="gazette" onclick="setFilter('doc_type','gazette')"><span class="material-symbols-outlined" style="font-size:16px;">newspaper</span> Gazette</button>
+      <button class="filter-chip" data-value="bill" onclick="setFilter('doc_type','bill')"><span class="material-symbols-outlined" style="font-size:16px;">draft</span> Bills</button>
+      <button class="filter-chip" data-value="generic_document" onclick="setFilter('doc_type','generic_document')"><span class="material-symbols-outlined" style="font-size:16px;">article</span> Publications</button>
     </div>
 
-    <!-- Results summary -->
-    <div id="results-summary" class="results-summary" style="display:none;"></div>
-
-    <!-- Loading state -->
-    <div id="search-loading" class="hidden">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div class="skeleton-card"><div class="skeleton-line w-30 h-4 mb-3"></div><div class="skeleton-line w-80 mb-2"></div><div class="skeleton-line w-50 mb-3"></div><div class="skeleton-line w-full h-4"></div></div>
-        <div class="skeleton-card"><div class="skeleton-line w-30 h-4 mb-3"></div><div class="skeleton-line w-80 mb-2"></div><div class="skeleton-line w-50 mb-3"></div><div class="skeleton-line w-full h-4"></div></div>
-        <div class="skeleton-card"><div class="skeleton-line w-30 h-4 mb-3"></div><div class="skeleton-line w-80 mb-2"></div><div class="skeleton-line w-50 mb-3"></div><div class="skeleton-line w-full h-4"></div></div>
-        <div class="skeleton-card"><div class="skeleton-line w-30 h-4 mb-3"></div><div class="skeleton-line w-80 mb-2"></div><div class="skeleton-line w-50 mb-3"></div><div class="skeleton-line w-full h-4"></div></div>
-      </div>
+    <div id="filter-courts" class="filter-row mb-5">
+      <button class="filter-chip active" data-value="" onclick="setFilter('court','')">All Courts</button>
     </div>
 
-    <!-- Empty state -->
-    <div id="search-empty" class="hidden text-center py-16">
-      <span class="material-symbols-outlined mb-4" style="font-size:56px;color:#c3c5d9;">search_off</span>
-      <p class="font-headline-md text-headline-md mb-2" style="color:#434656;">No results found</p>
-      <p class="font-body-md" style="color:#737688;">Try a different search term or adjust your filters</p>
-    </div>
+    <div id="results-summary" class="hidden items-center gap-2 mb-5 text-sm font-600 text-secondary"></div>
 
-    <!-- Results container (grouped sections rendered here) -->
-    <div id="search-results"></div>
+    <div id="search-loading" class="hidden py-16 text-center">
+      <div class="spinner mx-auto mb-4"></div>
+      <p class="text-secondary text-sm">Searching KenyaLaw.org...</p>
+    </div>
+    <div id="search-empty" class="hidden py-16 text-center">
+      <span class="material-symbols-outlined text-5xl text-outline-variant mb-3 block">search_off</span>
+      <p class="text-secondary text-sm font-500">No results found. Try different keywords.</p>
+    </div>
+    <div id="search-results" class="stagger"></div>
   </main>
 </section>
 
-<!-- ======================== SCREEN: CASE DETAIL ======================== -->
+<!-- ======================== CASE DETAIL ======================== -->
 <section id="screen-case-detail" class="screen">
-  <header class="bg-surface w-full top-0 sticky z-40 border-b border-outline-variant">
-    <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-stack-md max-w-container-max mx-auto h-16 md:h-auto">
-      <button onclick="history.back()" class="text-secondary hover:bg-surface-container transition-colors p-2 rounded-full cursor-pointer active:opacity-80 flex items-center justify-center"><span class="material-symbols-outlined">arrow_back</span></button>
-      <div class="font-headline-md text-headline-md text-primary truncate flex-1 text-center">Case Detail</div>
-      <div class="w-10"></div>
+  <main class="flex-1 max-w-4xl mx-auto w-full px-4 md:px-6 py-6 pb-24 md:pb-10">
+    <div id="case-detail-loading" class="py-16 text-center">
+      <div class="spinner mx-auto mb-3"></div>
+      <p class="text-secondary text-sm">Loading case details...</p>
     </div>
-  </header>
-  <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pb-32 pt-stack-lg">
-    <article class="max-w-[720px] mx-auto">
-      <div id="case-detail-loading" class="flex items-center justify-center py-stack-lg"><span class="spinner"></span></div>
-      <div id="case-detail-content" class="hidden">
-        <header class="mb-stack-lg">
-          <div id="case-detail-tags" class="flex items-center gap-3 mb-stack-sm flex-wrap"></div>
-          <h1 id="case-detail-title" class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-stack-md"></h1>
-          <p id="case-detail-citation" class="font-code-snippet text-code-snippet text-secondary mb-stack-sm"></p>
-          <p id="case-detail-summary-text" class="font-body-lg text-body-lg text-on-surface-variant"></p>
-        </header>
-        <nav class="flex border-b border-outline-variant mb-stack-lg overflow-x-auto hide-scrollbar">
-          <button onclick="showCaseTab('summary')" class="case-tab px-4 py-3 font-title-lg text-title-lg text-primary border-b-2 border-primary whitespace-nowrap">Summary</button>
-          <button onclick="showCaseTab('fulltext')" class="case-tab px-4 py-3 font-title-lg text-title-lg text-secondary hover:text-on-surface transition-colors whitespace-nowrap">Full Text</button>
-          <button onclick="showCaseTab('notes')" class="case-tab px-4 py-3 font-title-lg text-title-lg text-secondary hover:text-on-surface transition-colors whitespace-nowrap">Notes</button>
-        </nav>
-        <div id="case-tab-summary" class="space-y-stack-lg font-body-lg text-body-lg text-on-surface leading-relaxed"></div>
-        <div id="case-tab-fulltext" class="hidden font-body-md text-body-md text-on-surface-variant whitespace-pre-wrap"></div>
-        <div id="case-tab-notes" class="hidden">
-          <textarea id="case-note-input" class="w-full p-4 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary resize-none" rows="4" placeholder="Write a note about this case..."></textarea>
-          <button onclick="saveCaseNote()" class="mt-2 bg-primary-container text-on-primary font-label-md text-label-md py-2 px-6 rounded-lg hover:bg-primary transition-colors">Save Note</button>
-          <div id="case-notes-list" class="mt-stack-md space-y-stack-sm"></div>
+    <div id="case-detail-content" class="hidden animate-fade-in-up">
+      <div class="case-hero rounded-2xl p-6 md:p-8 mb-6">
+        <h1 id="case-detail-title" class="font-display text-xl md:text-2xl font-700 text-on-surface leading-tight mb-3"></h1>
+        <p id="case-detail-citation" class="font-display text-sm text-secondary font-500 mb-4"></p>
+        <div id="case-detail-tags" class="flex flex-wrap gap-2"></div>
+        <div class="flex gap-2 mt-4">
+          <button onclick="saveCase(currentCaseId)" class="btn-primary-sm !bg-white !text-primary !border !border-primary/20">
+            <span class="material-symbols-outlined" style="font-size:16px;">bookmark_add</span> Save
+          </button>
+          <button onclick="addToNotebook()" class="btn-outline-sm">
+            <span class="material-symbols-outlined" style="font-size:16px;">note_add</span> Notebook
+          </button>
         </div>
       </div>
-    </article>
-  </main>
-  <div class="fixed bottom-0 left-0 w-full bg-surface border-t border-outline-variant shadow-[0px_-4px_12px_rgba(0,0,0,0.05)] z-50">
-    <div class="max-w-[720px] mx-auto px-margin-mobile md:px-0 py-stack-sm md:py-stack-md flex justify-end gap-4 items-center h-16">
-      <button onclick="addToNotebook()" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-colors shadow-lg"><span class="material-symbols-outlined text-[18px]">bookmark_add</span>Add to Notebook</button>
+
+      <div class="tab-bar mb-6">
+        <div class="tab-item active" onclick="showCaseTab('summary')">Summary</div>
+        <div class="tab-item" onclick="showCaseTab('fulltext')">Full Text</div>
+        <div class="tab-item" onclick="showCaseTab('notes')">Notes</div>
+      </div>
+
+      <div id="case-tab-summary" class="prose prose-sm max-w-none"></div>
+      <div id="case-tab-fulltext" class="hidden text-sm text-on-surface-variant leading-relaxed whitespace-pre-wrap font-body"></div>
+      <div id="case-tab-notes" class="hidden space-y-3">
+        <div class="flex gap-2">
+          <input id="case-note-input" type="text" placeholder="Add a note..." class="input-premium flex-1" onkeydown="if(event.key==='Enter')saveCaseNote()">
+          <button onclick="saveCaseNote()" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">add</span></button>
+        </div>
+        <div id="case-notes-list" class="space-y-2"></div>
+      </div>
     </div>
-  </div>
+  </main>
 </section>
 
-<!-- ======================== SCREEN: CONSTITUTION ======================== -->
+<!-- ======================== CONSTITUTION ======================== -->
 <section id="screen-constitution" class="screen">
-  <main class="flex-grow flex justify-center w-full px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto pb-24 md:pb-stack-lg">
-    <div class="w-full max-w-[720px] flex flex-col gap-stack-lg">
-      <div class="flex flex-col gap-stack-md">
-        <h1 class="font-headline-md text-headline-md text-on-surface">Constitution of Kenya 2010</h1>
-        <div class="relative w-full">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary">search</span>
-          <input id="constitution-search" onkeydown="if(event.key==='Enter')searchConstitution()" class="w-full pl-10 pr-4 py-3 border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-surface-container transition-all font-body-md text-body-md placeholder:text-secondary" placeholder="Search articles or keywords..." type="text"/>
+  <main class="flex-1 max-w-4xl mx-auto w-full px-4 md:px-6 py-6 pb-24 md:pb-10">
+    <div class="mb-6 animate-fade-in-up">
+      <h1 class="font-display text-xl md:text-2xl font-700 text-on-surface tracking-tight mb-1">Constitution of Kenya</h1>
+      <p class="text-secondary text-sm font-500">2010 — with amendments through 2024</p>
+    </div>
+
+    <div class="mb-6 animate-fade-in-up" style="animation-delay:0.05s">
+      <div class="search-hero">
+        <input id="constitution-search" type="text" placeholder="Search the constitution..." onkeydown="if(event.key==='Enter')searchConstitution()" class="!text-base">
+        <span class="material-symbols-outlined search-icon" style="font-size:22px;">search</span>
+      </div>
+    </div>
+
+    <div id="constitution-loading" class="py-12 text-center">
+      <div class="spinner mx-auto mb-3"></div>
+      <p class="text-secondary text-sm">Loading chapters...</p>
+    </div>
+    <div id="constitution-chapters" class="space-y-2.5 stagger"></div>
+    <div id="constitution-search-results" class="hidden space-y-2.5"></div>
+  </main>
+</section>
+
+<!-- ======================== FLASHCARDS ======================== -->
+<section id="screen-flashcards" class="screen">
+  <main class="flex-1 max-w-5xl mx-auto w-full px-4 md:px-6 py-6 pb-24 md:pb-10">
+    <div class="flex items-center justify-between mb-6 animate-fade-in-up">
+      <div>
+        <h1 class="font-display text-xl md:text-2xl font-700 text-on-surface tracking-tight">Study Decks</h1>
+        <p class="text-secondary text-sm font-500 mt-0.5">Spaced repetition for legal concepts</p>
+      </div>
+      <button onclick="showNewDeckForm()" class="btn-primary-sm !px-4 !py-2.5">
+        <span class="material-symbols-outlined" style="font-size:18px;">add</span> New Deck
+      </button>
+    </div>
+
+    <div id="new-deck-form" class="hidden mb-6 p-5 rounded-2xl bg-white border border-outline-variant animate-scale-in">
+      <h3 class="font-display text-base font-700 text-on-surface mb-3">Create New Deck</h3>
+      <input id="deck-title-input" type="text" placeholder="Deck title (e.g. Constitutional Law)" class="input-premium mb-2.5">
+      <input id="deck-subject-input" type="text" placeholder="Subject area (optional)" class="input-premium mb-3">
+      <div class="flex gap-2">
+        <button onclick="createDeck()" class="btn-primary-sm">Create</button>
+        <button onclick="hideNewDeckForm()" class="btn-outline-sm">Cancel</button>
+      </div>
+    </div>
+
+    <div id="flashcards-loading" class="py-12 text-center">
+      <div class="spinner mx-auto mb-3"></div>
+      <p class="text-secondary text-sm">Loading decks...</p>
+    </div>
+
+    <div id="study-session" class="hidden py-8">
+      <div class="max-w-lg mx-auto text-center">
+        <div class="flex items-center justify-between mb-4">
+          <span id="study-progress" class="text-sm font-600 text-secondary"></span>
+          <button onclick="endStudySession()" class="text-sm font-600 text-secondary hover:text-error transition-colors">End Session</button>
+        </div>
+        <div class="progress-track mb-6"><div id="study-progress-bar" class="progress-fill" style="width:0%"></div></div>
+        <div class="study-card mb-6" onclick="flipCard()">
+          <div class="study-card-inner">
+            <div id="study-card-front" class="study-card-front"></div>
+            <div id="study-card-back" class="study-card-back hidden mt-4 pt-4 border-t border-outline-variant"></div>
+          </div>
+        </div>
+        <p id="study-tap-hint" class="text-secondary text-xs font-500 mb-4">Tap card to reveal answer</p>
+        <div id="study-actions" class="hidden flex justify-center gap-3">
+          <button onclick="rateCard('again')" class="flex-1 max-w-[110px] py-2.5 rounded-xl text-sm font-700 border-1.5 border-outline-variant bg-white text-secondary hover:bg-error-container/30 hover:text-error hover:border-error/30 transition-all">Again</button>
+          <button onclick="rateCard('good')" class="flex-1 max-w-[110px] py-2.5 rounded-xl text-sm font-700 bg-primary text-white hover:bg-primary-dark transition-all">Good</button>
+          <button onclick="rateCard('easy')" class="flex-1 max-w-[110px] py-2.5 rounded-xl text-sm font-700 bg-success-container text-success hover:opacity-90 transition-all">Easy</button>
         </div>
       </div>
-      <div id="constitution-loading" class="flex items-center justify-center py-stack-lg"><span class="spinner"></span></div>
-      <div id="constitution-chapters" class="flex flex-col gap-stack-md"></div>
-      <div id="constitution-search-results" class="hidden flex flex-col gap-stack-md"></div>
+    </div>
+
+    <div id="flashcards-decks" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger"></div>
+    <div id="flashcards-empty" class="hidden py-16 text-center">
+      <span class="material-symbols-outlined text-5xl text-outline-variant mb-3 block">school</span>
+      <p class="text-secondary text-sm font-500 mb-4">No decks yet. Create your first study deck.</p>
+      <button onclick="showNewDeckForm()" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">add</span> Create Deck</button>
     </div>
   </main>
 </section>
 
-<!-- ======================== SCREEN: FLASHCARDS ======================== -->
-<section id="screen-flashcards" class="screen">
-  <main class="flex-1 p-margin-mobile md:p-margin-desktop max-w-container-max mx-auto w-full pb-24 md:pb-stack-lg">
-    <div class="flex justify-between items-center mb-stack-lg">
-      <h1 class="font-headline-md text-headline-md text-on-surface">Study Decks</h1>
-      <button onclick="showNewDeckForm()" class="bg-primary-container text-white px-4 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 hover:bg-primary transition-colors cursor-pointer shadow-sm"><span class="material-symbols-outlined text-[18px]">add</span>New Set</button>
-    </div>
-    <div id="new-deck-form" class="hidden mb-stack-lg bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md">
-      <input id="deck-title-input" class="w-full px-4 py-2 border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary mb-2" placeholder="Deck title..."/>
-      <input id="deck-subject-input" class="w-full px-4 py-2 border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary mb-2" placeholder="Subject (e.g. Constitutional Law)"/>
-      <div class="flex gap-2">
-        <button onclick="createDeck()" class="bg-primary-container text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-primary transition-colors">Create</button>
-        <button onclick="hideNewDeckForm()" class="border border-outline-variant text-on-surface px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors">Cancel</button>
-      </div>
-    </div>
-    <div id="flashcards-loading" class="flex items-center justify-center py-stack-lg"><span class="spinner"></span></div>
-    <div id="flashcards-decks" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter"></div>
-    <div id="flashcards-empty" class="hidden text-center py-stack-lg text-secondary font-body-md">No decks yet. Create your first study deck!</div>
-    <div id="study-session" class="hidden mt-stack-lg border-t border-outline-variant pt-stack-lg">
-      <div class="flex justify-between items-center mb-stack-md">
-        <h2 class="font-headline-md text-headline-md text-on-surface">Study Session</h2>
-        <button onclick="endStudySession()" class="text-secondary hover:text-primary font-label-md text-label-md">End Session</button>
-      </div>
-      <div class="max-w-[720px] mx-auto bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-lg shadow-lg text-center relative overflow-hidden min-h-[300px] flex flex-col justify-center cursor-pointer" onclick="flipCard()">
-        <span id="study-progress" class="absolute top-4 left-4 font-label-md text-label-md text-secondary"></span>
-        <div id="study-card-front" class="font-title-lg text-title-lg text-on-surface px-margin-desktop"></div>
-        <div id="study-card-back" class="hidden font-body-md text-body-md text-on-surface-variant px-margin-desktop mt-stack-md"></div>
-        <div id="study-tap-hint" class="mt-stack-lg text-on-surface-variant text-body-sm">Tap to reveal answer</div>
-      </div>
-      <div id="study-actions" class="hidden max-w-[720px] mx-auto flex justify-center gap-stack-md mt-stack-md">
-        <button onclick="rateCard('again')" class="flex-1 max-w-[120px] border border-outline bg-surface text-secondary py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors">Again</button>
-        <button onclick="rateCard('good')" class="flex-1 max-w-[120px] bg-primary-container text-white py-2 rounded-lg font-label-md text-label-md hover:bg-primary transition-colors">Good</button>
-        <button onclick="rateCard('easy')" class="flex-1 max-w-[120px] bg-surface-container-low text-primary py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors">Easy</button>
-      </div>
-    </div>
-  </main>
-</section>
-
-<!-- ======================== SCREEN: NOTEBOOK ======================== -->
+<!-- ======================== NOTEBOOK ======================== -->
 <section id="screen-notebook" class="screen">
-  <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg flex flex-col md:flex-row gap-gutter pb-24 md:pb-stack-lg">
-    <aside class="hidden md:block w-[280px] shrink-0 border-r border-outline-variant pr-gutter">
-      <div class="sticky top-[100px]">
-        <h2 class="font-headline-md text-headline-md mb-stack-md text-on-surface">Folders</h2>
-        <div id="notebook-folders-list" class="space-y-2"></div>
-        <button onclick="createNotebookFolder()" class="mt-stack-md w-full py-2 border border-outline-variant rounded-lg flex items-center justify-center gap-2 text-primary-container hover:bg-surface-container-low transition-colors font-label-md text-label-md"><span class="material-symbols-outlined text-sm">add</span> New Folder</button>
+  <main class="flex-1 max-w-5xl mx-auto w-full px-4 md:px-6 py-6 pb-24 md:pb-10 flex flex-col md:flex-row gap-6">
+    <aside class="hidden md:block w-[260px] shrink-0">
+      <div class="sticky top-20">
+        <h2 class="text-sm font-700 text-secondary uppercase tracking-wider mb-3">Folders</h2>
+        <div id="notebook-folders-list" class="space-y-1"></div>
+        <button onclick="createNotebookFolder()" class="mt-3 w-full py-2.5 border-1.5 border-dashed border-outline-variant rounded-xl flex items-center justify-center gap-2 text-sm font-600 text-primary hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined" style="font-size:18px;">add</span> New Folder
+        </button>
       </div>
     </aside>
-    <section class="flex-1">
-      <div class="flex justify-between items-end mb-stack-lg border-b border-outline-variant pb-stack-sm">
+
+    <button onclick="openNotebookDrawer()" class="md:hidden fixed left-4 bottom-20 z-30 w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center shadow-float">
+      <span class="material-symbols-outlined" style="font-size:22px;">folder_open</span>
+    </button>
+
+    <section class="flex-1 min-w-0">
+      <div class="flex items-center justify-between mb-5">
         <div>
-          <h2 id="notebook-folder-title" class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">My Notebook</h2>
-          <p id="notebook-entry-count" class="font-body-md text-body-md text-secondary mt-1"></p>
+          <h2 id="notebook-folder-title" class="font-display text-xl font-700 text-on-surface">My Notebook</h2>
+          <p id="notebook-entry-count" class="text-xs font-500 text-secondary mt-0.5"></p>
         </div>
       </div>
-      <div id="notebook-loading" class="flex items-center justify-center py-stack-lg"><span class="spinner"></span></div>
-      <div id="notebook-entries" class="grid grid-cols-1 lg:grid-cols-2 gap-gutter"></div>
-      <div id="notebook-empty" class="hidden text-center py-stack-lg text-secondary font-body-md">No entries yet. Save cases from the search results.</div>
+      <div id="notebook-loading" class="py-12 text-center"><div class="spinner mx-auto mb-3"></div><p class="text-secondary text-sm">Loading...</p></div>
+      <div id="notebook-entries" class="grid grid-cols-1 lg:grid-cols-2 gap-3 stagger"></div>
+      <div id="notebook-empty" class="hidden py-16 text-center">
+        <span class="material-symbols-outlined text-5xl text-outline-variant mb-3 block">book</span>
+        <p class="text-secondary text-sm font-500">No entries yet. Save cases from search results.</p>
+      </div>
     </section>
   </main>
 </section>
 
-<!-- ======================== SCREEN: PROFILE ======================== -->
+<!-- ======================== PROFILE ======================== -->
 <section id="screen-profile" class="screen">
-  <main class="flex-grow max-w-container-max mx-auto w-full px-margin-mobile md:px-margin-desktop py-stack-lg flex flex-col gap-gutter pb-24 md:pb-stack-lg">
-    <div class="max-w-[720px] mx-auto w-full space-y-stack-lg">
-      <section class="flex flex-col items-center text-center space-y-stack-sm mb-stack-lg animate-fade-in-up">
-        <div class="w-24 h-24 rounded-full bg-primary-container flex items-center justify-center border-2 border-surface-container-high level-2-shadow">
-          <span id="profile-avatar" class="material-symbols-outlined text-on-primary" style="font-size: 48px;">person</span>
+  <main class="flex-1 max-w-2xl mx-auto w-full px-4 md:px-6 py-6 pb-24 md:pb-10">
+    <div class="animate-fade-in-up">
+      <div class="flex flex-col items-center text-center mb-8">
+        <div class="w-20 h-20 rounded-full bg-primary-container flex items-center justify-center border-2 border-white shadow-float mb-4">
+          <span id="profile-avatar" class="material-symbols-outlined text-white" style="font-size:36px;">person</span>
         </div>
-        <div class="space-y-1 mt-stack-md">
-          <h2 id="profile-name" class="font-headline-md text-headline-md text-on-surface"></h2>
-          <p id="profile-email" class="font-body-md text-body-md text-secondary"></p>
-          <p id="profile-university" class="font-body-sm text-body-sm text-secondary"></p>
-        </div>
-      </section>
-      <section class="grid grid-cols-2 md:grid-cols-4 gap-unit">
-        <div class="glass-card-solid rounded-lg p-stack-md flex flex-col items-center justify-center text-center"><span id="stat-cases" class="font-headline-md text-headline-md text-on-surface">0</span><span class="font-label-md text-label-md text-secondary mt-1 uppercase tracking-wider">Saved Cases</span></div>
-        <div class="glass-card-solid rounded-lg p-stack-md flex flex-col items-center justify-center text-center"><span id="stat-notebooks" class="font-headline-md text-headline-md text-on-surface">0</span><span class="font-label-md text-label-md text-secondary mt-1 uppercase tracking-wider">Notebooks</span></div>
-        <div class="glass-card-solid rounded-lg p-stack-md flex flex-col items-center justify-center text-center"><span id="stat-decks" class="font-headline-md text-headline-md text-on-surface">0</span><span class="font-label-md text-label-md text-secondary mt-1 uppercase tracking-wider">Decks</span></div>
-        <div class="glass-card-solid rounded-lg p-stack-md flex flex-col items-center justify-center text-center"><span id="stat-study" class="font-headline-md text-headline-md text-on-surface">0h</span><span class="font-label-md text-label-md text-secondary mt-1 uppercase tracking-wider">Study Time</span></div>
-      </section>
-      <section class="glass-card-solid rounded-xl overflow-hidden mt-stack-lg shadow-sm border border-outline-variant">
-        <div class="divide-y divide-outline-variant">
-          <div class="flex items-center justify-between p-stack-md"><div class="flex items-center gap-stack-md"><div class="p-2 rounded-lg bg-surface-variant text-on-surface-variant"><span class="material-symbols-outlined">person</span></div><div><h3 class="font-title-lg text-title-lg text-on-surface">Account</h3><p class="font-body-sm text-body-sm text-secondary" id="profile-account-info">Email, Password, Personal details</p></div></div></div>
-          <div class="flex items-center justify-between p-stack-md"><div class="flex items-center gap-stack-md"><div class="p-2 rounded-lg bg-surface-variant text-on-surface-variant"><span class="material-symbols-outlined">format_quote</span></div><div><h3 class="font-title-lg text-title-lg text-on-surface">Citation Style</h3><p class="font-body-sm text-body-sm text-secondary">eKLR (Kenyan Law Reports)</p></div></div></div>
-          <div class="flex items-center justify-between p-stack-md"><div class="flex items-center gap-stack-md"><div class="p-2 rounded-lg bg-surface-variant text-on-surface-variant"><span class="material-symbols-outlined">help</span></div><div><h3 class="font-title-lg text-title-lg text-on-surface">Help & Support</h3><p class="font-body-sm text-body-sm text-secondary">About Juriscore v1.0</p></div></div></div>
-        </div>
-      </section>
-      <section class="mt-stack-lg pt-stack-md pb-stack-lg">
-        <button onclick="doLogout()" class="w-full bg-surface border border-error-container text-error hover:bg-error-container hover:border-error transition-all duration-200 rounded-lg p-stack-sm flex items-center justify-center gap-2 font-headline-md text-body-lg"><span class="material-symbols-outlined">logout</span>Log Out</button>
-      </section>
+        <h2 id="profile-name" class="font-display text-xl font-700 text-on-surface"></h2>
+        <p id="profile-email" class="text-sm text-secondary font-500 mt-0.5"></p>
+        <p id="profile-university" class="text-xs text-secondary font-500"></p>
+      </div>
     </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 animate-fade-in-up" style="animation-delay:0.05s">
+      <div class="stat-card"><span id="stat-cases" class="stat-val">0</span><span class="stat-label">Saved Cases</span></div>
+      <div class="stat-card"><span id="stat-notebooks" class="stat-val">0</span><span class="stat-label">Notebooks</span></div>
+      <div class="stat-card"><span id="stat-decks" class="stat-val">0</span><span class="stat-label">Decks</span></div>
+      <div class="stat-card"><span id="stat-study" class="stat-val">0</span><span class="stat-label">Notes</span></div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden mb-6 animate-fade-in-up" style="animation-delay:0.1s">
+      <div class="settings-row">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center"><span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px;">person</span></div>
+          <div><h3 class="text-sm font-600 text-on-surface">Account</h3><p class="text-xs text-secondary" id="profile-account-info"></p></div>
+        </div>
+        <span class="material-symbols-outlined text-secondary" style="font-size:18px;">chevron_right</span>
+      </div>
+      <div class="settings-row">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center"><span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px;">format_quote</span></div>
+          <div><h3 class="text-sm font-600 text-on-surface">Citation Style</h3><p class="text-xs text-secondary">eKLR (Kenyan Law Reports)</p></div>
+        </div>
+        <span class="material-symbols-outlined text-secondary" style="font-size:18px;">chevron_right</span>
+      </div>
+      <div class="settings-row">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center"><span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px;">help</span></div>
+          <div><h3 class="text-sm font-600 text-on-surface">Help & Support</h3><p class="text-xs text-secondary">Juriscore v1.0</p></div>
+        </div>
+        <span class="material-symbols-outlined text-secondary" style="font-size:18px;">chevron_right</span>
+      </div>
+    </div>
+
+    <button onclick="doLogout()" class="w-full py-3 rounded-xl border-1.5 border-error/20 bg-white text-error font-700 text-sm hover:bg-error-container/30 transition-all flex items-center justify-center gap-2 animate-fade-in-up" style="animation-delay:0.15s">
+      <span class="material-symbols-outlined" style="font-size:18px;">logout</span> Log Out
+    </button>
   </main>
 </section>
 
-<!-- ======================== BOTTOM NAV BAR ======================== -->
-<nav id="app-bottom-nav" class="md:hidden fixed bottom-0 w-full z-50 bg-surface border-t border-outline-variant hidden">
-  <div class="flex justify-around items-center h-16 px-margin-mobile">
-    <button onclick="navigate('home')" class="nav-btn flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-all active:scale-95 duration-100" data-nav="home">
+<!-- ======================== BOTTOM NAV ======================== -->
+<nav id="app-bottom-nav" class="md:hidden fixed bottom-0 w-full z-50 hidden">
+  <div class="flex justify-around items-center h-16 px-2">
+    <button onclick="navigate('home')" class="nav-btn" data-nav="home">
       <span class="material-symbols-outlined">home</span>
-      <span class="font-label-md text-label-md mt-1">Home</span>
+      <span class="nav-label">Home</span>
     </button>
-    <button onclick="navigate('search')" class="nav-btn flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-all active:scale-95 duration-100" data-nav="search">
+    <button onclick="navigate('search')" class="nav-btn" data-nav="search">
       <span class="material-symbols-outlined">search</span>
-      <span class="font-label-md text-label-md mt-1">Search</span>
+      <span class="nav-label">Search</span>
     </button>
-    <button onclick="navigate('notebook')" class="nav-btn flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-all active:scale-95 duration-100" data-nav="notebook">
+    <button onclick="navigate('notebook')" class="nav-btn" data-nav="notebook">
       <span class="material-symbols-outlined">book</span>
-      <span class="font-label-md text-label-md mt-1">Notebook</span>
+      <span class="nav-label">Notebook</span>
     </button>
-    <button onclick="navigate('flashcards')" class="nav-btn flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-all active:scale-95 duration-100" data-nav="flashcards">
+    <button onclick="navigate('flashcards')" class="nav-btn" data-nav="flashcards">
       <span class="material-symbols-outlined">school</span>
-      <span class="font-label-md text-label-md mt-1">Study</span>
+      <span class="nav-label">Study</span>
     </button>
-    <button onclick="navigate('profile')" class="nav-btn flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-all active:scale-95 duration-100" data-nav="profile">
+    <button onclick="navigate('profile')" class="nav-btn" data-nav="profile">
       <span class="material-symbols-outlined">person</span>
-      <span class="font-label-md text-label-md mt-1">Profile</span>
+      <span class="nav-label">Profile</span>
     </button>
   </div>
 </nav>
+
+<!-- Notebook mobile drawer -->
+<div id="nb-drawer" class="nb-drawer">
+  <div class="nb-drawer-overlay" onclick="closeNotebookDrawer()"></div>
+  <div class="nb-drawer-panel p-5">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-base font-700 text-on-surface">Folders</h2>
+      <button onclick="closeNotebookDrawer()" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-secondary" style="font-size:20px;">close</span></button>
+    </div>
+    <div id="nb-drawer-folders" class="space-y-1"></div>
+    <button onclick="createNotebookFolder()" class="mt-4 w-full py-2.5 border-1.5 border-dashed border-outline-variant rounded-xl flex items-center justify-center gap-2 text-sm font-600 text-primary hover:bg-surface-container transition-colors">
+      <span class="material-symbols-outlined" style="font-size:18px;">add</span> New Folder
+    </button>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container" class="toast-wrap"></div>
 
 <!-- ======================== APP LOGIC ======================== -->
 <script>
 (function() {
   'use strict';
 
-  // ---- Config ----
   const API_BASE = '/api';
   const screens = ['splash','home','search','case-detail','constitution','flashcards','notebook','profile'];
   const headerEl = document.getElementById('app-header');
   const bottomNav = document.getElementById('app-bottom-nav');
   let currentCaseId = null;
   let currentNotebookFolderId = null;
-  let studyState = { deckId: null, cards: [], currentIndex: 0, flipped: false };
+  let studyState = { deckId:null, cards:[], currentIndex:0, flipped:false };
 
   // ---- Auth ----
-  function getUser() {
-    try { return JSON.parse(localStorage.getItem('juriscore_user')); } catch { return null; }
-  }
-  function setUser(user) { localStorage.setItem('juriscore_user', JSON.stringify(user)); }
+  function getUser() { try { return JSON.parse(localStorage.getItem('juriscore_user')); } catch { return null; } }
+  function setUser(u) { localStorage.setItem('juriscore_user', JSON.stringify(u)); }
   function clearUser() { localStorage.removeItem('juriscore_user'); }
 
   // ---- Toast ----
-  function toast(msg, type='success') {
+  window.toast = function(msg, type) {
+    type = type || 'success';
     const el = document.createElement('div');
     el.className = 'toast toast-' + type;
     el.textContent = msg;
     document.getElementById('toast-container').appendChild(el);
-    setTimeout(() => el.remove(), 3000);
-  }
+    setTimeout(function() { el.style.opacity = '0'; el.style.transform = 'translateY(8px) scale(0.95)'; el.style.transition = 'all 0.2s'; setTimeout(function() { el.remove(); }, 200); }, 2800);
+  };
 
   // ---- API helper ----
-  async function api(path, opts = {}) {
+  async function api(path, opts) {
+    opts = opts || {};
     try {
       const resp = await fetch(API_BASE + path, {
-        headers: { 'Content-Type': 'application/json', ...opts.headers },
-        ...opts
+        headers: Object.assign({ 'Content-Type':'application/json' }, opts.headers || {}),
+        method: opts.method || 'GET',
+        body: opts.body || undefined,
       });
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.detail || 'Request failed');
-      }
+      if (!resp.ok) { const err = await resp.json().catch(function() { return {}; }); throw new Error(err.detail || 'Request failed'); }
       return await resp.json();
-    } catch (e) {
-      console.error('API error:', path, e);
-      throw e;
-    }
+    } catch (e) { console.error('API error:', path, e); throw e; }
   }
 
   // ---- Navigation ----
   window.navigate = function(route) {
-    if (!getUser() && route !== 'splash') { route = 'splash'; }
-    screens.forEach(s => {
-      const el = document.getElementById('screen-' + s);
-      if (el) el.classList.remove('active');
-    });
-    const target = document.getElementById('screen-' + route);
+    if (!getUser() && route !== 'splash') route = 'splash';
+    screens.forEach(function(s) { var el = document.getElementById('screen-' + s); if (el) el.classList.remove('active'); });
+    var target = document.getElementById('screen-' + route);
     if (target) target.classList.add('active');
 
     if (route === 'splash') {
@@ -586,22 +721,22 @@ tailwind.config = {
       bottomNav.classList.remove('hidden');
     }
 
-    bottomNav.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.classList.remove('text-primary','font-bold');
+    // Bottom nav active
+    bottomNav.querySelectorAll('.nav-btn').forEach(function(btn) { btn.classList.remove('active'); });
+    var activeNav = bottomNav.querySelector('[data-nav="' + route + '"]');
+    if (activeNav) activeNav.classList.add('active');
+
+    // Header nav active
+    headerEl.querySelectorAll('.hdr-nav').forEach(function(btn) {
+      btn.classList.remove('text-on-surface', 'bg-surface-container', 'font-700');
       btn.classList.add('text-secondary');
-      btn.querySelector('.material-symbols-outlined').classList.remove('fill');
     });
-    const activeBtn = bottomNav.querySelector('[data-nav="' + route + '"]');
-    if (activeBtn) {
-      activeBtn.classList.remove('text-secondary');
-      activeBtn.classList.add('text-primary','font-bold');
-      activeBtn.querySelector('.material-symbols-outlined').classList.add('fill');
-    }
+    var activeHdr = headerEl.querySelector('[data-hdr="' + route + '"]');
+    if (activeHdr) { activeHdr.classList.add('text-on-surface', 'bg-surface-container', 'font-700'); activeHdr.classList.remove('text-secondary'); }
 
     window.location.hash = route;
     window.scrollTo(0, 0);
 
-    // Load data for screen
     if (route === 'home') loadHome();
     if (route === 'notebook') loadNotebook();
     if (route === 'flashcards') loadFlashcards();
@@ -610,7 +745,7 @@ tailwind.config = {
   };
 
   function handleRoute() {
-    const hash = window.location.hash.replace('#','') || 'splash';
+    var hash = window.location.hash.replace('#', '') || 'splash';
     navigate(screens.includes(hash) ? hash : 'splash');
   }
 
@@ -631,28 +766,27 @@ tailwind.config = {
     document.getElementById('splash-signup-form').classList.add('hidden');
   };
 
-  window.doLogin = async function() {
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value.trim();
+  window.doLogin = function() {
+    var email = document.getElementById('login-email').value.trim();
+    var password = document.getElementById('login-password').value.trim();
     if (!email || !password) { toast('Please fill in all fields', 'error'); return; }
-    // Demo login - check localStorage
-    const users = JSON.parse(localStorage.getItem('juriscore_users') || '[]');
-    const user = users.find(u => u.email === email);
+    var users = JSON.parse(localStorage.getItem('juriscore_users') || '[]');
+    var user = users.find(function(u) { return u.email === email; });
     if (!user) { toast('User not found. Please sign up.', 'error'); return; }
     setUser(user);
     toast('Welcome back, ' + user.name + '!');
     navigate('home');
   };
 
-  window.doSignup = async function() {
-    const name = document.getElementById('signup-name').value.trim();
-    const email = document.getElementById('signup-email').value.trim();
-    const password = document.getElementById('signup-password').value.trim();
-    const university = document.getElementById('signup-university').value.trim();
+  window.doSignup = function() {
+    var name = document.getElementById('signup-name').value.trim();
+    var email = document.getElementById('signup-email').value.trim();
+    var password = document.getElementById('signup-password').value.trim();
+    var university = document.getElementById('signup-university').value.trim();
     if (!name || !email || !password) { toast('Please fill in all fields', 'error'); return; }
-    const users = JSON.parse(localStorage.getItem('juriscore_users') || '[]');
-    if (users.find(u => u.email === email)) { toast('Email already registered', 'error'); return; }
-    const user = { id: 'user_' + Date.now(), name, email, university, created_at: new Date().toISOString() };
+    var users = JSON.parse(localStorage.getItem('juriscore_users') || '[]');
+    if (users.find(function(u) { return u.email === email; })) { toast('Email already registered', 'error'); return; }
+    var user = { id:'user_' + Date.now(), name:name, email:email, university:university, created_at:new Date().toISOString() };
     users.push(user);
     localStorage.setItem('juriscore_users', JSON.stringify(users));
     setUser(user);
@@ -667,97 +801,100 @@ tailwind.config = {
   };
 
   // ---- Home ----
-  async function loadHome() {
-    const user = getUser();
+  function loadHome() {
+    var user = getUser();
     if (!user) return;
-    const hour = new Date().getHours();
-    const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    var hour = new Date().getHours();
+    var greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
     document.getElementById('home-greeting').textContent = greeting + ', ' + user.name.split(' ')[0];
 
-    try {
-      const cases = await api('/cases/recent?limit=5');
-      const container = document.getElementById('home-recent-cases');
-      if (!cases.length) {
-        container.innerHTML = '<p class="text-secondary font-body-sm">No recent cases. Try searching!</p>';
-        return;
-      }
-      container.innerHTML = cases.map(c => `
-        <div onclick="viewCase('${c.id}')" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md hover:border-outline hover:shadow-lg transition-all cursor-pointer flex flex-col md:flex-row gap-stack-md items-start md:items-center justify-between">
-          <div>
-            <div class="flex items-center gap-2 mb-2">
-              <span class="px-2 py-1 bg-surface-container text-primary font-label-md text-label-md rounded">${c.court || 'Court'}</span>
-              <span class="font-body-sm text-body-sm text-on-surface-variant">${c.year || ''}</span>
-            </div>
-            <h3 class="font-headline-md text-headline-md text-on-surface mb-1">${c.title}</h3>
-            <p class="font-code-snippet text-code-snippet text-secondary">${c.citation}</p>
-          </div>
-        </div>
-      `).join('');
-    } catch (e) {
-      document.getElementById('home-recent-cases').innerHTML = '<p class="text-secondary font-body-sm">Could not load recent cases.</p>';
-    }
+    api('/cases/recent?limit=5').then(function(cases) {
+      var container = document.getElementById('home-recent-cases');
+      if (!cases.length) { container.innerHTML = '<div class="text-center py-8"><span class="material-symbols-outlined text-4xl text-outline-variant mb-2 block">gavel</span><p class="text-secondary text-sm font-500">No recent cases yet. Try searching!</p></div>'; return; }
+      container.innerHTML = cases.map(function(c) {
+        return '<div onclick="viewCase(\'' + c.id + '\')" class="bg-white border border-outline-variant rounded-xl p-4 hover:border-outline hover:shadow-card-hover transition-all cursor-pointer flex items-center gap-4 group">' +
+          '<div class="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-primary" style="font-size:20px;">gavel</span></div>' +
+          '<div class="flex-1 min-w-0">' +
+            '<h3 class="text-sm font-600 text-on-surface truncate">' + c.title + '</h3>' +
+            '<p class="text-xs text-secondary font-500 font-display mt-0.5">' + c.citation + '</p>' +
+          '</div>' +
+          '<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" style="font-size:18px;">chevron_right</span>' +
+        '</div>';
+      }).join('');
+    }).catch(function() {
+      document.getElementById('home-recent-cases').innerHTML = '<p class="text-secondary text-sm text-center py-8">Could not load recent cases.</p>';
+    });
   }
 
-  // ---- Search ----
-  const DOC_TYPE_META = {
-    judgment:     { label: 'Case Law',    icon: 'gavel',            color: '#003ec7', bg: '#dde1ff' },
-    legislation:  { label: 'Legislation',  icon: 'policy',           color: '#166534', bg: '#dcfce7' },
-    gazette:      { label: 'Gazette',      icon: 'newspaper',        color: '#6b21a8', bg: '#f3e8ff' },
-    bill:         { label: 'Bill',         icon: 'draft',            color: '#9a3412', bg: '#fff7ed' },
-    generic_document: { label: 'Publication', icon: 'article',       color: '#0e7490', bg: '#ecfeff' },
-    journal:      { label: 'Journal',      icon: 'auto_stories',     color: '#be123c', bg: '#fff1f2' },
-    causelist:    { label: 'Cause List',   icon: 'calendar_today',   color: '#374151', bg: '#f3f4f6' },
+  window.homeSearch = function() {
+    var q = document.getElementById('home-search-input').value.trim();
+    if (!q) return;
+    navigate('search');
+    document.getElementById('search-input').value = q;
+    doSearch();
   };
 
-  let searchFilters = { court: '', subject: '', doc_type: '' };
-  let lastSearchQuery = '';
+  window.quickRecent = function() {
+    navigate('search');
+    document.getElementById('search-input').value = '';
+    searchFilters.doc_type = '';
+    doSearch();
+  };
+
+  // ---- Search ----
+  var DOC_TYPE_META = {
+    judgment: { label:'Case Law', icon:'gavel', color:'#003ec7', bg:'#dde1ff' },
+    legislation: { label:'Legislation', icon:'policy', color:'#166534', bg:'#dcfce7' },
+    gazette: { label:'Gazette', icon:'newspaper', color:'#6b21a8', bg:'#f3e8ff' },
+    bill: { label:'Bill', icon:'draft', color:'#9a3412', bg:'#fff7ed' },
+    generic_document: { label:'Publication', icon:'article', color:'#0e7490', bg:'#ecfeff' },
+    journal: { label:'Journal', icon:'auto_stories', color:'#be123c', bg:'#fff1f2' },
+    causelist: { label:'Cause List', icon:'calendar_today', color:'#374151', bg:'#f3f4f6' },
+  };
+
+  var searchFilters = { court:'', subject:'', doc_type:'' };
+  var lastSearchQuery = '';
 
   window.setFilter = function(type, value) {
     searchFilters[type] = value;
-    const container = document.getElementById(type === 'doc_type' ? 'filter-doc-types' : 'filter-courts');
+    var container = document.getElementById(type === 'doc_type' ? 'filter-doc-types' : 'filter-courts');
     if (!container) return;
-    container.querySelectorAll('.filter-chip').forEach(btn => {
+    container.querySelectorAll('.filter-chip').forEach(function(btn) {
       btn.classList.toggle('active', btn.dataset.value === value);
     });
   };
 
   function renderCard(c) {
-    const meta = DOC_TYPE_META[c.doc_type] || { label: c.doc_type, icon: 'description', color: '#374151', bg: '#f3f4f6' };
-    const dateStr = c.date || '';
-    const courtStr = c.court || '';
-    const judgesStr = (c.judges || []).join(', ');
-    const excerpt = c.excerpt ? c.excerpt.replace(/<[^>]+>/g, '') : '';
-    const linkUrl = c.url || '#';
-
-    let metaHtml = '';
-    if (courtStr) metaHtml += '<span class="meta-chip">' + courtStr + '</span>';
-    if (dateStr) metaHtml += '<span class="meta-chip">' + dateStr + '</span>';
+    var meta = DOC_TYPE_META[c.doc_type] || { label:c.doc_type, icon:'description', color:'#374151', bg:'#f3f4f6' };
+    var excerpt = c.excerpt ? c.excerpt.replace(/<[^>]+>/g, '') : '';
+    var linkUrl = c.url || '#';
+    var metaHtml = '';
+    if (c.court) metaHtml += '<span class="meta-chip">' + c.court + '</span>';
+    if (c.date) metaHtml += '<span class="meta-chip">' + c.date + '</span>';
     if (c.nature && c.nature !== c.doc_type_label) metaHtml += '<span class="meta-chip">' + c.nature + '</span>';
-    if (judgesStr) metaHtml += '<span class="meta-chip">' + judgesStr + '</span>';
 
-    const cardData = btoa(unescape(encodeURIComponent(JSON.stringify({
-      title: c.title, citation: c.citation, court: c.court, date: c.date, doc_type: c.doc_type_label || c.doc_type, excerpt: excerpt, url: linkUrl
+    var cardData = btoa(unescape(encodeURIComponent(JSON.stringify({
+      title:c.title, citation:c.citation, court:c.court, date:c.date, doc_type:c.doc_type_label || c.doc_type, excerpt:excerpt, url:linkUrl
     }))));
 
     return '<div class="result-card">' +
-      '<div class="card-type-badge" style="background:' + meta.bg + ';color:' + meta.color + ';">' +
-        '<span class="material-symbols-outlined" style="font-size:13px;vertical-align:middle;margin-right:4px;">' + meta.icon + '</span>' +
-        meta.label +
+      '<div class="card-badge" style="background:' + meta.bg + ';color:' + meta.color + ';">' +
+        '<span class="material-symbols-outlined" style="font-size:14px;">' + meta.icon + '</span>' + meta.label +
       '</div>' +
-      '<div class="card-title" style="margin-top:28px;">' + c.title + '</div>' +
-      (c.citation ? '<div style="font-size:12px;color:#737688;font-family:Geist;margin-bottom:8px;">' + c.citation + '</div>' : '') +
+      '<div class="card-title" style="margin-top:22px;">' + c.title + '</div>' +
+      (c.citation ? '<div class="card-citation">' + c.citation + '</div>' : '') +
       (metaHtml ? '<div class="card-meta">' + metaHtml + '</div>' : '') +
       (excerpt ? '<div class="card-excerpt">' + excerpt + '</div>' : '') +
-      '<div class="card-footer">' +
+      '<div class="card-actions">' +
         '<div class="flex gap-2">' +
-          '<button onclick="event.stopPropagation();window.open(\'' + linkUrl + '\',\'_blank\')" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors" style="font-family:Geist;">' +
+          '<button onclick="event.stopPropagation();window.open(\'' + linkUrl + '\',\'_blank\')" class="btn-primary-sm">' +
             '<span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> Visit' +
           '</button>' +
-          '<button onclick="event.stopPropagation();summarizeCard(\'' + cardData + '\')" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border border-primary text-primary hover:bg-blue-50 transition-colors" style="font-family:Geist;">' +
+          '<button onclick="event.stopPropagation();summarizeCard(\'' + cardData + '\')" class="btn-outline-sm">' +
             '<span class="material-symbols-outlined" style="font-size:14px;">auto_awesome</span> Summarize' +
           '</button>' +
         '</div>' +
-        '<span style="font-size:11px;color:#9ca3af;">' + (c.registry || '') + '</span>' +
+        '<span class="text-[11px] text-secondary">' + (c.registry || '') + '</span>' +
       '</div>' +
     '</div>';
   }
@@ -765,470 +902,341 @@ tailwind.config = {
   function renderSection(title, icon, items, maxShow) {
     maxShow = maxShow || 6;
     if (!items.length) return '';
-    const showing = items.slice(0, maxShow);
-    const remaining = items.length - maxShow;
+    var showing = items.slice(0, maxShow);
+    var remaining = items.length - maxShow;
 
-    let html = '<div class="mb-8">';
-    html += '<div class="section-header">';
-    html += '<h2><span class="material-symbols-outlined" style="font-size:22px;color:#003ec7;">' + icon + '</span> ' + title + ' <span class="section-count">' + items.length + '</span></h2>';
-    if (remaining > 0) {
-      html += '<span class="section-view-more" onclick="setFilterAndSearch(\'' + title + '\')">View all ' + items.length + ' &rarr;</span>';
-    }
+    var html = '<div class="mb-8">';
+    html += '<div class="section-hdr"><h2><span class="material-symbols-outlined text-primary" style="font-size:20px;">' + icon + '</span> ' + title + ' <span class="section-count">' + items.length + '</span></h2>';
+    if (remaining > 0) html += '<span class="section-more" onclick="setFilterAndSearch(\'' + title + '\')">View all ' + items.length + ' &rarr;</span>';
     html += '</div>';
-    html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">';
-    showing.forEach(c => { html += renderCard(c); });
+    html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+    showing.forEach(function(c) { html += renderCard(c); });
     html += '</div></div>';
     return html;
   }
 
   window.setFilterAndSearch = function(typeLabel) {
-    const typeMap = { 'Case Law': 'judgment', 'Legislation': 'legislation', 'Gazette': 'gazette', 'Bill': 'bill', 'Publication': 'generic_document' };
-    const docType = typeMap[typeLabel] || '';
-    searchFilters.doc_type = docType;
-    const container = document.getElementById('filter-doc-types');
-    if (container) container.querySelectorAll('.filter-chip').forEach(btn => btn.classList.toggle('active', btn.dataset.value === docType));
+    var typeMap = { 'Case Law':'judgment', 'Legislation':'legislation', 'Gazette':'gazette', 'Bill':'bill', 'Publication':'generic_document' };
+    searchFilters.doc_type = typeMap[typeLabel] || '';
+    var container = document.getElementById('filter-doc-types');
+    if (container) container.querySelectorAll('.filter-chip').forEach(function(btn) { btn.classList.toggle('active', btn.dataset.value === searchFilters.doc_type); });
     doSearch();
   };
 
-  window.doSearch = async function() {
-    const q = document.getElementById('search-input').value.trim();
+  window.doSearch = function() {
+    var q = document.getElementById('search-input').value.trim();
     if (!q && !searchFilters.court && !searchFilters.doc_type) return;
-
     lastSearchQuery = q;
-    const resultsEl = document.getElementById('search-results');
-    const loadingEl = document.getElementById('search-loading');
-    const emptyEl = document.getElementById('search-empty');
-    const summaryEl = document.getElementById('results-summary');
+
+    var resultsEl = document.getElementById('search-results');
+    var loadingEl = document.getElementById('search-loading');
+    var emptyEl = document.getElementById('search-empty');
+    var summaryEl = document.getElementById('results-summary');
 
     resultsEl.innerHTML = '';
     loadingEl.classList.remove('hidden');
     emptyEl.classList.add('hidden');
     summaryEl.style.display = 'none';
 
-    try {
-      let url = '/search?q=' + encodeURIComponent(q || '');
-      if (searchFilters.doc_type) url += '&doc_type=' + encodeURIComponent(searchFilters.doc_type);
-      if (searchFilters.court) url += '&court=' + encodeURIComponent(searchFilters.court);
+    var url = '/search?q=' + encodeURIComponent(q || '');
+    if (searchFilters.doc_type) url += '&doc_type=' + encodeURIComponent(searchFilters.doc_type);
+    if (searchFilters.court) url += '&court=' + encodeURIComponent(searchFilters.court);
 
-      const data = await api(url);
+    api(url).then(function(data) {
       loadingEl.classList.add('hidden');
+      var results = data.results || [];
+      var total = data.count || 0;
 
-      const results = data.results || [];
-      const total = data.count || 0;
+      if (!results.length) { emptyEl.classList.remove('hidden'); return; }
 
-      if (!results.length) {
-        emptyEl.classList.remove('hidden');
-        return;
-      }
-
-      // Show summary
-      let summaryHtml = '';
-      if (q) summaryHtml += '<span class="query-badge">"' + q + '"</span>';
-      summaryHtml += '<span class="total-text">' + total.toLocaleString() + ' result' + (total !== 1 ? 's' : '') + '</span>';
+      var summaryHtml = '';
+      if (q) summaryHtml += '<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-primary/8 text-primary text-xs font-700">"' + q + '"</span>';
+      summaryHtml += '<span class="text-secondary">' + total.toLocaleString() + ' result' + (total !== 1 ? 's' : '') + '</span>';
       if (searchFilters.doc_type) {
-        const m = DOC_TYPE_META[searchFilters.doc_type];
-        if (m) summaryHtml += '<span class="query-badge" style="background:' + m.bg + ';color:' + m.color + ';">' + m.label + '</span>';
-      }
-      if (searchFilters.court) {
-        summaryHtml += '<span class="query-badge">' + searchFilters.court + '</span>';
+        var m = DOC_TYPE_META[searchFilters.doc_type];
+        if (m) summaryHtml += '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-700" style="background:' + m.bg + ';color:' + m.color + ';">' + m.label + '</span>';
       }
       summaryEl.innerHTML = summaryHtml;
       summaryEl.style.display = 'flex';
 
-      // If a specific doc_type filter is active, show flat grid
       if (searchFilters.doc_type) {
-        resultsEl.innerHTML = '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">' +
-          results.map(c => renderCard(c)).join('') +
-        '</div>';
+        resultsEl.innerHTML = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">' + results.map(renderCard).join('') + '</div>';
         return;
       }
 
-      // Group results by doc_type for "All Types" view
-      const groups = {};
-      const groupOrder = ['judgment', 'legislation', 'gazette', 'bill', 'generic_document', 'journal', 'causelist'];
-      results.forEach(c => {
-        const dt = c.doc_type || 'judgment';
-        if (!groups[dt]) groups[dt] = [];
-        groups[dt].push(c);
-      });
-
-      let html = '';
-      groupOrder.forEach(dt => {
+      var groups = {};
+      var groupOrder = ['judgment','legislation','gazette','bill','generic_document','journal','causelist'];
+      results.forEach(function(c) { var dt = c.doc_type || 'judgment'; if (!groups[dt]) groups[dt] = []; groups[dt].push(c); });
+      var html = '';
+      groupOrder.forEach(function(dt) {
         if (groups[dt] && groups[dt].length) {
-          const meta = DOC_TYPE_META[dt] || { label: dt, icon: 'description' };
+          var meta = DOC_TYPE_META[dt] || { label:dt, icon:'description' };
           html += renderSection(meta.label, meta.icon, groups[dt], dt === 'judgment' ? 6 : 4);
         }
       });
-
-      resultsEl.innerHTML = html || results.map(c => renderCard(c)).join('');
-    } catch (e) {
+      resultsEl.innerHTML = html || results.map(renderCard).join('');
+    }).catch(function() {
       loadingEl.classList.add('hidden');
       emptyEl.classList.remove('hidden');
       emptyEl.querySelector('p').textContent = 'Search failed. Please try again.';
-      console.error('Search error:', e);
-    }
+    });
   };
 
   // ---- Summarize ----
-  window.summarizeCard = async function(encodedData) {
-    try {
-      const data = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
-      showModal(data.title, data.court + (data.date ? ' | ' + data.date : ''), '<div class="modal-loading"><div class="spinner" style="margin:0 auto 12px;"></div><p style="color:#737688;font-size:14px;">Generating summary...</p></div>');
+  window.summarizeCard = function(encodedData) {
+    var data = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
+    showModal(data.title, data.court + (data.date ? ' | ' + data.date : ''), '<div class="text-center py-8"><div class="spinner mx-auto mb-3"></div><p class="text-secondary text-sm font-500">Generating summary...</p></div>');
 
-      const resp = await api('/search/summarize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: data.title,
-          citation: data.citation,
-          court: data.court,
-          date: data.date,
-          doc_type: data.doc_type,
-          excerpt: data.excerpt,
-          url: data.url,
-        }),
-      });
-
-      const body = document.querySelector('.modal-body');
-      if (body) {
-        body.innerHTML = resp.summary.split('\n').filter(p => p.trim()).map(p => '<p>' + p + '</p>').join('');
-      }
-    } catch (e) {
-      console.error('Summarize error:', e);
-      const body = document.querySelector('.modal-body');
-      if (body) body.innerHTML = '<p style="color:#ba1a1a;">Failed to generate summary. Please try again.</p>';
-    }
+    api('/search/summarize', {
+      method: 'POST',
+      body: JSON.stringify({ title:data.title, citation:data.citation, court:data.court, date:data.date, doc_type:data.doc_type, excerpt:data.excerpt, url:data.url }),
+    }).then(function(resp) {
+      var body = document.querySelector('.modal-body');
+      if (body) body.innerHTML = resp.summary.split('\n').filter(function(p) { return p.trim(); }).map(function(p) { return '<p>' + p + '</p>'; }).join('');
+    }).catch(function() {
+      var body = document.querySelector('.modal-body');
+      if (body) body.innerHTML = '<div class="text-center py-6"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-error text-sm font-600">Failed to generate summary. Please try again.</p></div>';
+    });
   };
 
   function showModal(title, meta, bodyHtml) {
-    let overlay = document.getElementById('modal-overlay');
-    if (!overlay) {
-      overlay = document.createElement('div');
-      overlay.id = 'modal-overlay';
-      document.body.appendChild(overlay);
-    }
+    var existing = document.getElementById('modal-overlay');
+    if (existing) existing.remove();
+    var overlay = document.createElement('div');
+    overlay.id = 'modal-overlay';
     overlay.className = 'modal-overlay';
-    overlay.style.display = 'flex';
     overlay.onclick = function(e) { if (e.target === overlay) closeModal(); };
-    overlay.innerHTML = '<div class="modal-content">' +
-      '<button class="modal-close" onclick="closeModal()"><span class="material-symbols-outlined" style="font-size:20px;">close</span></button>' +
-      '<div class="modal-title">' + title + '</div>' +
-      (meta ? '<div class="modal-meta">' + meta + '</div>' : '') +
+    overlay.innerHTML = '<div class="modal-box relative">' +
+      '<button class="modal-close" onclick="closeModal()"><span class="material-symbols-outlined" style="font-size:18px;">close</span></button>' +
+      '<div class="modal-header"><div><div class="modal-title">' + title + '</div>' + (meta ? '<div class="modal-meta">' + meta + '</div>' : '') + '</div></div>' +
       '<div class="modal-body">' + bodyHtml + '</div>' +
     '</div>';
+    document.body.appendChild(overlay);
   }
 
   window.closeModal = function() {
-    const overlay = document.getElementById('modal-overlay');
-    if (overlay) overlay.style.display = 'none';
+    var overlay = document.getElementById('modal-overlay');
+    if (overlay) { overlay.style.opacity = '0'; overlay.style.transition = 'opacity 0.15s'; setTimeout(function() { overlay.remove(); }, 150); }
   };
 
-  window.viewCase = async function(caseId) {
+  // ---- Case Detail ----
+  window.viewCase = function(caseId) {
     currentCaseId = caseId;
     navigate('case-detail');
     document.getElementById('case-detail-loading').classList.remove('hidden');
     document.getElementById('case-detail-content').classList.add('hidden');
 
-    try {
-      const c = await api('/cases/' + caseId);
+    api('/cases/' + caseId).then(function(c) {
       document.getElementById('case-detail-loading').classList.add('hidden');
       document.getElementById('case-detail-content').classList.remove('hidden');
-
       document.getElementById('case-detail-title').textContent = c.title;
       document.getElementById('case-detail-citation').textContent = c.citation;
       document.getElementById('case-detail-tags').innerHTML =
-        (c.subject_tags || []).map(t => '<span class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md px-3 py-1 rounded-full">' + t + '</span>').join('') +
-        '<span class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md px-3 py-1 rounded-full">' + (c.court || '') + '</span>' +
-        (c.year ? '<span class="text-secondary font-label-md text-label-md">' + c.year + '</span>' : '');
+        (c.subject_tags || []).map(function(t) { return '<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-surface-container text-on-surface-variant text-xs font-600">' + t + '</span>'; }).join('') +
+        '<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-primary/8 text-primary text-xs font-600">' + (c.court || '') + '</span>' +
+        (c.year ? '<span class="text-xs font-500 text-secondary">' + c.year + '</span>' : '');
 
-      // Load summary
-      const summaryTab = document.getElementById('case-tab-summary');
-      summaryTab.innerHTML = '<div class="flex items-center justify-center py-stack-md"><span class="spinner"></span></div>';
+      var summaryTab = document.getElementById('case-tab-summary');
+      summaryTab.innerHTML = '<div class="py-8 text-center"><div class="spinner mx-auto mb-2"></div><p class="text-secondary text-sm">Loading summary...</p></div>';
       showCaseTab('summary');
 
-      try {
-        const summary = await api('/cases/' + caseId + '/summary');
-        let html = '';
-        if (summary.facts) html += '<section><h2 class="font-headline-md text-headline-md mb-stack-sm text-on-surface">Facts</h2><p>' + summary.facts + '</p></section>';
-        if (summary.issues && summary.issues.length) html += '<section><h2 class="font-headline-md text-headline-md mb-stack-sm text-on-surface">Issues</h2><ul class="list-disc pl-6 space-y-2">' + summary.issues.map(i => '<li>' + i + '</li>').join('') + '</ul></section>';
-        if (summary.ratio) html += '<section class="bg-surface-container-low border border-primary-fixed-dim rounded-lg p-stack-md relative overflow-hidden shadow-lg"><div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div><div class="flex items-center gap-2 mb-stack-sm"><span class="material-symbols-outlined text-primary-container">lightbulb</span><h3 class="font-title-lg text-title-lg text-primary-container">Ratio Decidendi</h3></div><p class="font-body-md text-body-md text-on-surface-variant italic">' + summary.ratio + '</p></section>';
-        if (summary.holdings && summary.holdings.length) html += '<section><h2 class="font-headline-md text-headline-md mb-stack-sm text-on-surface">Holdings</h2><ul class="list-disc pl-6 space-y-2">' + summary.holdings.map(h => '<li>' + h + '</li>').join('') + '</ul></section>';
-        if (summary.obiter) html += '<section><h2 class="font-headline-md text-headline-md mb-stack-sm text-on-surface">Obiter Dicta</h2><p>' + summary.obiter + '</p></section>';
-        if (summary.cases_cited && summary.cases_cited.length) html += '<section><h2 class="font-headline-md text-headline-md mb-stack-sm text-on-surface">Cases Cited</h2><ul class="list-disc pl-6 space-y-2">' + summary.cases_cited.map(c => '<li>' + c + '</li>').join('') + '</ul></section>';
-        summaryTab.innerHTML = html || '<p class="text-secondary">No summary available for this case.</p>';
-      } catch (e) {
-        summaryTab.innerHTML = '<p class="text-secondary">Could not load summary.</p>';
-      }
+      api('/cases/' + caseId + '/summary').then(function(summary) {
+        var html = '';
+        if (summary.facts) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Facts</h3><p class="text-sm text-on-surface-variant leading-relaxed">' + summary.facts + '</p></div>';
+        if (summary.issues && summary.issues.length) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Issues</h3><ul class="list-disc pl-5 space-y-1.5 text-sm text-on-surface-variant leading-relaxed">' + summary.issues.map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul></div>';
+        if (summary.ratio) html += '<div class="mb-5 bg-primary/5 border border-primary/15 rounded-xl p-4 relative overflow-hidden"><div class="absolute top-0 left-0 w-1 h-full bg-primary rounded-r"></div><div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-primary" style="font-size:18px;">lightbulb</span><h3 class="text-sm font-700 text-primary">Ratio Decidendi</h3></div><p class="text-sm text-on-surface-variant leading-relaxed italic">' + summary.ratio + '</p></div>';
+        if (summary.holdings && summary.holdings.length) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Holdings</h3><ul class="list-disc pl-5 space-y-1.5 text-sm text-on-surface-variant leading-relaxed">' + summary.holdings.map(function(h) { return '<li>' + h + '</li>'; }).join('') + '</ul></div>';
+        if (summary.obiter) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Obiter Dicta</h3><p class="text-sm text-on-surface-variant leading-relaxed">' + summary.obiter + '</p></div>';
+        if (summary.cases_cited && summary.cases_cited.length) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Cases Cited</h3><ul class="list-disc pl-5 space-y-1.5 text-sm text-on-surface-variant leading-relaxed">' + summary.cases_cited.map(function(c) { return '<li>' + c + '</li>'; }).join('') + '</ul></div>';
+        summaryTab.innerHTML = html || '<p class="text-secondary text-sm">No summary available for this case.</p>';
+      }).catch(function() { summaryTab.innerHTML = '<p class="text-secondary text-sm">Could not load summary.</p>'; });
 
       document.getElementById('case-tab-fulltext').textContent = c.full_text || 'Full text not available.';
-    } catch (e) {
+    }).catch(function() {
       document.getElementById('case-detail-loading').classList.add('hidden');
-      document.getElementById('case-detail-content').innerHTML = '<p class="text-center text-secondary py-stack-lg">Case not found.</p>';
+      document.getElementById('case-detail-content').innerHTML = '<div class="text-center py-16"><span class="material-symbols-outlined text-5xl text-outline-variant mb-3 block">search_off</span><p class="text-secondary text-sm font-500">Case not found.</p></div>';
       document.getElementById('case-detail-content').classList.remove('hidden');
-    }
+    });
   };
 
   window.showCaseTab = function(tab) {
-    document.querySelectorAll('.case-tab').forEach(t => {
-      t.classList.remove('text-primary','border-b-2','border-primary');
-      t.classList.add('text-secondary');
-    });
-    event.target.classList.remove('text-secondary');
-    event.target.classList.add('text-primary','border-b-2','border-primary');
-    ['summary','fulltext','notes'].forEach(t => {
+    document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+    event.target.classList.add('active');
+    ['summary','fulltext','notes'].forEach(function(t) {
       document.getElementById('case-tab-' + t).classList.toggle('hidden', t !== tab);
     });
     if (tab === 'notes') loadCaseNotes();
   };
 
-  async function loadCaseNotes() {
+  function loadCaseNotes() {
     if (!currentCaseId) return;
-    const listEl = document.getElementById('case-notes-list');
-    try {
-      const user = getUser();
-      const notes = await api('/study/notes?user_id=' + user.id);
-      const caseNotes = notes.filter(n => n.case_id === currentCaseId);
-      listEl.innerHTML = caseNotes.length ? caseNotes.map(n => `
-        <div class="bg-surface-container-low border border-outline-variant rounded-lg p-stack-md">
-          <p class="font-body-sm text-body-sm text-on-surface">${n.note_text}</p>
-          <div class="flex justify-between items-center mt-2">
-            <span class="font-code-snippet text-code-snippet text-secondary">${new Date(n.created_at).toLocaleDateString()}</span>
-            <button onclick="deleteNote('${n.id}')" class="text-error hover:text-error-container transition-colors"><span class="material-symbols-outlined text-sm">delete</span></button>
-          </div>
-        </div>
-      `).join('') : '<p class="text-secondary font-body-sm">No notes yet.</p>';
-    } catch (e) {
-      listEl.innerHTML = '<p class="text-secondary font-body-sm">Could not load notes.</p>';
-    }
+    var listEl = document.getElementById('case-notes-list');
+    var user = getUser();
+    api('/study/notes?user_id=' + user.id).then(function(notes) {
+      var caseNotes = notes.filter(function(n) { return n.case_id === currentCaseId; });
+      listEl.innerHTML = caseNotes.length ? caseNotes.map(function(n) {
+        return '<div class="bg-surface-container-low border border-outline-variant rounded-xl p-3 flex items-start justify-between gap-3">' +
+          '<p class="text-sm text-on-surface flex-1">' + n.note_text + '</p>' +
+          '<button onclick="deleteNote(\'' + n.id + '\')" class="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-secondary hover:text-error hover:bg-error-container/30 transition-all"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>' +
+        '</div>';
+      }).join('') : '<p class="text-secondary text-sm text-center py-6">No notes yet.</p>';
+    }).catch(function() { listEl.innerHTML = '<p class="text-secondary text-sm">Could not load notes.</p>'; });
   }
 
-  window.saveCaseNote = async function() {
-    const text = document.getElementById('case-note-input').value.trim();
+  window.saveCaseNote = function() {
+    var text = document.getElementById('case-note-input').value.trim();
     if (!text || !currentCaseId) return;
-    try {
-      const user = getUser();
-      await api('/study/notes?user_id=' + user.id, {
-        method: 'POST',
-        body: JSON.stringify({ case_id: currentCaseId, note_text: text })
-      });
+    var user = getUser();
+    api('/study/notes?user_id=' + user.id, { method:'POST', body:JSON.stringify({ case_id:currentCaseId, note_text:text }) }).then(function() {
       document.getElementById('case-note-input').value = '';
       toast('Note saved');
       loadCaseNotes();
-    } catch (e) {
-      toast('Failed to save note', 'error');
-    }
+    }).catch(function() { toast('Failed to save note', 'error'); });
   };
 
-  window.deleteNote = async function(noteId) {
-    try {
-      await api('/study/notes/' + noteId, { method: 'DELETE' });
-      toast('Note deleted');
-      loadCaseNotes();
-    } catch (e) {
-      toast('Failed to delete note', 'error');
-    }
+  window.deleteNote = function(noteId) {
+    api('/study/notes/' + noteId, { method:'DELETE' }).then(function() { toast('Note deleted'); loadCaseNotes(); }).catch(function() { toast('Failed to delete note', 'error'); });
   };
 
-  window.saveCase = async function(caseId) {
-    try {
-      await api('/cases/' + caseId + '/save', { method: 'POST' });
-      toast('Case saved');
-    } catch (e) {
-      toast('Failed to save case', 'error');
-    }
+  window.saveCase = function(caseId) {
+    api('/cases/' + caseId + '/save', { method:'POST' }).then(function() { toast('Case saved'); }).catch(function() { toast('Failed to save case', 'error'); });
   };
 
-  window.addToNotebook = async function() {
+  window.addToNotebook = function() {
     if (!currentCaseId) return;
-    try {
-      const user = getUser();
-      const folders = await api('/notebook/folders?user_id=' + user.id);
-      if (!folders.length) {
-        toast('Create a notebook folder first', 'error');
-        return;
-      }
-      await api('/notebook/folders/' + folders[0].id + '/entries', {
-        method: 'POST',
-        body: JSON.stringify({ case_id: currentCaseId })
-      });
-      toast('Added to notebook: ' + folders[0].name);
-    } catch (e) {
-      toast('Failed to add to notebook', 'error');
-    }
+    var user = getUser();
+    api('/notebook/folders?user_id=' + user.id).then(function(folders) {
+      if (!folders.length) { toast('Create a notebook folder first', 'error'); return; }
+      return api('/notebook/folders/' + folders[0].id + '/entries', { method:'POST', body:JSON.stringify({ case_id:currentCaseId }) }).then(function() { toast('Added to notebook: ' + folders[0].name); });
+    }).catch(function() { toast('Failed to add to notebook', 'error'); });
   };
 
   // ---- Constitution ----
-  async function loadConstitution() {
-    const loadingEl = document.getElementById('constitution-loading');
-    const chaptersEl = document.getElementById('constitution-chapters');
-    const searchResultsEl = document.getElementById('constitution-search-results');
+  function loadConstitution() {
+    var loadingEl = document.getElementById('constitution-loading');
+    var chaptersEl = document.getElementById('constitution-chapters');
+    var searchResultsEl = document.getElementById('constitution-search-results');
     loadingEl.classList.remove('hidden');
     chaptersEl.innerHTML = '';
     searchResultsEl.classList.add('hidden');
 
-    try {
-      const chapters = await api('/constitution/chapters');
+    api('/constitution/chapters').then(function(chapters) {
       loadingEl.classList.add('hidden');
-
-      if (!chapters.length) {
-        chaptersEl.innerHTML = '<p class="text-secondary">Could not load constitution.</p>';
-        return;
-      }
-
-      chaptersEl.innerHTML = chapters.map((ch, i) => `
-        <div class="border border-outline-variant rounded-lg bg-surface-container-lowest overflow-hidden transition-all hover:border-outline" onclick="this.classList.toggle('article-expanded')">
-          <div class="flex justify-between items-center p-4 cursor-pointer hover:bg-surface-container-low transition-colors">
-            <div class="flex items-center gap-4">
-              <span class="font-title-lg text-title-lg text-primary w-8">${i + 1}</span>
-              <span class="font-headline-md text-headline-md text-on-surface">${ch.chapter || 'Chapter ' + (i+1)}</span>
-            </div>
-            <span class="material-symbols-outlined text-secondary expand-icon">expand_more</span>
-          </div>
-          <div class="article-content border-t border-outline-variant bg-surface-bright">
-            <div class="p-6 font-body-md text-body-md text-on-surface-variant max-h-[400px] overflow-y-auto">
-              ${(ch.articles || []).slice(0, 10).map(a => '<p class="mb-2">' + a.substring(0, 300) + (a.length > 300 ? '...' : '') + '</p>').join('')}
-              ${ch.articles && ch.articles.length > 10 ? '<p class="text-primary font-label-md">...and ' + (ch.articles.length - 10) + ' more articles</p>' : ''}
-            </div>
-          </div>
-        </div>
-      `).join('');
-    } catch (e) {
+      if (!chapters.length) { chaptersEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Could not load constitution.</p>'; return; }
+      chaptersEl.innerHTML = chapters.map(function(ch, i) {
+        return '<div class="ch-card" onclick="this.classList.toggle(\'expanded\')">' +
+          '<div class="ch-header">' +
+            '<div class="flex items-center gap-3">' +
+              '<span class="w-8 h-8 rounded-lg bg-primary/8 flex items-center justify-center text-sm font-700 text-primary">' + (i + 1) + '</span>' +
+              '<span class="text-sm font-600 text-on-surface">' + (ch.chapter || 'Chapter ' + (i+1)) + '</span>' +
+            '</div>' +
+            '<span class="material-symbols-outlined expand-icon" style="font-size:20px;">expand_more</span>' +
+          '</div>' +
+          '<div class="ch-body"><div class="p-5 text-sm text-on-surface-variant leading-relaxed max-h-[400px] overflow-y-auto">' +
+            (ch.articles || []).slice(0, 10).map(function(a) { return '<p class="mb-2">' + a.substring(0, 300) + (a.length > 300 ? '...' : '') + '</p>'; }).join('') +
+            (ch.articles && ch.articles.length > 10 ? '<p class="text-primary text-xs font-600 mt-2">...and ' + (ch.articles.length - 10) + ' more articles</p>' : '') +
+          '</div></div>' +
+        '</div>';
+      }).join('');
+    }).catch(function() {
       loadingEl.classList.add('hidden');
-      chaptersEl.innerHTML = '<p class="text-secondary">Failed to load constitution.</p>';
-    }
+      chaptersEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Failed to load constitution.</p>';
+    });
   }
 
-  window.searchConstitution = async function() {
-    const q = document.getElementById('constitution-search').value.trim();
+  window.searchConstitution = function() {
+    var q = document.getElementById('constitution-search').value.trim();
     if (!q) return;
-    const chaptersEl = document.getElementById('constitution-chapters');
-    const searchResultsEl = document.getElementById('constitution-search-results');
+    var chaptersEl = document.getElementById('constitution-chapters');
+    var searchResultsEl = document.getElementById('constitution-search-results');
     chaptersEl.classList.add('hidden');
     searchResultsEl.classList.remove('hidden');
-    searchResultsEl.innerHTML = '<div class="flex items-center justify-center py-stack-md"><span class="spinner"></span></div>';
+    searchResultsEl.innerHTML = '<div class="py-8 text-center"><div class="spinner mx-auto mb-2"></div><p class="text-secondary text-sm">Searching...</p></div>';
 
-    try {
-      const data = await api('/constitution/search?q=' + encodeURIComponent(q));
-      if (!data.results || !data.results.length) {
-        searchResultsEl.innerHTML = '<p class="text-secondary">No results found for "' + q + '"</p>';
-        return;
-      }
-      searchResultsEl.innerHTML = '<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-md">' + data.results.length + ' results for "' + q + '"</h3>' +
-        data.results.map(r => `
-          <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md">
-            <p class="font-body-sm text-body-sm text-on-surface-variant">${r.substring(0, 500)}${r.length > 500 ? '...' : ''}</p>
-          </div>
-        `).join('');
-    } catch (e) {
-      searchResultsEl.innerHTML = '<p class="text-secondary">Search failed.</p>';
-    }
+    api('/constitution/search?q=' + encodeURIComponent(q)).then(function(data) {
+      if (!data.results || !data.results.length) { searchResultsEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">No results found for "' + q + '"</p>'; return; }
+      searchResultsEl.innerHTML = '<h3 class="text-sm font-700 text-on-surface mb-3">' + data.results.length + ' results for "' + q + '"</h3>' +
+        data.results.map(function(r) {
+          return '<div class="bg-white border border-outline-variant rounded-xl p-4 mb-2.5"><p class="text-sm text-on-surface-variant leading-relaxed">' + r.substring(0, 500) + (r.length > 500 ? '...' : '') + '</p></div>';
+        }).join('');
+    }).catch(function() { searchResultsEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Search failed.</p>'; });
   };
 
   // ---- Flashcards ----
-  async function loadFlashcards() {
-    const user = getUser();
+  function loadFlashcards() {
+    var user = getUser();
     if (!user) return;
-    const loadingEl = document.getElementById('flashcards-loading');
-    const decksEl = document.getElementById('flashcards-decks');
-    const emptyEl = document.getElementById('flashcards-empty');
+    var loadingEl = document.getElementById('flashcards-loading');
+    var decksEl = document.getElementById('flashcards-decks');
+    var emptyEl = document.getElementById('flashcards-empty');
     loadingEl.classList.remove('hidden');
     decksEl.innerHTML = '';
 
-    try {
-      const decks = await api('/flashcards/decks?user_id=' + user.id);
+    api('/flashcards/decks?user_id=' + user.id).then(function(decks) {
       loadingEl.classList.add('hidden');
-
-      if (!decks.length) {
-        emptyEl.classList.remove('hidden');
-        return;
-      }
+      if (!decks.length) { emptyEl.classList.remove('hidden'); return; }
       emptyEl.classList.add('hidden');
 
-      // Get card counts for each deck
-      const deckCards = await Promise.all(decks.map(d =>
-        api('/flashcards/decks/' + d.id + '/due').catch(() => [])
-      ));
-
-      decksEl.innerHTML = decks.map((d, i) => {
-        const dueCount = deckCards[i] ? deckCards[i].length : 0;
-        return `
-          <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-md hover:border-outline hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
-            <div>
-              <div class="flex justify-between items-start mb-stack-sm">
-                <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">${d.subject || 'General'}</span>
-                <button onclick="event.stopPropagation();deleteDeck('${d.id}')" class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
-              </div>
-              <h3 class="font-title-lg text-title-lg text-on-surface mb-2">${d.title}</h3>
-            </div>
-            <div class="flex items-center justify-between border-t border-outline-variant pt-stack-sm mt-auto">
-              <span class="font-body-sm text-body-sm text-secondary">${dueCount} cards due</span>
-              <button onclick="event.stopPropagation();startStudy('${d.id}')" class="bg-surface-container-low text-primary px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-primary-container hover:text-white transition-colors">Study</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    } catch (e) {
+      return Promise.all(decks.map(function(d) {
+        return api('/flashcards/decks/' + d.id + '/due').catch(function() { return []; });
+      })).then(function(deckCards) {
+        decksEl.innerHTML = decks.map(function(d, i) {
+          var dueCount = deckCards[i] ? deckCards[i].length : 0;
+          return '<div class="bg-white border border-outline-variant rounded-2xl p-5 hover:border-outline hover:shadow-card-hover transition-all cursor-pointer group">' +
+            '<div class="flex justify-between items-start mb-3">' +
+              '<span class="text-[10px] font-700 text-secondary uppercase tracking-widest">' + (d.subject || 'General') + '</span>' +
+              '<button onclick="event.stopPropagation();deleteDeck(\'' + d.id + '\')" class="w-7 h-7 rounded-lg flex items-center justify-center text-secondary opacity-0 group-hover:opacity-100 hover:text-error hover:bg-error-container/30 transition-all"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>' +
+            '</div>' +
+            '<h3 class="text-base font-700 text-on-surface mb-3">' + d.title + '</h3>' +
+            '<div class="flex items-center justify-between pt-3 border-t border-outline-variant">' +
+              '<span class="text-xs font-500 text-secondary">' + dueCount + ' cards due</span>' +
+              '<button onclick="event.stopPropagation();startStudy(\'' + d.id + '\')" class="text-xs font-700 text-primary bg-primary/8 px-3.5 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-all">Study</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      });
+    }).catch(function() {
       loadingEl.classList.add('hidden');
-      decksEl.innerHTML = '<p class="text-secondary">Failed to load decks.</p>';
-    }
+      decksEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Failed to load decks.</p>';
+    });
   }
 
-  window.showNewDeckForm = function() {
-    document.getElementById('new-deck-form').classList.remove('hidden');
-  };
-  window.hideNewDeckForm = function() {
-    document.getElementById('new-deck-form').classList.add('hidden');
-  };
+  window.showNewDeckForm = function() { document.getElementById('new-deck-form').classList.remove('hidden'); };
+  window.hideNewDeckForm = function() { document.getElementById('new-deck-form').classList.add('hidden'); };
 
-  window.createDeck = async function() {
-    const title = document.getElementById('deck-title-input').value.trim();
-    const subject = document.getElementById('deck-subject-input').value.trim();
+  window.createDeck = function() {
+    var title = document.getElementById('deck-title-input').value.trim();
+    var subject = document.getElementById('deck-subject-input').value.trim();
     if (!title) { toast('Please enter a deck title', 'error'); return; }
-    try {
-      const user = getUser();
-      await api('/flashcards/decks?user_id=' + user.id, {
-        method: 'POST',
-        body: JSON.stringify({ title, subject: subject || null })
-      });
+    var user = getUser();
+    api('/flashcards/decks?user_id=' + user.id, { method:'POST', body:JSON.stringify({ title:title, subject:subject || null }) }).then(function() {
       document.getElementById('deck-title-input').value = '';
       document.getElementById('deck-subject-input').value = '';
       hideNewDeckForm();
       toast('Deck created');
       loadFlashcards();
-    } catch (e) {
-      toast('Failed to create deck', 'error');
-    }
+    }).catch(function() { toast('Failed to create deck', 'error'); });
   };
 
-  window.deleteDeck = async function(deckId) {
-    try {
-      await api('/flashcards/decks/' + deckId, { method: 'DELETE' });
-      toast('Deck deleted');
-      loadFlashcards();
-    } catch (e) {
-      toast('Failed to delete deck', 'error');
-    }
+  window.deleteDeck = function(deckId) {
+    api('/flashcards/decks/' + deckId, { method:'DELETE' }).then(function() { toast('Deck deleted'); loadFlashcards(); }).catch(function() { toast('Failed to delete deck', 'error'); });
   };
 
-  window.startStudy = async function(deckId) {
-    try {
-      const cards = await api('/flashcards/decks/' + deckId + '/due');
-      if (!cards.length) {
-        toast('No cards due for review');
-        return;
-      }
-      studyState = { deckId, cards, currentIndex: 0, flipped: false };
+  window.startStudy = function(deckId) {
+    api('/flashcards/decks/' + deckId + '/due').then(function(cards) {
+      if (!cards.length) { toast('No cards due for review'); return; }
+      studyState = { deckId:deckId, cards:cards, currentIndex:0, flipped:false };
       document.getElementById('study-session').classList.remove('hidden');
       showStudyCard();
-    } catch (e) {
-      toast('Failed to load cards', 'error');
-    }
+    }).catch(function() { toast('Failed to load cards', 'error'); });
   };
 
   function showStudyCard() {
-    const card = studyState.cards[studyState.currentIndex];
+    var card = studyState.cards[studyState.currentIndex];
     if (!card) { endStudySession(); return; }
+    var progress = ((studyState.currentIndex + 1) / studyState.cards.length) * 100;
     document.getElementById('study-progress').textContent = (studyState.currentIndex + 1) + ' / ' + studyState.cards.length;
+    document.getElementById('study-progress-bar').style.width = progress + '%';
     document.getElementById('study-card-front').textContent = card.front;
     document.getElementById('study-card-back').textContent = card.back;
     document.getElementById('study-card-back').classList.add('hidden');
@@ -1245,190 +1253,149 @@ tailwind.config = {
     document.getElementById('study-actions').classList.remove('hidden');
   };
 
-  window.rateCard = async function(rating) {
-    const card = studyState.cards[studyState.currentIndex];
-    const intervals = { again: 1, good: 3, easy: 7 };
-    const easeFactors = { again: 2.0, good: 2.5, easy: 3.0 };
-    const days = intervals[rating] || 1;
-    const next = new Date();
-    next.setDate(next.getDate() + days);
+  window.rateCard = function(rating) {
+    var card = studyState.cards[studyState.currentIndex];
+    var intervals = { again:1, good:3, easy:7 };
+    var easeFactors = { again:2.0, good:2.5, easy:3.0 };
+    var days = intervals[rating] || 1;
+    var next = new Date(); next.setDate(next.getDate() + days);
 
-    try {
-      await api('/flashcards/cards/' + card.id, {
-        method: 'PUT',
-        body: JSON.stringify({
-          interval: days,
-          ease_factor: easeFactors[rating] || 2.5,
-          next_review: next.toISOString()
-        })
-      });
-    } catch (e) { /* ignore */ }
+    api('/flashcards/cards/' + card.id, { method:'PUT', body:JSON.stringify({ interval:days, ease_factor:easeFactors[rating] || 2.5, next_review:next.toISOString() }) }).catch(function() {});
 
     studyState.currentIndex++;
-    if (studyState.currentIndex >= studyState.cards.length) {
-      toast('Session complete!');
-      endStudySession();
-    } else {
-      showStudyCard();
-    }
+    if (studyState.currentIndex >= studyState.cards.length) { toast('Session complete!'); endStudySession(); }
+    else { showStudyCard(); }
   };
 
   window.endStudySession = function() {
     document.getElementById('study-session').classList.add('hidden');
-    studyState = { deckId: null, cards: [], currentIndex: 0, flipped: false };
+    studyState = { deckId:null, cards:[], currentIndex:0, flipped:false };
     loadFlashcards();
   };
 
   // ---- Notebook ----
-  async function loadNotebook() {
-    const user = getUser();
+  function loadNotebook() {
+    var user = getUser();
     if (!user) return;
-    const loadingEl = document.getElementById('notebook-loading');
-    const entriesEl = document.getElementById('notebook-entries');
-    const emptyEl = document.getElementById('notebook-empty');
+    var loadingEl = document.getElementById('notebook-loading');
+    var entriesEl = document.getElementById('notebook-entries');
+    var emptyEl = document.getElementById('notebook-empty');
     loadingEl.classList.remove('hidden');
     entriesEl.innerHTML = '';
 
-    try {
-      const folders = await api('/notebook/folders?user_id=' + user.id);
-      const foldersList = document.getElementById('notebook-folders-list');
-      foldersList.innerHTML = folders.map(f => `
-        <button onclick="selectNotebookFolder('${f.id}','${f.name}')" class="w-full flex items-center justify-between p-3 rounded-lg ${currentNotebookFolderId === f.id ? 'bg-surface-container-low text-primary-container' : 'hover:bg-surface-container text-secondary'} transition-colors font-label-md text-label-md">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined ${currentNotebookFolderId === f.id ? 'text-primary-container' : 'text-secondary'}">${currentNotebookFolderId === f.id ? 'folder_open' : 'folder'}</span>
-            <span>${f.name}</span>
-          </div>
-          <button onclick="event.stopPropagation();deleteNotebookFolder('${f.id}')" class="text-secondary hover:text-error transition-colors"><span class="material-symbols-outlined text-sm">delete</span></button>
-        </button>
-      `).join('') + '<button onclick="createNotebookFolder()" class="mt-stack-md w-full py-2 border border-outline-variant rounded-lg flex items-center justify-center gap-2 text-primary-container hover:bg-surface-container-low transition-colors font-label-md text-label-md"><span class="material-symbols-outlined text-sm">add</span> New Folder</button>';
+    api('/notebook/folders?user_id=' + user.id).then(function(folders) {
+      var foldersList = document.getElementById('notebook-folders-list');
+      var drawerFolders = document.getElementById('nb-drawer-folders');
+      var folderHtml = folders.map(function(f) {
+        var isActive = currentNotebookFolderId === f.id;
+        return '<button onclick="selectNotebookFolder(\'' + f.id + '\',\'' + f.name.replace(/'/g, "\\'") + '\');closeNotebookDrawer()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all ' + (isActive ? 'bg-primary/8 text-primary font-700' : 'text-secondary hover:bg-surface-container font-500') + ' text-sm">' +
+          '<div class="flex items-center gap-2.5">' +
+            '<span class="material-symbols-outlined" style="font-size:18px;">' + (isActive ? 'folder_open' : 'folder') + '</span>' +
+            '<span>' + f.name + '</span>' +
+          '</div>' +
+          '<button onclick="event.stopPropagation();deleteNotebookFolder(\'' + f.id + '\')" class="w-6 h-6 rounded flex items-center justify-center text-secondary hover:text-error transition-colors"><span class="material-symbols-outlined" style="font-size:14px;">delete</span></button>' +
+        '</button>';
+      }).join('') + '<button onclick="createNotebookFolder()" class="mt-3 w-full py-2.5 border-1.5 border-dashed border-outline-variant rounded-xl flex items-center justify-center gap-2 text-sm font-600 text-primary hover:bg-surface-container transition-colors"><span class="material-symbols-outlined" style="font-size:18px;">add</span> New Folder</button>';
+      foldersList.innerHTML = folderHtml;
+      drawerFolders.innerHTML = folderHtml;
 
-      if (currentNotebookFolderId) {
-        await loadNotebookEntries(currentNotebookFolderId);
-      } else if (folders.length) {
-        selectNotebookFolder(folders[0].id, folders[0].name);
-      } else {
-        loadingEl.classList.add('hidden');
-        emptyEl.classList.remove('hidden');
-      }
-    } catch (e) {
+      if (currentNotebookFolderId) return loadNotebookEntries(currentNotebookFolderId);
+      if (folders.length) return selectNotebookFolder(folders[0].id, folders[0].name);
       loadingEl.classList.add('hidden');
-      entriesEl.innerHTML = '<p class="text-secondary">Failed to load notebook.</p>';
-    }
+      emptyEl.classList.remove('hidden');
+    }).catch(function() {
+      loadingEl.classList.add('hidden');
+      entriesEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Failed to load notebook.</p>';
+    });
   }
 
-  window.selectNotebookFolder = async function(folderId, folderName) {
+  window.selectNotebookFolder = function(folderId, folderName) {
     currentNotebookFolderId = folderId;
     document.getElementById('notebook-folder-title').textContent = folderName;
-    await loadNotebookEntries(folderId);
+    loadNotebookEntries(folderId);
     loadNotebook();
   };
 
-  async function loadNotebookEntries(folderId) {
-    const loadingEl = document.getElementById('notebook-loading');
-    const entriesEl = document.getElementById('notebook-entries');
-    const emptyEl = document.getElementById('notebook-empty');
+  function loadNotebookEntries(folderId) {
+    var loadingEl = document.getElementById('notebook-loading');
+    var entriesEl = document.getElementById('notebook-entries');
+    var emptyEl = document.getElementById('notebook-empty');
     loadingEl.classList.remove('hidden');
     entriesEl.innerHTML = '';
 
-    try {
-      const entries = await api('/notebook/recent?user_id=' + getUser().id + '&limit=50');
-      const folderEntries = entries.filter(e => e.notebook_id === folderId);
+    api('/notebook/recent?user_id=' + getUser().id + '&limit=50').then(function(entries) {
+      var folderEntries = entries.filter(function(e) { return e.notebook_id === folderId; });
       loadingEl.classList.add('hidden');
       document.getElementById('notebook-entry-count').textContent = folderEntries.length + ' items';
-
-      if (!folderEntries.length) {
-        emptyEl.classList.remove('hidden');
-        return;
-      }
+      if (!folderEntries.length) { emptyEl.classList.remove('hidden'); return; }
       emptyEl.classList.add('hidden');
 
-      entriesEl.innerHTML = folderEntries.map(e => `
-        <article class="p-stack-md rounded-xl border border-outline-variant bg-surface hover:shadow-lg hover:border-outline transition-all cursor-pointer group">
-          <div class="flex justify-between items-start mb-3">
-            <span class="inline-block px-2 py-1 bg-surface-container text-primary-container rounded font-label-md text-[10px] uppercase tracking-wider">${e.case_id ? 'Case' : e.statute_id ? 'Statute' : 'Note'}</span>
-            <button onclick="event.stopPropagation();deleteNotebookEntry('${e.id}')" class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
-          </div>
-          <p class="font-body-sm text-body-sm text-secondary">${e.note_text || 'No notes'}</p>
-          <div class="flex justify-between items-center border-t border-outline-variant pt-3 mt-3">
-            <span class="font-code-snippet text-code-snippet text-on-surface-variant bg-surface-container-low px-2 py-1 rounded">${e.case_id ? 'Case' : e.statute_id ? 'Statute' : 'Note'}</span>
-          </div>
-        </article>
-      `).join('');
-    } catch (e) {
+      entriesEl.innerHTML = folderEntries.map(function(e) {
+        return '<article class="bg-white border border-outline-variant rounded-xl p-4 hover:shadow-card-hover hover:border-outline transition-all cursor-pointer group">' +
+          '<div class="flex justify-between items-start mb-2">' +
+            '<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-primary/8 text-primary text-[10px] font-700 uppercase tracking-wider">' + (e.case_id ? 'Case' : e.statute_id ? 'Statute' : 'Note') + '</span>' +
+            '<button onclick="event.stopPropagation();deleteNotebookEntry(\'' + e.id + '\')" class="w-6 h-6 rounded flex items-center justify-center text-secondary opacity-0 group-hover:opacity-100 hover:text-error transition-all"><span class="material-symbols-outlined" style="font-size:14px;">delete</span></button>' +
+          '</div>' +
+          '<p class="text-sm text-secondary leading-relaxed">' + (e.note_text || 'No notes') + '</p>' +
+        '</article>';
+      }).join('');
+    }).catch(function() {
       loadingEl.classList.add('hidden');
-      entriesEl.innerHTML = '<p class="text-secondary">Failed to load entries.</p>';
-    }
+      entriesEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Failed to load entries.</p>';
+    });
   }
 
-  window.createNotebookFolder = async function() {
-    const name = prompt('Folder name:');
+  window.createNotebookFolder = function() {
+    var name = prompt('Folder name:');
     if (!name) return;
-    try {
-      const user = getUser();
-      await api('/notebook/folders?user_id=' + user.id, {
-        method: 'POST',
-        body: JSON.stringify({ name })
-      });
-      toast('Folder created');
-      loadNotebook();
-    } catch (e) {
-      toast('Failed to create folder', 'error');
-    }
+    var user = getUser();
+    api('/notebook/folders?user_id=' + user.id, { method:'POST', body:JSON.stringify({ name:name }) }).then(function() { toast('Folder created'); loadNotebook(); }).catch(function() { toast('Failed to create folder', 'error'); });
   };
 
-  window.deleteNotebookFolder = async function(folderId) {
+  window.deleteNotebookFolder = function(folderId) {
     if (!confirm('Delete this folder and all its entries?')) return;
-    try {
-      await api('/notebook/folders/' + folderId, { method: 'DELETE' });
+    api('/notebook/folders/' + folderId, { method:'DELETE' }).then(function() {
       if (currentNotebookFolderId === folderId) currentNotebookFolderId = null;
-      toast('Folder deleted');
-      loadNotebook();
-    } catch (e) {
-      toast('Failed to delete folder', 'error');
-    }
+      toast('Folder deleted'); loadNotebook();
+    }).catch(function() { toast('Failed to delete folder', 'error'); });
   };
 
-  window.deleteNotebookEntry = async function(entryId) {
-    try {
-      await api('/notebook/entries/' + entryId, { method: 'DELETE' });
+  window.deleteNotebookEntry = function(entryId) {
+    api('/notebook/entries/' + entryId, { method:'DELETE' }).then(function() {
       toast('Entry removed');
       if (currentNotebookFolderId) loadNotebookEntries(currentNotebookFolderId);
-    } catch (e) {
-      toast('Failed to remove entry', 'error');
-    }
+    }).catch(function() { toast('Failed to remove entry', 'error'); });
   };
 
+  window.openNotebookDrawer = function() { document.getElementById('nb-drawer').classList.add('open'); };
+  window.closeNotebookDrawer = function() { document.getElementById('nb-drawer').classList.remove('open'); };
+
   // ---- Profile ----
-  async function loadProfile() {
-    const user = getUser();
+  function loadProfile() {
+    var user = getUser();
     if (!user) return;
     document.getElementById('profile-name').textContent = user.name;
     document.getElementById('profile-email').textContent = user.email;
     document.getElementById('profile-university').textContent = user.university || '';
     document.getElementById('profile-account-info').textContent = user.email;
 
-    try {
-      const [folders, decks, notes] = await Promise.all([
-        api('/notebook/folders?user_id=' + user.id).catch(() => []),
-        api('/flashcards/decks?user_id=' + user.id).catch(() => []),
-        api('/study/notes?user_id=' + user.id).catch(() => [])
-      ]);
-      document.getElementById('stat-notebooks').textContent = folders.length;
-      document.getElementById('stat-decks').textContent = decks.length;
-      document.getElementById('stat-cases').textContent = notes.filter(n => n.case_id).length;
-      document.getElementById('stat-study').textContent = notes.length + 'h';
-    } catch (e) { /* use defaults */ }
+    Promise.all([
+      api('/notebook/folders?user_id=' + user.id).catch(function() { return []; }),
+      api('/flashcards/decks?user_id=' + user.id).catch(function() { return []; }),
+      api('/study/notes?user_id=' + user.id).catch(function() { return []; }),
+    ]).then(function(results) {
+      document.getElementById('stat-notebooks').textContent = results[0].length;
+      document.getElementById('stat-decks').textContent = results[1].length;
+      document.getElementById('stat-cases').textContent = results[2].filter(function(n) { return n.case_id; }).length;
+      document.getElementById('stat-study').textContent = results[2].length;
+    });
   }
 
   // ---- Init ----
   window.addEventListener('hashchange', handleRoute);
   window.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+  if (getUser()) handleRoute(); else navigate('splash');
 
-  if (getUser()) {
-    handleRoute();
-  } else {
-    navigate('splash');
-  }
 })();
 </script>
 </body>
