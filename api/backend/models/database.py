@@ -5,10 +5,15 @@ from sqlalchemy import String, ForeignKey, DateTime, JSON, Float, Integer
 from datetime import datetime
 import uuid
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./juriscore.db")
-# Fallback to sqlite if asyncpg URL not supplied
+DATABASE_URL = os.getenv("DATABASE_URL", "")
 
-if DATABASE_URL.startswith("postgresql"):
+if not DATABASE_URL:
+    # Use /tmp for Vercel serverless (writable), or local dir for dev
+    import tempfile
+    _db_dir = tempfile.gettempdir()
+    DATABASE_URL = f"sqlite+aiosqlite:///{os.path.join(_db_dir, 'juriscore.db')}"
+
+if DATABASE_URL.startswith("postgresql://"):
     DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
 
 engine = create_async_engine(DATABASE_URL, echo=False)
