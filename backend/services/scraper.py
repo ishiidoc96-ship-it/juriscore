@@ -20,6 +20,26 @@ DOC_TYPE_MAP = {
     "causelist": "Cause List",
 }
 
+# Reverse map for fuzzy matching against kenyalaw's actual doc_type values
+DOC_TYPE_ALIASES = {
+    "case law": "judgment", "case": "judgment", "cases": "judgment",
+    "law": "legislation", "act": "legislation", "acts": "legislation",
+    "statute": "legislation", "statutes": "legislation",
+    "gazette": "gazette", "gazettes": "gazette",
+    "bill": "bill", "bills": "bill",
+    "publication": "generic_document", "publications": "generic_document",
+    "journal": "journal", "journals": "journal",
+    "cause list": "causelist", "causelists": "causelist",
+}
+
+
+def _normalize_doc_type(raw: str) -> str:
+    """Normalize a doc_type string to match kenyalaw.org's values."""
+    lower = raw.lower().strip()
+    if lower in DOC_TYPE_MAP or lower in DOC_TYPE_ALIASES:
+        return DOC_TYPE_ALIASES.get(lower, lower)
+    return lower
+
 
 async def _get(url: str, params: Optional[Dict] = None) -> httpx.Response:
     headers = {
@@ -84,53 +104,94 @@ async def search_kenyalaw(
     ordering: str = "-score",
     limit: int = 50,
 ) -> Dict[str, Any]:
-    """Search kenyalaw.org. Since the API's _filter_doc_type is broken,
-    we fetch more results and filter client-side."""
+    """Search kenyalaw.org with AI-powered query correction and fuzzy filter matching."""
+    from services.ai_service import (
+        rewrite_search_query, rank_search_results,
+        fuzzy_match_court, fuzzy_match_doc_type,
+    )
+
+    # Step 1: AI query rewriting (fix misspellings, expand terms)
+    query_info = await asyncio.get_event_loop().run_in_executor(
+        None, rewrite_search_query, query
+    )
+    search_query = query_info["query"]
+    suggestions = query_info.get("suggestions", [])
+    query_corrected = query_info.get("corrected", False)
+
+    logger.info(f"AI query rewrite: '{query}' → '{search_query}' (corrected={query_corrected})")
+
+    # Step 2: Fuzzy match doc_type filter
+    matched_doc_type = None
+    if doc_type and doc_type != "all":
+        matched_doc_type = _normalize_doc_type(doc_type)
+        # If not a known type, try fuzzy matching
+        if matched_doc_type not in DOC_TYPE_MAP:
+            fuzzy = await asyncio.get_event_loop().run_in_executor(
+                None, fuzzy_match_doc_type, doc_type
+            )
+            if fuzzy:
+                matched_doc_type = fuzzy
+                logger.info(f"Fuzzy doc_type match: '{doc_type}' → '{matched_doc_type}'")
+
+    # Step 3: Fuzzy match court filter
+    matched_court = None
+    if court and court != "all":
+        matched_court = court  # Keep original for substring matching
+        fuzzy_court = await asyncio.get_event_loop().run_in_executor(
+            None, fuzzy_match_court, court
+        )
+        if fuzzy_court:
+            matched_court = fuzzy_court
+            logger.info(f"Fuzzy court match: '{court}' → '{matched_court}'")
+
+    # Step 4: Execute search with corrected query
     params = {
-        "search": query,
+        "search": search_query,
         "page": str(page),
         "ordering": ordering,
     }
-
-    # The API filter params are broken, so we fetch a large set and filter locally
-    # Fetch up to 50 results (the API max per page is typically 10-20)
-    fetch_limit = min(limit * 3, 60) if not doc_type else 60
 
     try:
         resp = await _get(KENYALAW_SEARCH_API, params=params)
         data = resp.json()
     except Exception as e:
         logger.error(f"kenyalaw.org search failed: {e}")
-        return {"count": 0, "results": [], "facets": {}}
+        return {
+            "count": 0, "results": [], "facets": {},
+            "query_corrected": query_corrected, "original_query": query,
+            "corrected_query": search_query, "suggestions": suggestions,
+        }
 
     all_items = data.get("results", [])
     total_count = data.get("count", 0)
 
-    # Client-side filtering since API filters are broken
+    # Step 5: Client-side filtering with fuzzy matching
     results = []
     for item in all_items:
         r = _build_result(item)
 
-        # Filter by doc_type if specified
-        if doc_type and doc_type != "all" and r["doc_type"] != doc_type:
+        if matched_doc_type and matched_doc_type != "all" and r["doc_type"] != matched_doc_type:
             continue
 
-        # Filter by court if specified
-        if court and court != "all":
-            if court.lower() not in (r["court"] or "").lower():
+        if matched_court and matched_court != "all":
+            if matched_court.lower() not in (r["court"] or "").lower():
                 continue
 
         results.append(r)
         if len(results) >= limit:
             break
 
-    # Extract facets from the raw response
+    # Step 6: AI-powered result ranking (only if we have results and query was non-trivial)
+    if results and len(results) > 3 and query.strip():
+        results = await asyncio.get_event_loop().run_in_executor(
+            None, rank_search_results, query, results, limit
+        )
+
+    # Extract facets
     facets_raw = data.get("facets", {})
     facets = {}
-
     doc_type_facet = facets_raw.get("_filter_doc_type", {}).get("doc_type", {}).get("buckets", [])
     facets["doc_types"] = [{"key": f["key"], "count": f["doc_count"]} for f in doc_type_facet]
-
     court_facet = facets_raw.get("_filter_court", {}).get("court", {}).get("buckets", [])
     facets["courts"] = [{"key": f["key"], "count": f["doc_count"]} for f in court_facet]
 
@@ -138,6 +199,10 @@ async def search_kenyalaw(
         "count": total_count,
         "results": results,
         "facets": facets,
+        "query_corrected": query_corrected,
+        "original_query": query,
+        "corrected_query": search_query,
+        "suggestions": suggestions,
     }
 
 

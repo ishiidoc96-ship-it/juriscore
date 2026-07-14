@@ -398,6 +398,7 @@
     </div>
 
     <div id="results-summary" class="hidden items-center gap-2 mb-5 text-sm font-600 text-secondary"></div>
+    <div id="search-correction"></div>
 
     <div id="search-loading" class="hidden py-16 text-center">
       <div class="spinner mx-auto mb-4"></div>
@@ -932,11 +933,13 @@
     var loadingEl = document.getElementById('search-loading');
     var emptyEl = document.getElementById('search-empty');
     var summaryEl = document.getElementById('results-summary');
+    var correctionEl = document.getElementById('search-correction');
 
     resultsEl.innerHTML = '';
     loadingEl.classList.remove('hidden');
     emptyEl.classList.add('hidden');
     summaryEl.style.display = 'none';
+    if (correctionEl) correctionEl.innerHTML = '';
 
     var url = '/search?q=' + encodeURIComponent(q || '');
     if (searchFilters.doc_type) url += '&doc_type=' + encodeURIComponent(searchFilters.doc_type);
@@ -947,10 +950,28 @@
       var results = data.results || [];
       var total = data.count || 0;
 
+      // Show AI correction if query was corrected
+      if (data.query_corrected && data.corrected_query && data.corrected_query !== q) {
+        var corrHtml = '<div class="flex items-center gap-2 p-3 rounded-xl bg-primary/5 border border-primary/15 mb-4 animate-fade-in">' +
+          '<span class="material-symbols-outlined text-primary" style="font-size:18px;">auto_awesome</span>' +
+          '<span class="text-sm text-on-surface-variant">Showing results for <strong class="text-primary">' + data.corrected_query + '</strong></span>' +
+          '<span class="text-xs text-secondary ml-1">(corrected from "' + q + '")</span>' +
+          '</div>';
+        if (data.suggestions && data.suggestions.length) {
+          corrHtml += '<div class="flex flex-wrap gap-1.5 mb-3">';
+          data.suggestions.forEach(function(s) {
+            corrHtml += '<button onclick="document.getElementById(\'search-input\').value=\'' + s.replace(/'/g, "\\'") + '\';doSearch()" class="text-xs font-600 text-primary bg-primary/8 px-2.5 py-1 rounded-lg hover:bg-primary/15 transition-colors">Try: ' + s + '</button>';
+          });
+          corrHtml += '</div>';
+        }
+        if (correctionEl) correctionEl.innerHTML = corrHtml;
+      }
+
       if (!results.length) { emptyEl.classList.remove('hidden'); return; }
 
       var summaryHtml = '';
-      if (q) summaryHtml += '<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-primary/8 text-primary text-xs font-700">"' + q + '"</span>';
+      var displayQuery = data.query_corrected ? data.corrected_query : q;
+      if (displayQuery) summaryHtml += '<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-primary/8 text-primary text-xs font-700">"' + displayQuery + '"</span>';
       summaryHtml += '<span class="text-secondary">' + total.toLocaleString() + ' result' + (total !== 1 ? 's' : '') + '</span>';
       if (searchFilters.doc_type) {
         var m = DOC_TYPE_META[searchFilters.doc_type];

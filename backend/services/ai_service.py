@@ -232,3 +232,159 @@ def search_similar(query: str, cases: List[Dict]) -> List[str]:
         scored.append((score, c.get("id", "")))
     scored.sort(reverse=True)
     return [cid for _, cid in scored]
+
+
+# ---------- AI-Powered Search ----------
+
+QUERY_REWRITE_SYSTEM = """You are a legal search assistant for KenyaLaw.org (Kenyan legal database).
+Your job: take a user's search query and produce an improved search query that will find the best results.
+
+RULES:
+- Fix ALL misspellings and typos (e.g. "constituion" → "constitution", "crimnal" → "criminal")
+- Expand abbreviations: MR → Mining Regulations, EMCA → Environmental Management Act, CPC → Criminal Procedure Code
+- If the query is a case name, keep it but fix spelling (e.g. "Republic v Odhiambo" stays as case name)
+- If the query is vague, add legal context (e.g. "land dispute" → "land dispute property ownership")
+- Return ONLY a JSON object: {"query": "corrected search query", "suggestions": ["alternative search 1", "alternative search 2"]}
+- Keep the main query under 15 words
+- suggestions should be 1-3 related searches the user might also want"""
+
+def rewrite_search_query(query: str) -> Dict[str, Any]:
+    """Use AI to correct misspellings and expand search queries."""
+    if not _client or len(query.strip()) < 2:
+        return {"query": query, "suggestions": [], "corrected": False}
+
+    prompt = f"""Correct and improve this legal search query for KenyaLaw.org:
+
+"{query}"
+
+Return JSON: {{"query": "corrected query", "suggestions": ["alt1", "alt2"]}}"""
+
+    raw = _call_model(prompt, max_tokens=150, system=QUERY_REWRITE_SYSTEM)
+    try:
+        parsed = json.loads(raw)
+        corrected_query = parsed.get("query", query).strip()
+        suggestions = parsed.get("suggestions", [])
+        # If AI returned something substantially different, it corrected it
+        corrected = corrected_query.lower().replace(" ", "") != query.lower().replace(" ", "")
+        return {"query": corrected_query, "suggestions": suggestions[:3], "corrected": corrected}
+    except Exception:
+        return {"query": query, "suggestions": [], "corrected": False}
+
+
+def rank_search_results(query: str, results: List[Dict], top_n: int = 30) -> List[Dict]:
+    """Use AI to re-rank search results by relevance to the query.
+    Sends batch titles for fast scoring instead of one-by-one."""
+    if not _client or not results:
+        return results
+
+    # Build a compact listing of result titles for the AI to score
+    listing = "\n".join(
+        f"[{i}] {r.get('title', 'Untitled')} | {r.get('court', '')} | {r.get('doc_type', '')} | {r.get('date', '')}"
+        for i, r in enumerate(results)
+    )
+
+    prompt = f"""Rank these search results by relevance to the query: "{query}"
+
+Results:
+{listing}
+
+Return ONLY a JSON array of indices in order of relevance (most relevant first).
+Return at most {top_n} indices. Only include results that are actually relevant.
+Example: [0, 5, 2, 8]"""
+
+    raw = _call_model(prompt, max_tokens=300, system=QUERY_REWRITE_SYSTEM)
+    try:
+        indices = json.loads(raw)
+        if isinstance(indices, list):
+            ranked = []
+            seen = set()
+            for idx in indices:
+                if isinstance(idx, int) and 0 <= idx < len(results) and idx not in seen:
+                    ranked.append(results[idx])
+                    seen.add(idx)
+            # Append any results the AI didn't rank (fallback)
+            for i, r in enumerate(results):
+                if i not in seen:
+                    ranked.append(r)
+            return ranked[:top_n]
+    except Exception:
+        pass
+    return results[:top_n]
+
+
+def fuzzy_match_term(term: str, candidates: List[str], threshold: float = 0.5) -> Optional[str]:
+    """Find the closest matching term from a list of candidates using fuzzy matching.
+    Returns the best match if it meets the threshold, else None."""
+    from difflib import SequenceMatcher
+    term_lower = term.lower().strip()
+    best_match = None
+    best_score = 0.0
+
+    for candidate in candidates:
+        candidate_lower = candidate.lower().strip()
+        # Exact match
+        if term_lower == candidate_lower:
+            return candidate
+        # Containment check
+        if term_lower in candidate_lower or candidate_lower in term_lower:
+            score = 0.9
+        else:
+            # Sequence matching
+            score = SequenceMatcher(None, term_lower, candidate_lower).ratio()
+            # Boost score if words overlap
+            term_words = set(term_lower.split())
+            cand_words = set(candidate_lower.split())
+            if term_words & cand_words:
+                score = max(score, 0.75)
+
+        if score > best_score:
+            best_score = score
+            best_match = candidate
+
+    if best_score >= threshold:
+        return best_match
+    return None
+
+
+# Known court names for fuzzy matching
+KNOWN_COURTS = [
+    "Supreme Court", "Court of Appeal", "High Court",
+    "Environment and Land Court", "Employment and Labour Relations Court",
+    "Magistrate Court", "Kadhi Court", "Military Court",
+    "Tribunal", "Industrial Court", "Commercial Court",
+    "Constitutional Court", "Family Court", "Criminal Division",
+    "Civil Division", "Judicial Review Division", "Anti-Corruption Court",
+    "Drug Traffic Court", "Tax Tribunal", "Nairobi", "Mombasa",
+    "Kisumu", "Nakuru", "Eldoret", "Nyeri", "Machakos", "Meru",
+]
+
+# Known document types for fuzzy matching
+KNOWN_DOC_TYPES = [
+    "judgment", "legislation", "gazette", "bill",
+    "generic_document", "journal", "causelist",
+    "case law", "act", "regulation", "statute",
+]
+
+
+def fuzzy_match_court(court_input: str) -> Optional[str]:
+    """Match a user's court input to the closest known court name."""
+    return fuzzy_match_term(court_input, KNOWN_COURTS, threshold=0.45)
+
+
+def fuzzy_match_doc_type(type_input: str) -> Optional[str]:
+    """Match a user's doc_type input to the closest known type."""
+    # Also handle common aliases
+    aliases = {
+        "case": "judgment", "cases": "judgment", "case law": "judgment",
+        "law": "legislation", "act": "legislation", "acts": "legislation",
+        "statute": "legislation", "statutes": "legislation",
+        "gazette": "gazette", "gazettes": "gazette",
+        "bill": "bill", "bills": "bill",
+        "publication": "generic_document", "publications": "generic_document",
+        "journal": "journal", "journals": "journal",
+        "cause list": "causelist", "causelists": "causelist",
+    }
+    lower = type_input.lower().strip()
+    if lower in aliases:
+        return aliases[lower]
+    return fuzzy_match_term(lower, KNOWN_DOC_TYPES, threshold=0.45)

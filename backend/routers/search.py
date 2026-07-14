@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from services.scraper import search_all, search_kenyalaw
 from services.ai_service import generate_summary_from_metadata
+import asyncio
 import logging
 
 logger = logging.getLogger("juriscore")
@@ -71,3 +72,13 @@ async def list_doc_types(q: Optional[str] = Query(None)):
     data = await search_kenyalaw(query=q or "a", limit=0)
     doc_types = data.get("facets", {}).get("doc_types", [])
     return doc_types
+
+
+@router.get("/rewrite")
+async def rewrite_query(q: str = Query(...)):
+    """AI-powered query rewriting: fix misspellings, expand terms."""
+    from services.ai_service import rewrite_search_query
+    result = await asyncio.get_event_loop().run_in_executor(
+        None, rewrite_search_query, q
+    )
+    return result
