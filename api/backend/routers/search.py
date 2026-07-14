@@ -46,7 +46,7 @@ async def universal_search(
 async def summarize_document(req: SummarizeRequest):
     """Generate a human-readable summary of a document from its metadata."""
     try:
-        summary = generate_summary_from_metadata(
+        summary = await generate_summary_from_metadata(
             title=req.title,
             citation=req.citation,
             court=req.court,
@@ -78,7 +78,5 @@ async def list_doc_types(q: Optional[str] = Query(None)):
 async def rewrite_query(q: str = Query(...)):
     """AI-powered query rewriting: fix misspellings, expand terms."""
     from services.ai_service import rewrite_search_query
-    result = await asyncio.get_event_loop().run_in_executor(
-        None, rewrite_search_query, q
-    )
+    result = await rewrite_search_query(q)
     return result

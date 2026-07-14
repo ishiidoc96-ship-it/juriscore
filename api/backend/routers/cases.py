@@ -14,7 +14,7 @@ logger = logging.getLogger("juriscore")
 router = APIRouter()
 
 
-async def get_session() -> AsyncSession:
+async def get_session():
     async with async_session() as session:
         yield session
 
@@ -67,42 +67,45 @@ async def search_cases_endpoint(
 
 @router.get("/recent", response_model=List[CaseResponse])
 async def get_recent_cases(limit: int = 10, session: AsyncSession = Depends(get_session)):
-    result = await session.execute(
-        select(Case).order_by(Case.created_at.desc()).limit(limit)
-    )
-    cases = result.scalars().all()
-    if not cases:
-        # Return demo cases if DB is empty
-        from services.scraper import DEMO_CASES
-        demo_results = []
-        for c in DEMO_CASES[:limit]:
-            case = Case(
-                id=str(uuid.uuid4()),
-                title=c["title"],
-                citation=str(c["citation"]),
-                court=c["court"],
-                year=c["year"],
-                subject_tags=c.get("subject_tags"),
-                full_text=c["full_text"],
-                judges=c.get("judges"),
-            )
-            session.add(case)
-            await session.flush()
-            demo_results.append(CaseResponse(
-                id=case.id, title=case.title, citation=case.citation, court=case.court,
-                year=case.year, subject_tags=case.subject_tags,
-                judges=case.judges, created_at=case.created_at,
-            ))
-        await session.commit()
-        return demo_results
-    return [
-        CaseResponse(
-            id=c.id, title=c.title, citation=c.citation, court=c.court,
-            year=c.year, subject_tags=c.subject_tags, summary=c.summary,
-            ratio=c.ratio, judges=c.judges, created_at=c.created_at,
+    try:
+        result = await session.execute(
+            select(Case).order_by(Case.created_at.desc()).limit(limit)
         )
-        for c in cases
-    ]
+        cases = result.scalars().all()
+        if not cases:
+            from services.scraper import DEMO_CASES
+            demo_results = []
+            for c in DEMO_CASES[:limit]:
+                case = Case(
+                    id=str(uuid.uuid4()),
+                    title=c["title"],
+                    citation=str(c["citation"]),
+                    court=c["court"],
+                    year=c["year"],
+                    subject_tags=c.get("subject_tags"),
+                    full_text=c["full_text"],
+                    judges=c.get("judges"),
+                )
+                session.add(case)
+                await session.flush()
+                demo_results.append(CaseResponse(
+                    id=case.id, title=case.title, citation=case.citation, court=case.court,
+                    year=case.year, subject_tags=case.subject_tags,
+                    judges=case.judges, created_at=case.created_at,
+                ))
+            await session.commit()
+            return demo_results
+        return [
+            CaseResponse(
+                id=c.id, title=c.title, citation=c.citation, court=c.court,
+                year=c.year, subject_tags=c.subject_tags, summary=c.summary,
+                ratio=c.ratio, judges=c.judges, created_at=c.created_at,
+            )
+            for c in cases
+        ]
+    except Exception as e:
+        logger.error(f"get_recent_cases error: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to load recent cases: {str(e)}")
 
 
 @router.get("/{case_id}", response_model=CaseResponse)
@@ -127,7 +130,7 @@ async def get_case_summary(case_id: str, session: AsyncSession = Depends(get_ses
     if case.summary:
         return case.summary
     try:
-        summary = generate_case_summary(case.full_text)
+        summary = await generate_case_summary(case.full_text)
         case.summary = summary
         case.updated_at = datetime.utcnow()
         await session.commit()
@@ -154,13 +157,13 @@ async def compare_cases(request: CaseComparisonRequest, session: AsyncSession = 
     case_b = result_b.scalar_one_or_none()
     if not case_a or not case_b:
         raise HTTPException(status_code=404, detail="Case not found")
-    comparison = ai_compare_cases(case_a.full_text, case_b.full_text)
+    comparison = await ai_compare_cases(case_a.full_text, case_b.full_text)
     return CaseComparisonResponse(comparison=comparison)
 
 
 @router.get("/citations/generate")
 async def get_citation(url: str):
-    citation_data = generate_citation({"url": url})
+    citation_data = await generate_citation({"url": url})
     return {"citation": citation_data}
 
 

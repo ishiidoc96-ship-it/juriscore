@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from typing import List
+from typing import List, Optional
 from models.database import async_session, StudyNote
 from models.schemas import StudyNoteCreate, StudyNoteUpdate, StudyNoteResponse, GenerateNotesRequest
 from services.ai_service import generate_study_notes
@@ -12,13 +12,15 @@ import logging
 router = APIRouter()
 
 
-async def get_session() -> AsyncSession:
+async def get_session():
     async with async_session() as session:
         yield session
 
 
 @router.get("/notes", response_model=List[StudyNoteResponse])
-async def list_notes(user_id: str, session: AsyncSession = Depends(get_session)):
+async def list_notes(user_id: Optional[str] = Query(None), session: AsyncSession = Depends(get_session)):
+    if not user_id:
+        return []
     result = await session.execute(select(StudyNote).where(StudyNote.user_id == user_id))
     notes = result.scalars().all()
     return [
@@ -32,7 +34,9 @@ async def list_notes(user_id: str, session: AsyncSession = Depends(get_session))
 
 
 @router.post("/notes", response_model=StudyNoteResponse)
-async def create_note(payload: StudyNoteCreate, user_id: str, session: AsyncSession = Depends(get_session)):
+async def create_note(payload: StudyNoteCreate, user_id: Optional[str] = Query(None), session: AsyncSession = Depends(get_session)):
+    if not user_id:
+        raise HTTPException(status_code=400, detail="user_id required")
     note = StudyNote(
         user_id=user_id,
         case_id=payload.case_id,
@@ -77,19 +81,20 @@ async def delete_note(note_id: str, session: AsyncSession = Depends(get_session)
 
 
 @router.post("/notes/generate")
-async def generate_notes(payload: GenerateNotesRequest, user_id: str, session: AsyncSession = Depends(get_session)):
+async def generate_notes(payload: GenerateNotesRequest, user_id: Optional[str] = Query(None), session: AsyncSession = Depends(get_session)):
     from models.database import Case
     result = await session.execute(select(Case).where(Case.id == payload.case_id))
     case = result.scalar_one_or_none()
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    notes = generate_study_notes(case.full_text)
-    note = StudyNote(
-        user_id=user_id,
-        case_id=case.id,
-        note_text=json.dumps(notes),
-    )
-    session.add(note)
-    await session.flush()
-    await session.commit()
+    notes = await generate_study_notes(case.full_text)
+    if user_id:
+        note = StudyNote(
+            user_id=user_id,
+            case_id=case.id,
+            note_text=json.dumps(notes),
+        )
+        session.add(note)
+        await session.flush()
+        await session.commit()
     return notes

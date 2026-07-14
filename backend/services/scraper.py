@@ -111,9 +111,7 @@ async def search_kenyalaw(
     )
 
     # Step 1: AI query rewriting (fix misspellings, expand terms)
-    query_info = await asyncio.get_event_loop().run_in_executor(
-        None, rewrite_search_query, query
-    )
+    query_info = await rewrite_search_query(query)
     search_query = query_info["query"]
     suggestions = query_info.get("suggestions", [])
     query_corrected = query_info.get("corrected", False)
@@ -126,9 +124,7 @@ async def search_kenyalaw(
         matched_doc_type = _normalize_doc_type(doc_type)
         # If not a known type, try fuzzy matching
         if matched_doc_type not in DOC_TYPE_MAP:
-            fuzzy = await asyncio.get_event_loop().run_in_executor(
-                None, fuzzy_match_doc_type, doc_type
-            )
+            fuzzy = fuzzy_match_doc_type(doc_type)
             if fuzzy:
                 matched_doc_type = fuzzy
                 logger.info(f"Fuzzy doc_type match: '{doc_type}' → '{matched_doc_type}'")
@@ -137,9 +133,7 @@ async def search_kenyalaw(
     matched_court = None
     if court and court != "all":
         matched_court = court  # Keep original for substring matching
-        fuzzy_court = await asyncio.get_event_loop().run_in_executor(
-            None, fuzzy_match_court, court
-        )
+        fuzzy_court = fuzzy_match_court(court)
         if fuzzy_court:
             matched_court = fuzzy_court
             logger.info(f"Fuzzy court match: '{court}' → '{matched_court}'")
@@ -183,9 +177,7 @@ async def search_kenyalaw(
 
     # Step 6: AI-powered result ranking (only if we have results and query was non-trivial)
     if results and len(results) > 3 and query.strip():
-        results = await asyncio.get_event_loop().run_in_executor(
-            None, rank_search_results, query, results, limit
-        )
+        results = await rank_search_results(query, results, limit)
 
     # Extract facets
     facets_raw = data.get("facets", {})
@@ -324,3 +316,52 @@ Article 93 - Functions of Parliament
 CHAPTER EIGHT - THE JUDICIARY
 Article 159 - Judicial authority
 (1) Judicial authority is derived from the people of Kenya and vests in, and is exercised by, the courts and tribunals."""
+
+
+DEMO_CASES = [
+    {
+        "title": "Republic v Paul Kipkoech Korir & Another",
+        "citation": "[2021] eKLR",
+        "court": "High Court",
+        "year": 2021,
+        "subject_tags": ["Criminal Law", "Murder"],
+        "full_text": "This is a criminal case involving charges of murder. The accused persons were charged with the murder of the deceased on or about 15th March 2019 in Nakuru County. The prosecution called 12 witnesses and tendered documentary evidence. The court examined the evidence of identification, the post-mortem report, and the ballistic analysis. The key issue was whether the prosecution had proved its case beyond reasonable doubt. The court considered the principles established in Republic v Okenye [2018] eKLR regarding circumstantial evidence and the requirements for conviction in murder cases under Section 203 of the Penal Code.",
+        "judges": ["Justice J. M. Ngugi"],
+    },
+    {
+        "title": "Anarita Karimi Njeru v Republic",
+        "citation": "[1979] eKLR",
+        "court": "High Court",
+        "year": 1979,
+        "subject_tags": ["Constitutional Law", "Human Rights", "Criminal Procedure"],
+        "full_text": "This landmark case addressed the fundamental rights of accused persons under the Constitution of Kenya. The petitioner challenged the constitutionality of certain provisions of the Criminal Procedure Code that allowed detention without trial. The court held that the Bill of Rights under Chapter V of the then Constitution (now Chapter 4 of the 2010 Constitution) guaranteed the right to liberty and security of person. The court established the principle that any restriction on fundamental rights must be prescribed by law and be reasonably justifiable in a democratic society. This case remains a cornerstone of Kenyan constitutional jurisprudence and has been cited extensively in subsequent human rights litigation.",
+        "judges": ["Justice H. R. Kneller", "Justice Chanan Singh"],
+    },
+    {
+        "title": "Communications Commission of Kenya v Royal Media Services Limited & Others",
+        "citation": "[2014] eKLR",
+        "court": "Supreme Court",
+        "year": 2014,
+        "subject_tags": ["Constitutional Law", "Media Law", "Freedom of Expression"],
+        "full_text": "This Supreme Court case addressed the balance between freedom of expression and the right of the state to regulate communications. The appellant, the Communications Commission of Kenya, challenged the Court of Appeal's decision that had struck down certain regulatory provisions. The Supreme Court examined Articles 33 and 34 of the Constitution of Kenya 2010 on freedom of expression and media freedom respectively. The court held that while freedom of expression is a fundamental right, it is not absolute and may be limited in accordance with Article 24 of the Constitution. The court established important principles on the doctrine of fair comment in media law and the role of the state in regulating broadcasting frequencies.",
+        "judges": ["Chief Justice Dr. Willy Mutunga", "Justice Jackton Ojwang", "Justice Njoki Ndung'u"],
+    },
+    {
+        "title": "Republic v Mwangi v Attorney General",
+        "citation": "[2019] eKLR",
+        "court": "High Court",
+        "year": 2019,
+        "subject_tags": ["Employment Law", "Labour Relations", "Constitutional Law"],
+        "full_text": "This case concerned the rights of public servants to fair labour practices under Article 41 of the Constitution of Kenya 2010. The petitioner, a senior government officer, challenged his dismissal from the civil service on grounds of procedural unfairness. The court examined the Employment Act 2007 and the Public Service (Values and Principles) Act 2015. The court held that public servants are entitled to the same employment protections as private sector employees and that the state must follow fair administrative action principles under Article 47 of the Constitution when terminating employment. The court awarded damages for wrongful dismissal and ordered reinstatement.",
+        "judges": ["Justice Radido Stephen"],
+    },
+    {
+        "title": "Kenya Revenue Authority v Yaya Towers Limited",
+        "citation": "[2020] eKLR",
+        "court": "Court of Appeal",
+        "year": 2020,
+        "subject_tags": ["Tax Law", "Revenue", "Commercial Law"],
+        "full_text": "This Court of Appeal case addressed the interpretation of the Income Tax Act and the obligations of taxpayers in Kenya. The appellant, Kenya Revenue Authority, appealed against the High Court's decision that had ruled in favour of the respondent, Yaya Towers Limited, on the question of capital gains tax on the disposal of property. The court examined the definition of 'capital gains' under the Eighth Schedule to the Income Tax Act and the meaning of 'disposal' in the context of corporate restructuring. The court held that the transfer of shares in a company that owns immovable property constitutes a disposal of property for capital gains tax purposes. The court also addressed the limitation period for tax assessments under Section 31 of the Tax Procedures Act.",
+        "judges": ["Justice Asike Makhandia", "Justice Patrick Kiage"],
+    },
+]

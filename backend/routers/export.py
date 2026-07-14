@@ -57,7 +57,7 @@ async def export_comparison(
     if not case_a or not case_b:
         raise HTTPException(status_code=404, detail="Case not found")
     from services.ai_service import compare_cases as ai_compare
-    comparison = ai_compare(case_a.full_text, case_b.full_text)
+    comparison = await ai_compare(case_a.full_text, case_b.full_text)
     content = "\n".join([f"{k}: {v}" for k, v in comparison.items()])
     pdf_bytes = build_pdf_bytes(f"{case_a.title} vs {case_b.title}", content)
     from fastapi.responses import Response
