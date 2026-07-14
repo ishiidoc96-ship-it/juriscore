@@ -109,3 +109,10 @@ try:
     logger.info("Export router loaded")
 except Exception as e:
     logger.error(f"Failed to load export router: {traceback.format_exc()}")
+
+try:
+    from routers import search
+    app.include_router(search.router, prefix="/api/search", tags=["Search"])
+    logger.info("Search router loaded")
+except Exception as e:
+    logger.error(f"Failed to load search router: {traceback.format_exc()}")

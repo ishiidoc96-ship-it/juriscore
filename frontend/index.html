@@ -215,15 +215,26 @@ tailwind.config = {
 <section id="screen-search" class="screen">
   <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg">
     <section class="mb-stack-lg">
-      <div class="font-headline-md text-headline-md mb-stack-md text-on-surface">Search & Browse Cases</div>
+      <div class="font-headline-md text-headline-md mb-stack-md text-on-surface">Search Kenya Law</div>
       <div class="relative max-w-2xl">
         <span class="material-symbols-outlined absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">search</span>
-        <input id="search-input" onkeydown="if(event.key==='Enter')doSearch()" class="w-full pl-12 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all shadow-sm" placeholder="Search by keyword, citation, or party name..." type="text"/>
+        <input id="search-input" onkeydown="if(event.key==='Enter')doSearch()" class="w-full pl-12 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all shadow-sm" placeholder="Search cases, legislation, gazettes, publications..." type="text"/>
       </div>
       <button onclick="doSearch()" class="mt-2 bg-primary-container text-on-primary font-label-md text-label-md py-2 px-6 rounded-lg hover:bg-primary transition-colors">Search</button>
     </section>
     <section class="mb-stack-lg">
       <div class="flex flex-col gap-stack-md">
+        <div>
+          <div class="font-label-md text-label-md text-secondary mb-stack-sm">CONTENT TYPE</div>
+          <div class="flex overflow-x-auto hide-scrollbar gap-unit pb-2">
+            <button onclick="setFilter('doc_type','')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-inverse-on-surface text-primary-container border border-primary-container/20">All Types</button>
+            <button onclick="setFilter('doc_type','judgment')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Case Law</button>
+            <button onclick="setFilter('doc_type','legislation')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Legislation</button>
+            <button onclick="setFilter('doc_type','gazette')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Gazette</button>
+            <button onclick="setFilter('doc_type','bill')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Bills</button>
+            <button onclick="setFilter('doc_type','generic_document')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Publications</button>
+          </div>
+        </div>
         <div>
           <div class="font-label-md text-label-md text-secondary mb-stack-sm">COURT</div>
           <div class="flex overflow-x-auto hide-scrollbar gap-unit pb-2">
@@ -231,16 +242,8 @@ tailwind.config = {
             <button onclick="setFilter('court','Supreme Court')" class="filter-court whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Supreme Court</button>
             <button onclick="setFilter('court','High Court')" class="filter-court whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">High Court</button>
             <button onclick="setFilter('court','Court of Appeal')" class="filter-court whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Court of Appeal</button>
-          </div>
-        </div>
-        <div>
-          <div class="font-label-md text-label-md text-secondary mb-stack-sm">TOPIC</div>
-          <div class="flex overflow-x-auto hide-scrollbar gap-unit pb-2">
-            <button onclick="setFilter('subject','')" class="filter-subject whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-inverse-on-surface text-primary-container border border-primary-container/20">All Topics</button>
-            <button onclick="setFilter('subject','Constitutional Law')" class="filter-subject whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Constitutional Law</button>
-            <button onclick="setFilter('subject','Criminal Law')" class="filter-subject whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Criminal Law</button>
-            <button onclick="setFilter('subject','Contract Law')" class="filter-subject whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Contract Law</button>
-            <button onclick="setFilter('subject','Tort')" class="filter-subject whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Tort</button>
+            <button onclick="setFilter('court','Employment and Labour Relations Court')" class="filter-court whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Employment Court</button>
+            <button onclick="setFilter('court','Environment and Land Court')" class="filter-court whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Environment & Land</button>
           </div>
         </div>
       </div>
@@ -251,7 +254,7 @@ tailwind.config = {
       </div>
       <div id="search-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter"></div>
       <div id="search-loading" class="hidden flex items-center justify-center py-stack-lg"><span class="spinner"></span></div>
-      <div id="search-empty" class="hidden text-center py-stack-lg text-secondary font-body-md">No cases found. Try a different search.</div>
+      <div id="search-empty" class="hidden text-center py-stack-lg text-secondary font-body-md">No results found. Try a different search.</div>
     </section>
   </main>
 </section>
@@ -449,7 +452,7 @@ tailwind.config = {
   const bottomNav = document.getElementById('app-bottom-nav');
   let currentCaseId = null;
   let currentNotebookFolderId = null;
-  let searchFilters = { court: '', subject: '' };
+  let searchFilters = { court: '', subject: '', doc_type: '' };
   let studyState = { deckId: null, cards: [], currentIndex: 0, flipped: false };
 
   // ---- Auth ----
@@ -617,6 +620,16 @@ tailwind.config = {
   }
 
   // ---- Search ----
+  const DOC_TYPE_COLORS = {
+    judgment: 'bg-blue-100 text-blue-800',
+    legislation: 'bg-green-100 text-green-800',
+    gazette: 'bg-purple-100 text-purple-800',
+    bill: 'bg-orange-100 text-orange-800',
+    generic_document: 'bg-teal-100 text-teal-800',
+    journal: 'bg-rose-100 text-rose-800',
+    causelist: 'bg-gray-100 text-gray-800',
+  };
+
   window.setFilter = function(type, value) {
     searchFilters[type] = value;
     document.querySelectorAll('.filter-' + type).forEach(btn => {
@@ -629,7 +642,7 @@ tailwind.config = {
 
   window.doSearch = async function() {
     const q = document.getElementById('search-input').value.trim();
-    if (!q && !searchFilters.court && !searchFilters.subject) return;
+    if (!q && !searchFilters.court && !searchFilters.doc_type) return;
 
     const resultsEl = document.getElementById('search-results');
     const loadingEl = document.getElementById('search-loading');
@@ -641,38 +654,53 @@ tailwind.config = {
     emptyEl.classList.add('hidden');
 
     try {
-      let url = '/cases/search?limit=20';
-      if (q) url += '&q=' + encodeURIComponent(q);
+      let url = '/search?q=' + encodeURIComponent(q || '');
+      if (searchFilters.doc_type) url += '&doc_type=' + encodeURIComponent(searchFilters.doc_type);
       if (searchFilters.court) url += '&court=' + encodeURIComponent(searchFilters.court);
-      if (searchFilters.subject) url += '&subject=' + encodeURIComponent(searchFilters.subject);
 
-      const cases = await api(url);
+      const data = await api(url);
       loadingEl.classList.add('hidden');
-      countEl.textContent = cases.length + ' results found';
 
-      if (!cases.length) {
+      const results = data.results || [];
+      const total = data.count || 0;
+      countEl.textContent = total.toLocaleString() + ' results found' + (q ? ' for "' + q + '"' : '');
+
+      if (!results.length) {
         emptyEl.classList.remove('hidden');
         return;
       }
 
-      resultsEl.innerHTML = cases.map(c => `
-        <div onclick="viewCase('${c.id}')" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md hover:border-secondary hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="font-label-md text-label-md text-secondary bg-surface-container-low px-2 py-1 rounded">${(c.court || 'COURT').toUpperCase()}</span>
-              <button onclick="event.stopPropagation();saveCase('${c.id}')" class="text-secondary hover:text-primary-container transition-colors p-1"><span class="material-symbols-outlined">bookmark_add</span></button>
-            </div>
-            <h3 class="font-title-lg text-title-lg text-on-surface mb-1 group-hover:text-primary-container transition-colors">${c.title}</h3>
-            <p class="font-code-snippet text-code-snippet text-secondary mb-stack-sm">${c.citation}</p>
-          </div>
-          <div class="flex gap-2 mt-auto">
-            ${(c.subject_tags || []).slice(0,2).map(t => '<span class="text-[10px] uppercase font-semibold text-secondary bg-surface-variant px-2 py-1 rounded-sm">' + t + '</span>').join('')}
-          </div>
-        </div>
-      `).join('');
+      resultsEl.innerHTML = results.map(c => {
+        const typeColor = DOC_TYPE_COLORS[c.doc_type] || 'bg-gray-100 text-gray-800';
+        const typeLabel = c.doc_type_label || c.doc_type || '';
+        const courtBadge = c.court ? '<span class="font-label-xs text-label-xs text-secondary bg-surface-container-low px-2 py-0.5 rounded">' + c.court + '</span>' : '';
+        const dateBadge = c.date ? '<span class="font-label-xs text-label-xs text-tertiary">' + c.date + '</span>' : '';
+        const judgesStr = (c.judges || []).join(', ');
+        const excerpt = c.excerpt ? '<p class="font-body-sm text-body-sm text-secondary line-clamp-2 mt-1">' + c.excerpt.replace(/<[^>]+>/g, '') + '</p>' : '';
+        const linkUrl = c.url || '#';
+
+        return '<div onclick="window.open(\'' + linkUrl + '\',\'_blank\')" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md hover:border-secondary hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">' +
+          '<div>' +
+            '<div class="flex justify-between items-start mb-2 gap-2">' +
+              '<span class="whitespace-nowrap px-2 py-0.5 rounded text-[10px] font-semibold uppercase ' + typeColor + '">' + typeLabel + '</span>' +
+              '<div class="flex gap-2 items-center">' + dateBadge + '</div>' +
+            '</div>' +
+            '<h3 class="font-title-lg text-title-lg text-on-surface mb-1 group-hover:text-primary-container transition-colors line-clamp-3">' + c.title + '</h3>' +
+            '<p class="font-code-snippet text-code-snippet text-secondary mb-1">' + (c.citation || '') + '</p>' +
+            (judgesStr ? '<p class="font-body-sm text-body-sm text-secondary">Judges: ' + judgesStr + '</p>' : '') +
+            excerpt +
+          '</div>' +
+          '<div class="flex gap-2 mt-auto flex-wrap">' +
+            courtBadge +
+            (c.nature ? '<span class="font-label-xs text-label-xs text-secondary bg-surface-variant px-2 py-0.5 rounded">' + c.nature + '</span>' : '') +
+            (c.registry ? '<span class="font-label-xs text-label-xs text-secondary bg-surface-variant px-2 py-0.5 rounded">' + c.registry + '</span>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
     } catch (e) {
       loadingEl.classList.add('hidden');
       countEl.textContent = 'Search failed. Please try again.';
+      console.error('Search error:', e);
     }
   };
 
