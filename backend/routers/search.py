@@ -1,22 +1,32 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
+from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from services.scraper import search_all, search_kenyalaw
+from services.ai_service import generate_summary_from_metadata
 import logging
 
 logger = logging.getLogger("juriscore")
 router = APIRouter()
 
 
+class SummarizeRequest(BaseModel):
+    title: str
+    citation: str = ""
+    court: str = ""
+    date: str = ""
+    doc_type: str = ""
+    excerpt: str = ""
+    url: str = ""
+
+
 @router.get("")
 async def universal_search(
-    q: Optional[str] = Query(None, description="Search query"),
-    doc_type: Optional[str] = Query(None, description="Document type: judgment, legislation, gazette, bill, all"),
-    court: Optional[str] = Query(None, description="Court name filter"),
-    date_from: Optional[str] = Query(None, description="Date from (YYYY-MM-DD)"),
-    date_to: Optional[str] = Query(None, description="Date to (YYYY-MM-DD)"),
+    q: Optional[str] = Query(None),
+    doc_type: Optional[str] = Query(None),
+    court: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
-    ordering: Optional[str] = Query("-score", description="Sort: -score, -date, date"),
-    limit: int = Query(20, le=100),
+    ordering: Optional[str] = Query("-score"),
+    limit: int = Query(50, le=100),
 ):
     if not q:
         return {"count": 0, "results": [], "facets": {}}
@@ -24,13 +34,29 @@ async def universal_search(
     filters = {
         "doc_type": doc_type,
         "court": court,
-        "date_from": date_from,
-        "date_to": date_to,
         "page": page,
         "ordering": ordering,
         "limit": limit,
     }
     return await search_all(q, filters)
+
+
+@router.post("/summarize")
+async def summarize_document(req: SummarizeRequest):
+    """Generate a human-readable summary of a document from its metadata."""
+    try:
+        summary = generate_summary_from_metadata(
+            title=req.title,
+            citation=req.citation,
+            court=req.court,
+            date=req.date,
+            doc_type=req.doc_type,
+            excerpt=req.excerpt,
+        )
+        return {"summary": summary, "title": req.title}
+    except Exception as e:
+        logger.error(f"Summarize failed: {e}")
+        raise HTTPException(status_code=500, detail="Summary generation failed")
 
 
 @router.get("/courts")

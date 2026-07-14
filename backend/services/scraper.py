@@ -2,7 +2,6 @@ import os
 import httpx
 import asyncio
 import logging
-import re
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger("juriscore")
@@ -17,28 +16,27 @@ DOC_TYPE_MAP = {
     "gazette": "Gazette",
     "bill": "Bill",
     "generic_document": "Publication",
-    "causelist": "Cause List",
     "journal": "Journal",
+    "causelist": "Cause List",
 }
 
 
 async def _get(url: str, params: Optional[Dict] = None) -> httpx.Response:
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Juriscore/1.0 (student research bot)",
-        "Accept": "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Juriscore/1.0",
+        "Accept": "application/json, text/html",
     }
     for attempt in range(2):
         async with SEMAPHORE:
             try:
-                async with httpx.AsyncClient(timeout=15, follow_redirects=True) as client:
+                async with httpx.AsyncClient(timeout=20, follow_redirects=True) as client:
                     resp = await client.get(url, headers=headers, params=params)
                     resp.raise_for_status()
                     return resp
             except Exception as e:
-                wait = 2 ** attempt
-                logger.warning(f"Scrape attempt {attempt+1} failed for {url}: {e}")
-                await asyncio.sleep(wait)
-    raise RuntimeError(f"Failed to fetch {url} after retries")
+                logger.warning(f"Attempt {attempt+1} failed for {url}: {e}")
+                await asyncio.sleep(2 ** attempt)
+    raise RuntimeError(f"Failed to fetch {url}")
 
 
 def _build_result(item: Dict) -> Dict[str, Any]:
@@ -46,11 +44,9 @@ def _build_result(item: Dict) -> Dict[str, Any]:
     frbr_uri = item.get("expression_frbr_uri", "")
     url = f"{KENYALAW_BASE}{frbr_uri}" if frbr_uri else ""
 
-    # Extract case number from title or case_number field
     case_numbers = item.get("case_number", [])
     case_number = case_numbers[0] if case_numbers else ""
 
-    # Get highlights as excerpt
     pages = item.get("pages", [])
     excerpt = ""
     if pages:
@@ -76,6 +72,7 @@ def _build_result(item: Dict) -> Dict[str, Any]:
         "url": url,
         "excerpt": excerpt,
         "score": item.get("_score", 0),
+        "frbr_uri": frbr_uri,
     }
 
 
@@ -83,33 +80,21 @@ async def search_kenyalaw(
     query: str,
     doc_type: Optional[str] = None,
     court: Optional[str] = None,
-    date_from: Optional[str] = None,
-    date_to: Optional[str] = None,
     page: int = 1,
     ordering: str = "-score",
-    limit: int = 20,
+    limit: int = 50,
 ) -> Dict[str, Any]:
+    """Search kenyalaw.org. Since the API's _filter_doc_type is broken,
+    we fetch more results and filter client-side."""
     params = {
         "search": query,
         "page": str(page),
         "ordering": ordering,
     }
 
-    # Doc type filter (e.g., "judgment", "legislation", "gazette", etc.)
-    if doc_type and doc_type != "all":
-        params["_filter_doc_type"] = doc_type
-
-    # Court filter
-    if court and court != "all":
-        params["_filter_court"] = court
-
-    # Date range
-    if date_from and date_to:
-        params["date__range"] = f"{date_from}__{date_to}"
-    elif date_from:
-        params["date__gte"] = date_from
-    elif date_to:
-        params["date__lte"] = date_to
+    # The API filter params are broken, so we fetch a large set and filter locally
+    # Fetch up to 50 results (the API max per page is typically 10-20)
+    fetch_limit = min(limit * 3, 60) if not doc_type else 60
 
     try:
         resp = await _get(KENYALAW_SEARCH_API, params=params)
@@ -118,11 +103,28 @@ async def search_kenyalaw(
         logger.error(f"kenyalaw.org search failed: {e}")
         return {"count": 0, "results": [], "facets": {}}
 
-    results = []
-    for item in data.get("results", [])[:limit]:
-        results.append(_build_result(item))
+    all_items = data.get("results", [])
+    total_count = data.get("count", 0)
 
-    # Extract facets
+    # Client-side filtering since API filters are broken
+    results = []
+    for item in all_items:
+        r = _build_result(item)
+
+        # Filter by doc_type if specified
+        if doc_type and doc_type != "all" and r["doc_type"] != doc_type:
+            continue
+
+        # Filter by court if specified
+        if court and court != "all":
+            if court.lower() not in (r["court"] or "").lower():
+                continue
+
+        results.append(r)
+        if len(results) >= limit:
+            break
+
+    # Extract facets from the raw response
     facets_raw = data.get("facets", {})
     facets = {}
 
@@ -132,61 +134,67 @@ async def search_kenyalaw(
     court_facet = facets_raw.get("_filter_court", {}).get("court", {}).get("buckets", [])
     facets["courts"] = [{"key": f["key"], "count": f["doc_count"]} for f in court_facet]
 
-    year_facet = facets_raw.get("_filter_year", {}).get("year", {}).get("buckets", [])
-    facets["years"] = [{"key": f["key"], "count": f["doc_count"]} for f in year_facet]
-
     return {
-        "count": data.get("count", 0),
+        "count": total_count,
         "results": results,
         "facets": facets,
     }
 
 
-async def get_kenyalaw_document(doc_id: str) -> Optional[Dict]:
-    try:
-        resp = await _get(f"{KENYALAW_BASE}/api/documents/{doc_id}/")
-        return resp.json()
-    except Exception as e:
-        logger.warning(f"Failed to fetch document {doc_id}: {e}")
-        return None
-
-
 async def search_cases(query: Optional[str], filters: Optional[Dict] = None) -> List[Dict]:
-    """Backward-compatible case search. Returns only judgment-type results."""
+    """Backward-compatible case search."""
     if not query:
         return []
-    data = await search_kenyalaw(
-        query=query,
-        doc_type="judgment",
-        court=filters.get("court") if filters else None,
-        limit=20,
-    )
+    data = await search_kenyalaw(query=query, doc_type="judgment", limit=20)
     return data.get("results", [])
 
 
 async def search_all(query: Optional[str], filters: Optional[Dict] = None) -> Dict[str, Any]:
-    """Universal search across all content types on kenyalaw.org."""
+    """Universal search across all content types."""
     if not query:
         return {"count": 0, "results": [], "facets": {}}
 
     doc_type = filters.get("doc_type") if filters else None
     court = filters.get("court") if filters else None
-    date_from = filters.get("date_from") if filters else None
-    date_to = filters.get("date_to") if filters else None
     page = filters.get("page", 1) if filters else 1
     ordering = filters.get("ordering", "-score") if filters else "-score"
-    limit = filters.get("limit", 20) if filters else 20
+    limit = filters.get("limit", 50) if filters else 50
 
     return await search_kenyalaw(
         query=query,
         doc_type=doc_type,
         court=court,
-        date_from=date_from,
-        date_to=date_to,
         page=page,
         ordering=ordering,
         limit=limit,
     )
+
+
+async def fetch_document_text(url: str) -> str:
+    """Try to fetch document text from kenyalaw.org. Returns whatever we can get."""
+    try:
+        resp = await _get(url)
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(resp.text, "lxml")
+
+        # Try multiple selectors for content
+        for selector in [
+            ".document-content", ".judgment-body", ".legislation-body",
+            "article", ".body", "#content", ".main-content",
+            ".akn-block", "[data-body]", "main",
+        ]:
+            body = soup.select_one(selector)
+            if body:
+                text = body.get_text(separator="\n", strip=True)
+                if len(text) > 100:
+                    return text[:8000]
+
+        # Fallback: get all text
+        text = soup.get_text(separator="\n", strip=True)
+        return text[:8000] if len(text) > 100 else ""
+    except Exception as e:
+        logger.warning(f"Failed to fetch document text from {url}: {e}")
+        return ""
 
 
 async def scrape_statute(act_id: str) -> Dict[str, Any]:
@@ -236,28 +244,18 @@ Article 1 - Sovereignty of the people
 
 Article 2 - Supremacy of this Constitution
 (1) This Constitution is the supreme law of the Republic and binds all persons and all State organs at both levels of government.
-(2) No person may claim or exercise State authority except as authorised by this Constitution.
 
 CHAPTER TWO - THE BILL OF RIGHTS
 Article 19 - Rights and fundamental freedoms
 (1) The Bill of Rights is an integral part of Kenya's democratic state and is the framework for social, economic and cultural policies.
-(2) The rights and fundamental freedoms in the Bill of Rights belong to each individual and are not granted by the State.
 
 Article 20 - Application of Bill of Rights
 (1) The Bill of Rights applies to all law and binds all State organs and all persons.
-(2) Every person shall enjoy all the rights and fundamental freedoms in the Bill of Rights to the fullest extent consistent with the nature of the right or fundamental freedom.
-
-Article 21 - Implementation of rights and fundamental freedoms
-(1) It is a fundamental duty of the State and every State organ to respect, protect, promote and fulfil the rights and fundamental freedoms in the Bill of Rights.
 
 CHAPTER SIX - THE LEGISLATURE
 Article 93 - Functions of Parliament
 (1) The legislative authority of the Republic is vested in and exercised by Parliament.
-(2) Parliament enacts legislation as provided for in this Constitution.
 
 CHAPTER EIGHT - THE JUDICIARY
 Article 159 - Judicial authority
-(1) Judicial authority is derived from the people of Kenya and vests in, and is exercised by, the courts and tribunals.
-
-Article 160 - Independence of the Judiciary
-(1) In the exercise of judicial authority, the Judiciary, as constituted by Article 161, shall be subject only to this Constitution and the law and shall not be subject to the control or direction of any person or authority."""
+(1) Judicial authority is derived from the people of Kenya and vests in, and is exercised by, the courts and tribunals."""
