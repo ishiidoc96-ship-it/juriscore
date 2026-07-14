@@ -428,3 +428,308 @@ def search_similar(query: str, cases: List[Dict]) -> List[str]:
         scored.append((score, c.get("id", "")))
     scored.sort(reverse=True)
     return [cid for _, cid in scored]
+
+
+# ==================== COMPREHENSIVE AI TOOLS ====================
+
+LEGAL_RESEARCH_SYSTEM = """You are a world-class legal research assistant with expertise across multiple jurisdictions and legal systems. You have deep knowledge of:
+- Common law, civil law, religious law, and mixed legal systems
+- International law, human rights law, trade law, environmental law
+- African legal systems (East African, ECOWAS, SADC, African Union)
+- Major world legal systems (US, UK, EU, India, Australia, Canada, etc.)
+
+You provide precise, well-cited legal analysis. Always cite specific cases, statutes, or articles when making legal points."""
+
+
+async def legal_research_assistant(query: str, jurisdiction: str = "kenya") -> Dict[str, Any]:
+    """Comprehensive legal research across multiple jurisdictions."""
+    prompt = f"""Provide comprehensive legal research on this query for {jurisdiction} jurisdiction:
+
+Query: "{query}"
+
+Provide:
+1. Legal framework: What laws/acts/constitution articles apply
+2. Key cases: Relevant case law with citations
+3. Legal principles: Established legal principles that apply
+4. Practical implications: What this means in practice
+5. Related topics: Related legal areas to explore
+
+Be specific with citations. Format as JSON:
+{{
+    "legal_framework": "description of applicable laws",
+    "key_cases": [{{"name": "Case Name", "citation": "[Year] eKLR", "principle": "what it established"}}],
+    "legal_principles": ["principle 1", "principle 2"],
+    "practical_implications": "what this means",
+    "related_topics": ["topic 1", "topic 2"]
+}}"""
+
+    raw = await _call_model(prompt, max_tokens=1500, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
+    parsed = _parse_json(raw, {})
+    if isinstance(parsed, dict):
+        return parsed
+    return {
+        "legal_framework": "Research temporarily unavailable",
+        "key_cases": [],
+        "legal_principles": [],
+        "practical_implications": "",
+        "related_topics": []
+    }
+
+
+async def format_citation(case_data: Dict, jurisdiction: str = "kenya") -> str:
+    """Format citation according to jurisdiction-specific rules."""
+    citation_rules = {
+        "kenya": "Case Name [Year] eKLR (Kenya Law Reports)",
+        "nigeria": "Case Name [Year] LPELR-XXXX (Nigerian Law Reports)",
+        "south_africa": "Case Name [Year] ZACC/ZZA/ZZG (South African Constitutional Court)",
+        "uk": "Case Name [Year] UKSC/UKHL/EWCA/Civil/Criminal (Law Reports)",
+        "us": "Case Name Volume Reporter Page (Court Year)",
+        "india": "Case Name (Year) SCC (Supreme Court Cases)",
+        "international": "Case Name [Year] ICJ/ECtHR/AfCHPR Reports",
+    }
+
+    prompt = f"""Format this case citation according to {jurisdiction} citation rules.
+
+Case data:
+- Title: {case_data.get('title', 'Unknown')}
+- Court: {case_data.get('court', 'Unknown')}
+- Year: {case_data.get('year', 'Unknown')}
+- Citation: {case_data.get('citation', 'Unknown')}
+
+Citation format: {citation_rules.get(jurisdiction, citation_rules['kenya'])}
+
+Return ONLY the properly formatted citation string."""
+
+    result = await _call_model(prompt, max_tokens=200, temperature=0.2)
+    return result if result else f"{case_data.get('title', 'Unknown')} [{case_data.get('year', 'Year')}] {jurisdiction.title()} Reports"
+
+
+async def explain_legal_concept(concept: str, jurisdiction: str = "kenya") -> str:
+    """Explain a legal concept with jurisdiction-specific context."""
+    prompt = f"""Explain this legal concept clearly and concisely for a law student in {jurisdiction}:
+
+"{concept}"
+
+Provide:
+1. Definition in plain language
+2. How it applies in {jurisdiction}
+3. Key cases that established/defined it
+4. Common exam questions about it
+5. Practical examples
+
+Write like a knowledgeable tutor — direct, specific, with real examples."""
+
+    result = await _call_model(prompt, max_tokens=800, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
+    return result if result else f"Explanation unavailable for: {concept}"
+
+
+async def compare_jurisdictions(
+    legal_issue: str,
+    jurisdictions: List[str] = None,
+) -> Dict[str, Any]:
+    """Compare how different jurisdictions handle the same legal issue."""
+    if not jurisdictions:
+        jurisdictions = ["kenya", "nigeria", "south_africa", "uk", "us"]
+
+    prompt = f"""Compare how these jurisdictions handle the legal issue: "{legal_issue}"
+
+Jurisdictions: {', '.join(jurisdictions)}
+
+For each jurisdiction, explain:
+1. The applicable law/constitution
+2. How courts have interpreted it
+3. Key differences from other jurisdictions
+4. Trends or developments
+
+Format as JSON:
+{{
+    "issue": "{legal_issue}",
+    "comparisons": {{
+        "kenya": {{"law": "...", "interpretation": "...", "key_cases": ["..."], "unique_aspect": "..."}},
+        "nigeria": {{"law": "...", "interpretation": "...", "key_cases": ["..."], "unique_aspect": "..."}},
+        ...
+    }},
+    "key_differences": ["difference 1", "difference 2"],
+    "trend": "description of global trend"
+}}"""
+
+    raw = await _call_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
+    parsed = _parse_json(raw, {})
+    if isinstance(parsed, dict):
+        return parsed
+    return {"issue": legal_issue, "comparisons": {}, "key_differences": [], "trend": ""}
+
+
+async def generate_legal_memo(
+    issue: str,
+    facts: str = "",
+    jurisdiction: str = "kenya",
+) -> str:
+    """Generate a legal memorandum analyzing a legal issue."""
+    prompt = f"""Write a legal memorandum analyzing this issue for {jurisdiction}:
+
+Issue: {issue}
+{"Facts: " + facts if facts else ""}
+
+Structure:
+1. ISSUE(S) PRESENTED
+2. BRIEF ANSWER
+3. STATEMENT OF FACTS (if provided)
+4. DISCUSSION
+   - Applicable law
+   - Case law analysis
+   - Application to facts
+5. CONCLUSION
+
+Be direct. Cite specific cases and statutes. Write like a practicing lawyer, not a textbook."""
+
+    result = await _call_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
+    return result if result else f"Legal memo generation unavailable for: {issue}"
+
+
+async def analyze_case_law(case_text: str, jurisdiction: str = "kenya") -> Dict[str, Any]:
+    """Deep analysis of case law with cross-jurisdictional comparison."""
+    prompt = f"""Provide deep analysis of this {jurisdiction} case:
+
+Case text:
+{case_text[:5000]}
+
+Analyze:
+1. FACTS: Detailed factual summary
+2. ISSUES: All legal issues (framed as questions)
+3. HOLDINGS: Each holding with article/section references
+4. RATIO: The ratio decidendi (binding principle)
+5. OBITER: Notable obiter dicta
+6. SIGNIFICANCE: Why this case matters
+7. CRITIQUE: Any controversial aspects or criticisms
+8. APPLICATION: How this applies to similar facts
+9. RELATED CASES: Similar cases in other jurisdictions
+10. EXAM RELEVANCE: Likely exam questions
+
+Format as JSON with these keys."""
+
+    raw = await _call_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
+    parsed = _parse_json(raw, {})
+    if isinstance(parsed, dict):
+        return parsed
+    return {
+        "facts": "", "issues": [], "holdings": [], "ratio": "",
+        "obiter": "", "significance": "", "critique": "",
+        "application": "", "related_cases": [], "exam_relevance": []
+    }
+
+
+async def interpret_statute(
+    statute_text: str,
+    section: str = "",
+    jurisdiction: str = "kenya",
+) -> Dict[str, Any]:
+    """Interplain a statute section with case law context."""
+    prompt = f"""Interpret this {jurisdiction} statute{(' section ' + section) if section else ''}:
+
+Statute text:
+{statute_text[:5000]}
+
+Provide:
+1. Plain meaning: What the words say
+2. Legal meaning: How courts interpret it
+3. Case law: Key cases interpreting this provision
+4. Practical application: How it works in practice
+5. Exceptions/limitations: Any exceptions or limitations
+6. Recent developments: Any recent changes or interpretations
+
+Format as JSON:
+{{
+    "plain_meaning": "...",
+    "legal_meaning": "...",
+    "case_law": [{{"case": "Name", "citation": "...", "interpretation": "..."}}],
+    "practical_application": "...",
+    "exceptions": ["..."],
+    "recent_developments": "..."
+}}"""
+
+    raw = await _call_model(prompt, max_tokens=1500, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
+    parsed = _parse_json(raw, {})
+    if isinstance(parsed, dict):
+        return parsed
+    return {
+        "plain_meaning": "Interpretation unavailable",
+        "legal_meaning": "",
+        "case_law": [],
+        "practical_application": "",
+        "exceptions": [],
+        "recent_developments": ""
+    }
+
+
+async def generate_study_plan(
+    topic: str,
+    exam_date: str = "",
+    jurisdiction: str = "kenya",
+) -> Dict[str, Any]:
+    """Generate a personalized study plan for a legal topic."""
+    prompt = f"""Create a study plan for mastering "{topic}" in {jurisdiction} law{"for an exam on " + exam_date if exam_date else ""}.
+
+Include:
+1. WEEK-BY-WEEK BREAKDOWN: Topics to cover each week
+2. KEY CASES: Must-know cases with brief summaries
+3. KEY STATUTES: Important acts and sections
+4. PRACTICE QUESTIONS: 5 likely exam questions
+5. STUDY TIPS: How to approach this topic
+6. RESOURCES: Where to find more information
+
+Make it practical and achievable. Focus on what's most likely to be examined."""
+
+    raw = await _call_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
+    parsed = _parse_json(raw, {})
+    if isinstance(parsed, dict):
+        return parsed
+    return {
+        "weekly_plan": [],
+        "key_cases": [],
+        "key_statutes": [],
+        "practice_questions": [],
+        "study_tips": "",
+        "resources": []
+    }
+
+
+async def translate_legal_term(
+    term: str,
+    source_lang: str = "english",
+    target_lang: str = "swahili",
+    jurisdiction: str = "kenya",
+) -> Dict[str, str]:
+    """Translate legal terms with jurisdiction-specific context."""
+    prompt = f"""Translate this legal term from {source_lang} to {target_lang} for {jurisdiction} legal context:
+
+"{term}"
+
+Provide:
+1. Direct translation
+2. Legal translation (if different)
+3. Explanation of the concept in both languages
+4. Usage in legal documents
+
+Format as JSON:
+{{
+    "original": "{term}",
+    "translation": "...",
+    "legal_translation": "...",
+    "explanation_en": "...",
+    "explanation_local": "...",
+    "usage": "..."
+}}"""
+
+    raw = await _call_model(prompt, max_tokens=400, temperature=0.3)
+    parsed = _parse_json(raw, {})
+    if isinstance(parsed, dict):
+        return parsed
+    return {
+        "original": term,
+        "translation": "Translation unavailable",
+        "legal_translation": "",
+        "explanation_en": "",
+        "explanation_local": "",
+        "usage": ""
+    }

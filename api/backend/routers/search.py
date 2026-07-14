@@ -2,7 +2,14 @@ from fastapi import APIRouter, Query, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from services.scraper import search_all, search_kenyalaw
-from services.ai_service import generate_summary_from_metadata
+from services.africa_law_scraper import search_africanlii, search_african_court, get_african_jurisdictions, get_african_courts
+from services.world_law_scraper import search_worldlii, search_global_case_law, get_world_jurisdictions, get_world_sources, get_legal_systems
+from services.ai_service import (
+    generate_summary_from_metadata, legal_research_assistant,
+    format_citation, explain_legal_concept, compare_jurisdictions,
+    generate_legal_memo, analyze_case_law, interpret_statute,
+    generate_study_plan, translate_legal_term,
+)
 import asyncio
 import logging
 
@@ -25,21 +32,126 @@ async def universal_search(
     q: Optional[str] = Query(None),
     doc_type: Optional[str] = Query(None),
     court: Optional[str] = Query(None),
+    jurisdiction: Optional[str] = Query("kenya"),
+    country: Optional[str] = Query(None),
+    source: Optional[str] = Query(None),
+    legal_system: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     ordering: Optional[str] = Query("-score"),
     limit: int = Query(50, le=100),
 ):
+    """Universal search across Kenya, Africa, and World legal sources."""
     if not q:
         return {"count": 0, "results": [], "facets": {}}
 
-    filters = {
-        "doc_type": doc_type,
-        "court": court,
-        "page": page,
-        "ordering": ordering,
-        "limit": limit,
+    jurisdiction = jurisdiction.lower().strip()
+
+    # Kenya Law search
+    if jurisdiction == "kenya" or jurisdiction == "ke":
+        filters = {
+            "doc_type": doc_type,
+            "court": court,
+            "page": page,
+            "ordering": ordering,
+            "limit": limit,
+        }
+        result = await search_all(q, filters)
+        result["jurisdiction"] = "kenya"
+        return result
+
+    # Africa Law search
+    elif jurisdiction == "africa" or jurisdiction == "af":
+        try:
+            result = await search_africanlii(
+                query=q,
+                doc_type=doc_type,
+                country=country,
+                page=page,
+                limit=limit,
+            )
+            # Also search African regional courts
+            court_results = await search_african_court(
+                query=q,
+                court=court,
+                limit=limit // 2,
+            )
+            # Merge results
+            all_results = result.get("results", []) + court_results.get("results", [])
+            result["results"] = all_results[:limit]
+            result["count"] = len(all_results)
+            result["jurisdiction"] = "africa"
+            return result
+        except Exception as e:
+            logger.error(f"Africa search failed: {e}")
+            return {"count": 0, "results": [], "facets": {}, "jurisdiction": "africa", "error": str(e)}
+
+    # World Law search
+    elif jurisdiction == "world" or jurisdiction == "ww":
+        try:
+            result = await search_worldlii(
+                query=q,
+                doc_type=doc_type,
+                jurisdiction=country,
+                source=source,
+                page=page,
+                limit=limit,
+            )
+            # Also search global case law
+            global_results = await search_global_case_law(
+                query=q,
+                legal_system=legal_system,
+                country=country,
+                limit=limit // 2,
+            )
+            # Merge results
+            all_results = result.get("results", []) + global_results.get("results", [])
+            result["results"] = all_results[:limit]
+            result["count"] = len(all_results)
+            result["jurisdiction"] = "world"
+            return result
+        except Exception as e:
+            logger.error(f"World search failed: {e}")
+            return {"count": 0, "results": [], "facets": {}, "jurisdiction": "world", "error": str(e)}
+
+    # Default: Kenya Law
+    else:
+        filters = {
+            "doc_type": doc_type,
+            "court": court,
+            "page": page,
+            "ordering": ordering,
+            "limit": limit,
+        }
+        result = await search_all(q, filters)
+        result["jurisdiction"] = "kenya"
+        return result
+
+
+@router.get("/jurisdictions")
+async def list_jurisdictions():
+    """List all available jurisdictions."""
+    return {
+        "kenya": {
+            "name": "Kenya",
+            "id": "kenya",
+            "sources": ["KenyaLaw.org"],
+            "courts": ["Supreme Court", "Court of Appeal", "High Court", "Environment and Land Court", "Employment and Labour Relations Court"],
+        },
+        "africa": {
+            "name": "Africa",
+            "id": "africa",
+            "sources": ["AfricanLII", "ECOWAS Court", "East African Court of Justice", "SADC Tribunal"],
+            "courts": get_african_courts(),
+            "jurisdictions": get_african_jurisdictions(),
+        },
+        "world": {
+            "name": "World",
+            "id": "world",
+            "sources": [s["name"] for s in get_world_sources()],
+            "legal_systems": get_legal_systems(),
+            "jurisdictions": get_world_jurisdictions(),
+        },
     }
-    return await search_all(q, filters)
 
 
 @router.post("/summarize")
@@ -61,17 +173,52 @@ async def summarize_document(req: SummarizeRequest):
 
 
 @router.get("/courts")
-async def list_courts(q: Optional[str] = Query(None)):
-    data = await search_kenyalaw(query=q or "a", limit=0)
-    courts = data.get("facets", {}).get("courts", [])
-    return courts
+async def list_courts(q: Optional[str] = Query(None), jurisdiction: Optional[str] = Query("kenya")):
+    """List courts for a jurisdiction."""
+    jurisdiction = jurisdiction.lower().strip()
+
+    if jurisdiction == "africa" or jurisdiction == "af":
+        courts = get_african_courts()
+        return [{"key": c, "count": 0} for c in courts]
+
+    elif jurisdiction == "world" or jurisdiction == "ww":
+        jurisdictions = get_world_jurisdictions()
+        all_courts = []
+        for j in jurisdictions:
+            for c in j.get("courts", []):
+                all_courts.append({"key": c, "count": 0, "country": j["name"]})
+        return all_courts
+
+    else:
+        data = await search_kenyalaw(query=q or "a", limit=0)
+        return data.get("facets", {}).get("courts", [])
 
 
 @router.get("/types")
-async def list_doc_types(q: Optional[str] = Query(None)):
-    data = await search_kenyalaw(query=q or "a", limit=0)
-    doc_types = data.get("facets", {}).get("doc_types", [])
-    return doc_types
+async def list_doc_types(q: Optional[str] = Query(None), jurisdiction: Optional[str] = Query("kenya")):
+    """List document types for a jurisdiction."""
+    jurisdiction = jurisdiction.lower().strip()
+
+    if jurisdiction == "africa" or jurisdiction == "af":
+        return [
+            {"key": "judgment", "count": 0},
+            {"key": "legislation", "count": 0},
+            {"key": "treaty", "count": 0},
+            {"key": "regulation", "count": 0},
+        ]
+
+    elif jurisdiction == "world" or jurisdiction == "ww":
+        return [
+            {"key": "case", "count": 0},
+            {"key": "legislation", "count": 0},
+            {"key": "regulation", "count": 0},
+            {"key": "journal", "count": 0},
+            {"key": "treaty", "count": 0},
+        ]
+
+    else:
+        data = await search_kenyalaw(query=q or "a", limit=0)
+        return data.get("facets", {}).get("doc_types", [])
 
 
 @router.get("/rewrite")
@@ -80,3 +227,149 @@ async def rewrite_query(q: str = Query(...)):
     from services.ai_service import rewrite_search_query
     result = await rewrite_search_query(q)
     return result
+
+
+# ==================== AI TOOLS ENDPOINTS ====================
+
+class LegalResearchRequest(BaseModel):
+    query: str
+    jurisdiction: str = "kenya"
+
+
+class CitationRequest(BaseModel):
+    case_data: Dict[str, Any]
+    jurisdiction: str = "kenya"
+
+
+class ConceptRequest(BaseModel):
+    concept: str
+    jurisdiction: str = "kenya"
+
+
+class JurisdictionCompareRequest(BaseModel):
+    legal_issue: str
+    jurisdictions: List[str] = ["kenya", "nigeria", "south_africa", "uk", "us"]
+
+
+class LegalMemoRequest(BaseModel):
+    issue: str
+    facts: str = ""
+    jurisdiction: str = "kenya"
+
+
+class StatuteInterpretRequest(BaseModel):
+    statute_text: str
+    section: str = ""
+    jurisdiction: str = "kenya"
+
+
+class StudyPlanRequest(BaseModel):
+    topic: str
+    exam_date: str = ""
+    jurisdiction: str = "kenya"
+
+
+class TranslationRequest(BaseModel):
+    term: str
+    source_lang: str = "english"
+    target_lang: str = "swahili"
+    jurisdiction: str = "kenya"
+
+
+@router.post("/tools/research")
+async def ai_legal_research(req: LegalResearchRequest):
+    """Comprehensive legal research across jurisdictions."""
+    try:
+        result = await legal_research_assistant(req.query, req.jurisdiction)
+        return result
+    except Exception as e:
+        logger.error(f"Legal research failed: {e}")
+        raise HTTPException(status_code=500, detail="Research temporarily unavailable")
+
+
+@router.post("/tools/citation")
+async def ai_format_citation(req: CitationRequest):
+    """Format citation according to jurisdiction rules."""
+    try:
+        result = await format_citation(req.case_data, req.jurisdiction)
+        return {"citation": result}
+    except Exception as e:
+        logger.error(f"Citation formatting failed: {e}")
+        raise HTTPException(status_code=500, detail="Citation formatting unavailable")
+
+
+@router.post("/tools/explain")
+async def ai_explain_concept(req: ConceptRequest):
+    """Explain a legal concept with jurisdiction context."""
+    try:
+        result = await explain_legal_concept(req.concept, req.jurisdiction)
+        return {"explanation": result}
+    except Exception as e:
+        logger.error(f"Concept explanation failed: {e}")
+        raise HTTPException(status_code=500, detail="Explanation unavailable")
+
+
+@router.post("/tools/compare-jurisdictions")
+async def ai_compare_jurisdictions(req: JurisdictionCompareRequest):
+    """Compare legal issues across jurisdictions."""
+    try:
+        result = await compare_jurisdictions(req.legal_issue, req.jurisdictions)
+        return result
+    except Exception as e:
+        logger.error(f"Jurisdiction comparison failed: {e}")
+        raise HTTPException(status_code=500, detail="Comparison unavailable")
+
+
+@router.post("/tools/legal-memo")
+async def ai_legal_memo(req: LegalMemoRequest):
+    """Generate a legal memorandum."""
+    try:
+        result = await generate_legal_memo(req.issue, req.facts, req.jurisdiction)
+        return {"memo": result}
+    except Exception as e:
+        logger.error(f"Legal memo generation failed: {e}")
+        raise HTTPException(status_code=500, detail="Memo generation unavailable")
+
+
+@router.post("/tools/analyze-case")
+async def ai_analyze_case(req: LegalResearchRequest):
+    """Deep analysis of case law."""
+    try:
+        result = await analyze_case_law(req.query, req.jurisdiction)
+        return result
+    except Exception as e:
+        logger.error(f"Case analysis failed: {e}")
+        raise HTTPException(status_code=500, detail="Case analysis unavailable")
+
+
+@router.post("/tools/interpret-statute")
+async def ai_interpret_statute(req: StatuteInterpretRequest):
+    """Interpret a statute with case law context."""
+    try:
+        result = await interpret_statute(req.statute_text, req.section, req.jurisdiction)
+        return result
+    except Exception as e:
+        logger.error(f"Statute interpretation failed: {e}")
+        raise HTTPException(status_code=500, detail="Statute interpretation unavailable")
+
+
+@router.post("/tools/study-plan")
+async def ai_study_plan(req: StudyPlanRequest):
+    """Generate a study plan for a legal topic."""
+    try:
+        result = await generate_study_plan(req.topic, req.exam_date, req.jurisdiction)
+        return result
+    except Exception as e:
+        logger.error(f"Study plan generation failed: {e}")
+        raise HTTPException(status_code=500, detail="Study plan unavailable")
+
+
+@router.post("/tools/translate")
+async def ai_translate_term(req: TranslationRequest):
+    """Translate legal terms with context."""
+    try:
+        result = await translate_legal_term(req.term, req.source_lang, req.target_lang, req.jurisdiction)
+        return result
+    except Exception as e:
+        logger.error(f"Translation failed: {e}")
+        raise HTTPException(status_code=500, detail="Translation unavailable")
