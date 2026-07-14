@@ -9,7 +9,7 @@ logger = logging.getLogger("juriscore")
 
 _api_key = ""
 _base_url = "https://integrate.api.nvidia.com/v1"
-_model = "nvidia/nemotron-mini-4b-instruct"
+_model = "stepfun-ai/step-3.7-flash"
 
 HUMANIZE_SYSTEM = """You are a senior Kenyan legal scholar who writes with genuine authority and a distinct voice. You write like a real person who has spent years in courtrooms and libraries — not like a language model.
 
@@ -38,7 +38,7 @@ def init_backend():
         logger.warning("No NVIDIA_API_KEY set - AI features disabled")
 
 
-async def _call_model(prompt: str, max_tokens: int = 1024, system: str = None) -> str:
+async def _call_model(prompt: str, max_tokens: int = 1024, system: str = None, temperature: float = 0.7) -> str:
     """Call NVIDIA API asynchronously using httpx directly."""
     if not _api_key:
         logger.warning("_call_model called but no API key set")
@@ -51,7 +51,7 @@ async def _call_model(prompt: str, max_tokens: int = 1024, system: str = None) -
         payload = {
             "model": _model,
             "messages": messages,
-            "temperature": 0.7,
+            "temperature": temperature,
             "max_tokens": max_tokens,
             "top_p": 0.9,
         }
@@ -59,7 +59,7 @@ async def _call_model(prompt: str, max_tokens: int = 1024, system: str = None) -
             "Authorization": f"Bearer {_api_key}",
             "Content-Type": "application/json",
         }
-        async with httpx.AsyncClient(timeout=60) as client:
+        async with httpx.AsyncClient(timeout=90) as client:
             resp = await client.post(
                 f"{_base_url}/chat/completions",
                 json=payload,
@@ -68,6 +68,8 @@ async def _call_model(prompt: str, max_tokens: int = 1024, system: str = None) -
             resp.raise_for_status()
             data = resp.json()
             content = data["choices"][0]["message"]["content"].strip()
+            # Strip thinking tags if present (step-3.7-flash may include reasoning)
+            content = re.sub(r"<thinking>.*?</thinking>", "", content, flags=re.DOTALL).strip()
             if content.startswith("```"):
                 content = re.sub(r"^```(?:json)?\s*", "", content)
                 content = re.sub(r"\s*```$", "", content)
@@ -105,7 +107,7 @@ Case text:
 {full_text[:6000]}
 
 JSON:"""
-    raw = await _call_model(prompt)
+    raw = await _call_model(prompt, temperature=0.5)
     parsed = _parse_json(raw, {})
     if isinstance(parsed, dict):
         for key in ["facts", "issues", "holdings", "ratio", "obiter", "cases_cited"]:
@@ -134,7 +136,7 @@ Case text:
 {full_text[:6000]}
 
 JSON:"""
-    raw = await _call_model(prompt)
+    raw = await _call_model(prompt, temperature=0.5)
     parsed = _parse_json(raw, {})
     if isinstance(parsed, dict):
         for key in ["facts", "issues", "holdings", "ratio", "key_quotes", "annotations"]:
@@ -153,7 +155,7 @@ Return ONLY valid JSON with: parties, year, court, neutral_citation, formatted.
 {json.dumps(case_data)[:2000]}
 
 JSON:"""
-    raw = await _call_model(prompt)
+    raw = await _call_model(prompt, temperature=0.3)
     parsed = _parse_json(raw, {})
     if isinstance(parsed, dict):
         for key in ["parties", "year", "court", "neutral_citation", "formatted"]:
@@ -176,7 +178,7 @@ Case B:
 {case_b_text[:4000]}
 
 JSON:"""
-    raw = await _call_model(prompt)
+    raw = await _call_model(prompt, temperature=0.5)
     parsed = _parse_json(raw, {})
     if isinstance(parsed, dict):
         for key in ["similarities", "differences", "legal_proposition_a", "legal_proposition_b", "recommendation"]:
@@ -198,7 +200,7 @@ Return ONLY valid JSON with keys front and back.
 {json.dumps(case_data)[:2000]}
 
 JSON:"""
-    raw = await _call_model(prompt)
+    raw = await _call_model(prompt, temperature=0.5)
     parsed = _parse_json(raw, {})
     if isinstance(parsed, dict):
         parsed.setdefault("front", "What is the holding?")
@@ -225,7 +227,7 @@ Document details:
 
 Write 2-3 paragraphs. Be direct. Name specific legal principles. If it's a case, state the ratio. If it's legislation, state what it regulates. Don't use AI words like "delve", "comprehensive", or "in conclusion"."""
 
-    result = await _call_model(prompt, max_tokens=800)
+    result = await _call_model(prompt, max_tokens=800, temperature=0.6)
     return result if result else f"Summary unavailable for: {title}"
 
 
@@ -239,7 +241,7 @@ Return ONLY a JSON array of strings (max 40 words each).
 {text[:6000]}
 
 JSON:"""
-    raw = await _call_model(prompt, max_tokens=512)
+    raw = await _call_model(prompt, max_tokens=512, temperature=0.4)
     parsed = _parse_json(raw, [])
     if isinstance(parsed, list):
         return parsed[:max_quotes]
@@ -248,47 +250,76 @@ JSON:"""
 
 # ---------- AI Search ----------
 
-QUERY_REWRITE_SYSTEM = """You are a legal search assistant for KenyaLaw.org (Kenyan legal database).
-Your job: take a user's search query and produce an improved search query that will find the best results.
+QUERY_REWRITE_SYSTEM = """You are an expert legal search assistant specializing in Kenyan law and the KenyaLaw.org database.
+
+Your task: take a user's search query and produce an improved search query that will find the best results from KenyaLaw.org.
+
+THINK STEP BY STEP:
+1. Identify what the user is actually looking for (case name, legal topic, statute, court, etc.)
+2. Fix ALL misspellings and typos (e.g. "constituion" → "constitution", "crimnal" → "criminal", "Odhiambo" → "Ochieng" if that's the common spelling)
+3. Expand abbreviations: MR → Mining Regulations, EMCA → Environmental Management Act, CPC → Criminal Procedure Code, KLR → Kenya Law Reports
+4. If the query is a case name, keep it but fix spelling and add the year if known
+5. If the query is vague, add legal context (e.g. "land dispute" → "land dispute property ownership Kenya")
+6. If the query mentions a specific area of law, add relevant statute names
+7. Consider both Swahili and English legal terms
+
+Return ONLY a JSON object: {"query": "corrected search query", "suggestions": ["alternative search 1", "alternative search 2", "alternative search 3"], "reasoning": "brief explanation of what you changed and why"}
 
 RULES:
-- Fix ALL misspellings and typos (e.g. "constituion" → "constitution", "crimnal" → "criminal")
-- Expand abbreviations: MR → Mining Regulations, EMCA → Environmental Management Act, CPC → Criminal Procedure Code
-- If the query is a case name, keep it but fix spelling (e.g. "Republic v Odhiambo" stays as case name)
-- If the query is vague, add legal context (e.g. "land dispute" → "land dispute property ownership")
-- Return ONLY a JSON object: {"query": "corrected search query", "suggestions": ["alternative search 1", "alternative search 2"]}
 - Keep the main query under 15 words
-- suggestions should be 1-3 related searches the user might also want"""
+- suggestions should be 1-3 related searches the user might also want
+- reasoning should be one sentence explaining your changes"""
 
 
 async def rewrite_search_query(query: str) -> Dict[str, Any]:
-    """Use AI to correct misspellings and expand search queries."""
+    """Use AI to correct misspellings and expand search queries with chain-of-thought reasoning."""
     if not _api_key or len(query.strip()) < 2:
         return {"query": query, "suggestions": [], "corrected": False}
 
-    prompt = f"""Correct and improve this legal search query for KenyaLaw.org:
+    prompt = f"""Correct and improve this legal search query for KenyaLaw.org.
 
-"{query}"
+User's query: "{query}"
 
-Return JSON: {{"query": "corrected query", "suggestions": ["alt1", "alt2"]}}"""
+Think through:
+1. What is the user looking for? (case/legislation/topic)
+2. Are there any misspellings?
+3. What abbreviations need expanding?
+4. What additional terms would improve results?
 
-    raw = await _call_model(prompt, max_tokens=150, system=QUERY_REWRITE_SYSTEM)
+Then return JSON: {{"query": "corrected query", "suggestions": ["alt1", "alt2"], "reasoning": "what you changed"}}"""
+
+    raw = await _call_model(prompt, max_tokens=300, system=QUERY_REWRITE_SYSTEM, temperature=0.3)
     parsed = _parse_json(raw, {})
     if isinstance(parsed, dict):
         corrected_query = parsed.get("query", query).strip()
         suggestions = parsed.get("suggestions", [])
+        reasoning = parsed.get("reasoning", "")
         corrected = corrected_query.lower().replace(" ", "") != query.lower().replace(" ", "")
+        if reasoning:
+            logger.info(f"AI query rewrite reasoning: {reasoning}")
         return {"query": corrected_query, "suggestions": suggestions[:3], "corrected": corrected}
     return {"query": query, "suggestions": [], "corrected": False}
 
 
+RANK_SYSTEM = """You are a legal research expert specializing in Kenyan law. Your task is to rank search results by their relevance to a user's query.
+
+THINK STEP BY STEP for each result:
+1. Does the title match what the user is looking for?
+2. Is the court/jurisdiction relevant?
+3. Is the document type what they want (case, legislation, etc.)?
+4. Is the date/recentness relevant?
+5. Overall relevance score (0-10)
+
+Then rank from most relevant to least relevant."""
+
+
 async def rank_search_results(query: str, results: List[Dict], top_n: int = 30) -> List[Dict]:
-    """Use AI to re-rank search results by relevance."""
+    """Use AI to re-rank search results by relevance with chain-of-thought reasoning."""
     if not _api_key or not results:
         return results
 
     listing = "\n".join(
-        f"[{i}] {r.get('title', 'Untitled')} | {r.get('court', '')} | {r.get('doc_type', '')} | {r.get('date', '')}"
+        f"[{i}] {r.get('title', 'Untitled')} | Court: {r.get('court', 'N/A')} | Type: {r.get('doc_type', 'N/A')} | Date: {r.get('date', 'N/A')} | Excerpt: {r.get('excerpt', '')[:100]}"
         for i, r in enumerate(results)
     )
 
@@ -297,11 +328,12 @@ async def rank_search_results(query: str, results: List[Dict], top_n: int = 30) 
 Results:
 {listing}
 
-Return ONLY a JSON array of indices in order of relevance (most relevant first).
-Return at most {top_n} indices. Only include results that are actually relevant.
+For each result, briefly note why it is or isn't relevant, then return ONLY a JSON array of indices in order of relevance (most relevant first).
+Return at most {top_n} indices. Only include results that are actually relevant (score >= 5).
+
 Example: [0, 5, 2, 8]"""
 
-    raw = await _call_model(prompt, max_tokens=300, system=QUERY_REWRITE_SYSTEM)
+    raw = await _call_model(prompt, max_tokens=500, system=RANK_SYSTEM, temperature=0.3)
     parsed = _parse_json(raw, [])
     if isinstance(parsed, list):
         ranked = []

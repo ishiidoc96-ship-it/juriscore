@@ -111,10 +111,16 @@ async def search_kenyalaw(
     )
 
     # Step 1: AI query rewriting (fix misspellings, expand terms)
-    query_info = await rewrite_search_query(query)
-    search_query = query_info["query"]
-    suggestions = query_info.get("suggestions", [])
-    query_corrected = query_info.get("corrected", False)
+    try:
+        query_info = await rewrite_search_query(query)
+        search_query = query_info["query"]
+        suggestions = query_info.get("suggestions", [])
+        query_corrected = query_info.get("corrected", False)
+    except Exception as e:
+        logger.warning(f"AI query rewrite failed, using original: {e}")
+        search_query = query
+        suggestions = []
+        query_corrected = False
 
     logger.info(f"AI query rewrite: '{query}' → '{search_query}' (corrected={query_corrected})")
 
@@ -159,6 +165,48 @@ async def search_kenyalaw(
     all_items = data.get("results", [])
     total_count = data.get("count", 0)
 
+    # If no results with corrected query, try the original query
+    if not all_items and query_corrected and search_query != query:
+        logger.info(f"No results with corrected query '{search_query}', trying original '{query}'")
+        try:
+            params_original = {
+                "search": query,
+                "page": str(page),
+                "ordering": ordering,
+            }
+            resp = await _get(KENYALAW_SEARCH_API, params=params_original)
+            data = resp.json()
+            all_items = data.get("results", [])
+            total_count = data.get("count", 0)
+            if all_items:
+                search_query = query
+                query_corrected = False
+        except Exception as e:
+            logger.warning(f"Fallback search also failed: {e}")
+
+    # If still no results, try a simplified query (remove common words)
+    if not all_items and len(query.split()) > 2:
+        stop_words = {"the", "a", "an", "in", "of", "for", "and", "or", "v", "vs", "versus", "case", "law", "matter"}
+        simple_words = [w for w in query.lower().split() if w not in stop_words]
+        if simple_words:
+            simple_query = " ".join(simple_words)
+            logger.info(f"No results, trying simplified query: '{simple_query}'")
+            try:
+                params_simple = {
+                    "search": simple_query,
+                    "page": str(page),
+                    "ordering": ordering,
+                }
+                resp = await _get(KENYALAW_SEARCH_API, params=params_simple)
+                data = resp.json()
+                all_items = data.get("results", [])
+                total_count = data.get("count", 0)
+                if all_items:
+                    search_query = simple_query
+                    query_corrected = True
+            except Exception as e:
+                logger.warning(f"Simplified search also failed: {e}")
+
     # Step 5: Client-side filtering with fuzzy matching
     results = []
     for item in all_items:
@@ -177,7 +225,10 @@ async def search_kenyalaw(
 
     # Step 6: AI-powered result ranking (only if we have results and query was non-trivial)
     if results and len(results) > 3 and query.strip():
-        results = await rank_search_results(query, results, limit)
+        try:
+            results = await rank_search_results(query, results, limit)
+        except Exception as e:
+            logger.warning(f"AI result ranking failed, using original order: {e}")
 
     # Extract facets
     facets_raw = data.get("facets", {})
