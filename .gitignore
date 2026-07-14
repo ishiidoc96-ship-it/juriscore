@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.pnp.*
+.yarn/*
+
+# Environment
+.env
+.env.local
+.env.*.local
+frontend/.env
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Python
+venv/
+.venv/
+*.egg-info/
+*.db
+
+# Supabase
+.supabase/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.apk
+*.aab
+*.ipa
+
+# Cache
+.cache/
+.python-version
+
+# Logs
+*.log
+npm-debug.log*
