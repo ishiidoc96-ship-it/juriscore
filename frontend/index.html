@@ -111,6 +111,54 @@ tailwind.config = {
   @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
   .spinner { border: 3px solid #e7eefe; border-top: 3px solid #003ec7; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; display: inline-block; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Search redesign */
+  .search-hero { background: linear-gradient(135deg, #003ec7 0%, #0052ff 100%); border-radius: 24px; padding: 48px 32px 40px; margin-bottom: 32px; position: relative; overflow: hidden; }
+  .search-hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .search-hero::after { content: ''; position: absolute; bottom: -40px; left: 20%; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+  .search-input-hero { width: 100%; padding: 18px 24px 18px 56px; border: none; border-radius: 16px; font-size: 17px; font-family: Inter; background: white; color: #151c27; box-shadow: 0 4px 24px rgba(0,0,0,0.15); outline: none; transition: box-shadow 0.2s; }
+  .search-input-hero:focus { box-shadow: 0 4px 32px rgba(0,0,0,0.25); }
+  .search-input-hero::placeholder { color: #9ca3af; }
+
+  .filter-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; -ms-overflow-style: none; scrollbar-width: none; }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .filter-chip { flex-shrink: 0; padding: 8px 18px; border-radius: 100px; font-size: 13px; font-weight: 600; font-family: Geist; border: 1.5px solid #dce2f3; background: white; color: #434656; cursor: pointer; transition: all 0.15s ease; white-space: nowrap; }
+  .filter-chip:hover { border-color: #003ec7; color: #003ec7; background: #f0f3ff; }
+  .filter-chip.active { background: #003ec7; color: white; border-color: #003ec7; box-shadow: 0 2px 8px rgba(0,62,199,0.3); }
+  .filter-chip.active:hover { background: #0044e0; }
+
+  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0 12px; border-bottom: 2px solid #e7eefe; margin-bottom: 16px; }
+  .section-header h2 { font-family: Geist; font-size: 18px; font-weight: 700; color: #151c27; display: flex; align-items: center; gap: 10px; }
+  .section-count { font-size: 12px; font-weight: 600; color: #003ec7; background: #dde1ff; padding: 2px 10px; border-radius: 100px; }
+  .section-view-more { font-size: 13px; font-weight: 600; color: #003ec7; cursor: pointer; transition: color 0.15s; text-decoration: none; }
+  .section-view-more:hover { color: #001452; }
+
+  .result-card { background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s ease; position: relative; overflow: hidden; }
+  .result-card:hover { border-color: #003ec7; box-shadow: 0 8px 32px rgba(0,62,199,0.12); transform: translateY(-2px); }
+  .result-card:active { transform: translateY(0); }
+  .result-card .card-type-badge { position: absolute; top: 0; left: 0; padding: 4px 14px 4px 12px; border-radius: 0 0 12px 0; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+  .result-card .card-title { font-family: Geist; font-size: 16px; font-weight: 600; line-height: 1.4; color: #151c27; margin: 8px 0 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .result-card:hover .card-title { color: #003ec7; }
+  .result-card .card-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .result-card .card-meta .meta-chip { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 6px; background: #f0f3ff; color: #434656; }
+  .result-card .card-excerpt { font-size: 13px; line-height: 1.5; color: #737688; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 8px; }
+  .result-card .card-excerpt mark { background: #dde1ff; color: #003ec7; padding: 0 2px; border-radius: 2px; }
+  .result-card .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f3ff; }
+  .result-card .card-footer .source-link { font-size: 12px; font-weight: 600; color: #003ec7; display: flex; align-items: center; gap: 4px; }
+
+  .skeleton-card { background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; }
+  .skeleton-line { height: 12px; background: linear-gradient(90deg, #f0f3ff 25%, #e7eefe 50%, #f0f3ff 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
+  .skeleton-line.w-30 { width: 30%; }
+  .skeleton-line.w-50 { width: 50%; }
+  .skeleton-line.w-80 { width: 80%; }
+  .skeleton-line.w-full { width: 100%; }
+  .skeleton-line.h-4 { height: 4px; }
+  .skeleton-line.h-5 { height: 5px; }
+  @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+  .results-summary { display: flex; align-items: center; gap: 12px; padding: 16px 0; flex-wrap: wrap; }
+  .results-summary .query-badge { font-family: Geist; font-size: 14px; font-weight: 600; color: #003ec7; background: #dde1ff; padding: 4px 14px; border-radius: 100px; }
+  .results-summary .total-text { font-size: 14px; color: #737688; }
 </style>
 </head>
 <body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col">
@@ -214,48 +262,68 @@ tailwind.config = {
 <!-- ======================== SCREEN: SEARCH ======================== -->
 <section id="screen-search" class="screen">
   <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg">
-    <section class="mb-stack-lg">
-      <div class="font-headline-md text-headline-md mb-stack-md text-on-surface">Search Kenya Law</div>
-      <div class="relative max-w-2xl">
-        <span class="material-symbols-outlined absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">search</span>
-        <input id="search-input" onkeydown="if(event.key==='Enter')doSearch()" class="w-full pl-12 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all shadow-sm" placeholder="Search cases, legislation, gazettes, publications..." type="text"/>
-      </div>
-      <button onclick="doSearch()" class="mt-2 bg-primary-container text-on-primary font-label-md text-label-md py-2 px-6 rounded-lg hover:bg-primary transition-colors">Search</button>
-    </section>
-    <section class="mb-stack-lg">
-      <div class="flex flex-col gap-stack-md">
-        <div>
-          <div class="font-label-md text-label-md text-secondary mb-stack-sm">CONTENT TYPE</div>
-          <div class="flex overflow-x-auto hide-scrollbar gap-unit pb-2">
-            <button onclick="setFilter('doc_type','')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-inverse-on-surface text-primary-container border border-primary-container/20">All Types</button>
-            <button onclick="setFilter('doc_type','judgment')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Case Law</button>
-            <button onclick="setFilter('doc_type','legislation')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Legislation</button>
-            <button onclick="setFilter('doc_type','gazette')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Gazette</button>
-            <button onclick="setFilter('doc_type','bill')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Bills</button>
-            <button onclick="setFilter('doc_type','generic_document')" class="filter-doc_type whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Publications</button>
-          </div>
-        </div>
-        <div>
-          <div class="font-label-md text-label-md text-secondary mb-stack-sm">COURT</div>
-          <div class="flex overflow-x-auto hide-scrollbar gap-unit pb-2">
-            <button onclick="setFilter('court','')" class="filter-court whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-inverse-on-surface text-primary-container border border-primary-container/20">All Courts</button>
-            <button onclick="setFilter('court','Supreme Court')" class="filter-court whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Supreme Court</button>
-            <button onclick="setFilter('court','High Court')" class="filter-court whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">High Court</button>
-            <button onclick="setFilter('court','Court of Appeal')" class="filter-court whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Court of Appeal</button>
-            <button onclick="setFilter('court','Employment and Labour Relations Court')" class="filter-court whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Employment Court</button>
-            <button onclick="setFilter('court','Environment and Land Court')" class="filter-court whitespace-nowrap px-4 py-2 rounded-full font-body-sm bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-variant transition-colors">Environment & Land</button>
-          </div>
+    <!-- Hero search -->
+    <div class="search-hero">
+      <div class="relative z-10">
+        <h1 class="font-display-lg-mobile md:font-display-lg text-white mb-stack-md" style="font-size:28px;line-height:1.2;">Search Kenya Law</h1>
+        <p class="text-blue-100 font-body-md mb-stack-md" style="opacity:0.85;">Cases, legislation, gazettes, bills, and publications</p>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-5 top-1/2 transform -translate-y-1/2" style="color:#9ca3af;font-size:22px;">search</span>
+          <input id="search-input" onkeydown="if(event.key==='Enter')doSearch()" class="search-input-hero" placeholder="Try &quot;murder conviction&quot;, &quot;sale of goods act&quot;, &quot;constitutional law&quot;..." type="text"/>
+          <button onclick="doSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors" style="font-family:Geist;">Search</button>
         </div>
       </div>
-    </section>
-    <section>
-      <div class="flex justify-between items-center mb-stack-md border-b border-outline-variant pb-2">
-        <div id="search-count" class="font-body-md text-secondary">Ready to search</div>
+    </div>
+
+    <!-- Filter chips -->
+    <div class="space-y-4 mb-stack-lg">
+      <div>
+        <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:#737688;">Content Type</div>
+        <div class="filter-row" id="filter-doc-types">
+          <button onclick="setFilter('doc_type','')" class="filter-chip active" data-filter="doc_type" data-value="">All Types</button>
+          <button onclick="setFilter('doc_type','judgment')" class="filter-chip" data-filter="doc_type" data-value="judgment">Case Law</button>
+          <button onclick="setFilter('doc_type','legislation')" class="filter-chip" data-filter="doc_type" data-value="legislation">Legislation</button>
+          <button onclick="setFilter('doc_type','gazette')" class="filter-chip" data-filter="doc_type" data-value="gazette">Gazette</button>
+          <button onclick="setFilter('doc_type','bill')" class="filter-chip" data-filter="doc_type" data-value="bill">Bills</button>
+          <button onclick="setFilter('doc_type','generic_document')" class="filter-chip" data-filter="doc_type" data-value="generic_document">Publications</button>
+        </div>
       </div>
-      <div id="search-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter"></div>
-      <div id="search-loading" class="hidden flex items-center justify-center py-stack-lg"><span class="spinner"></span></div>
-      <div id="search-empty" class="hidden text-center py-stack-lg text-secondary font-body-md">No results found. Try a different search.</div>
-    </section>
+      <div>
+        <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:#737688;">Court</div>
+        <div class="filter-row" id="filter-courts">
+          <button onclick="setFilter('court','')" class="filter-chip active" data-filter="court" data-value="">All Courts</button>
+          <button onclick="setFilter('court','Supreme Court')" class="filter-chip" data-filter="court" data-value="Supreme Court">Supreme Court</button>
+          <button onclick="setFilter('court','High Court')" class="filter-chip" data-filter="court" data-value="High Court">High Court</button>
+          <button onclick="setFilter('court','Court of Appeal')" class="filter-chip" data-filter="court" data-value="Court of Appeal">Court of Appeal</button>
+          <button onclick="setFilter('court','Employment and Labour Relations Court')" class="filter-chip" data-filter="court" data-value="Employment and Labour Relations Court">Employment Court</button>
+          <button onclick="setFilter('court','Environment and Land Court')" class="filter-chip" data-filter="court" data-value="Environment and Land Court">Environment & Land</button>
+          <button onclick="setFilter('court','Magistrate')" class="filter-chip" data-filter="court" data-value="Magistrate">Magistrate's Court</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results summary -->
+    <div id="results-summary" class="results-summary" style="display:none;"></div>
+
+    <!-- Loading state -->
+    <div id="search-loading" class="hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="skeleton-card"><div class="skeleton-line w-30 h-4 mb-3"></div><div class="skeleton-line w-80 mb-2"></div><div class="skeleton-line w-50 mb-3"></div><div class="skeleton-line w-full h-4"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line w-30 h-4 mb-3"></div><div class="skeleton-line w-80 mb-2"></div><div class="skeleton-line w-50 mb-3"></div><div class="skeleton-line w-full h-4"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line w-30 h-4 mb-3"></div><div class="skeleton-line w-80 mb-2"></div><div class="skeleton-line w-50 mb-3"></div><div class="skeleton-line w-full h-4"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line w-30 h-4 mb-3"></div><div class="skeleton-line w-80 mb-2"></div><div class="skeleton-line w-50 mb-3"></div><div class="skeleton-line w-full h-4"></div></div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="search-empty" class="hidden text-center py-16">
+      <span class="material-symbols-outlined mb-4" style="font-size:56px;color:#c3c5d9;">search_off</span>
+      <p class="font-headline-md text-headline-md mb-2" style="color:#434656;">No results found</p>
+      <p class="font-body-md" style="color:#737688;">Try a different search term or adjust your filters</p>
+    </div>
+
+    <!-- Results container (grouped sections rendered here) -->
+    <div id="search-results"></div>
   </main>
 </section>
 
@@ -452,7 +520,6 @@ tailwind.config = {
   const bottomNav = document.getElementById('app-bottom-nav');
   let currentCaseId = null;
   let currentNotebookFolderId = null;
-  let searchFilters = { court: '', subject: '', doc_type: '' };
   let studyState = { deckId: null, cards: [], currentIndex: 0, flipped: false };
 
   // ---- Auth ----
@@ -620,38 +687,100 @@ tailwind.config = {
   }
 
   // ---- Search ----
-  const DOC_TYPE_COLORS = {
-    judgment: 'bg-blue-100 text-blue-800',
-    legislation: 'bg-green-100 text-green-800',
-    gazette: 'bg-purple-100 text-purple-800',
-    bill: 'bg-orange-100 text-orange-800',
-    generic_document: 'bg-teal-100 text-teal-800',
-    journal: 'bg-rose-100 text-rose-800',
-    causelist: 'bg-gray-100 text-gray-800',
+  const DOC_TYPE_META = {
+    judgment:     { label: 'Case Law',    icon: 'gavel',            color: '#003ec7', bg: '#dde1ff' },
+    legislation:  { label: 'Legislation',  icon: 'policy',           color: '#166534', bg: '#dcfce7' },
+    gazette:      { label: 'Gazette',      icon: 'newspaper',        color: '#6b21a8', bg: '#f3e8ff' },
+    bill:         { label: 'Bill',         icon: 'draft',            color: '#9a3412', bg: '#fff7ed' },
+    generic_document: { label: 'Publication', icon: 'article',       color: '#0e7490', bg: '#ecfeff' },
+    journal:      { label: 'Journal',      icon: 'auto_stories',     color: '#be123c', bg: '#fff1f2' },
+    causelist:    { label: 'Cause List',   icon: 'calendar_today',   color: '#374151', bg: '#f3f4f6' },
   };
+
+  let searchFilters = { court: '', subject: '', doc_type: '' };
+  let lastSearchQuery = '';
 
   window.setFilter = function(type, value) {
     searchFilters[type] = value;
-    document.querySelectorAll('.filter-' + type).forEach(btn => {
-      btn.classList.remove('bg-inverse-on-surface','text-primary-container','border-primary-container/20');
-      btn.classList.add('bg-surface-container-low','text-on-surface','border-outline-variant');
+    const container = document.getElementById(type === 'doc_type' ? 'filter-doc-types' : 'filter-courts');
+    if (!container) return;
+    container.querySelectorAll('.filter-chip').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.value === value);
     });
-    event.target.classList.remove('bg-surface-container-low','text-on-surface','border-outline-variant');
-    event.target.classList.add('bg-inverse-on-surface','text-primary-container','border-primary-container/20');
+  };
+
+  function renderCard(c) {
+    const meta = DOC_TYPE_META[c.doc_type] || { label: c.doc_type, icon: 'description', color: '#374151', bg: '#f3f4f6' };
+    const dateStr = c.date || '';
+    const courtStr = c.court || '';
+    const judgesStr = (c.judges || []).join(', ');
+    const excerpt = c.excerpt ? c.excerpt.replace(/<[^>]+>/g, '') : '';
+    const linkUrl = c.url || '#';
+
+    let metaHtml = '';
+    if (courtStr) metaHtml += '<span class="meta-chip">' + courtStr + '</span>';
+    if (dateStr) metaHtml += '<span class="meta-chip">' + dateStr + '</span>';
+    if (c.nature && c.nature !== c.doc_type_label) metaHtml += '<span class="meta-chip">' + c.nature + '</span>';
+    if (judgesStr) metaHtml += '<span class="meta-chip">' + judgesStr + '</span>';
+
+    return '<div onclick="window.open(\'' + linkUrl + '\',\'_blank\')" class="result-card">' +
+      '<div class="card-type-badge" style="background:' + meta.bg + ';color:' + meta.color + ';">' +
+        '<span class="material-symbols-outlined" style="font-size:13px;vertical-align:middle;margin-right:4px;">' + meta.icon + '</span>' +
+        meta.label +
+      '</div>' +
+      '<div class="card-title" style="margin-top:28px;">' + c.title + '</div>' +
+      (c.citation ? '<div style="font-size:12px;color:#737688;font-family:Geist;margin-bottom:8px;">' + c.citation + '</div>' : '') +
+      (metaHtml ? '<div class="card-meta">' + metaHtml + '</div>' : '') +
+      (excerpt ? '<div class="card-excerpt">' + excerpt + '</div>' : '') +
+      '<div class="card-footer">' +
+        '<span style="font-size:11px;color:#9ca3af;">' + (c.registry || '') + '</span>' +
+        '<span class="source-link">View on Kenya Law <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span></span>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderSection(title, icon, items, maxShow) {
+    maxShow = maxShow || 6;
+    if (!items.length) return '';
+    const showing = items.slice(0, maxShow);
+    const remaining = items.length - maxShow;
+
+    let html = '<div class="mb-8">';
+    html += '<div class="section-header">';
+    html += '<h2><span class="material-symbols-outlined" style="font-size:22px;color:#003ec7;">' + icon + '</span> ' + title + ' <span class="section-count">' + items.length + '</span></h2>';
+    if (remaining > 0) {
+      html += '<span class="section-view-more" onclick="setFilterAndSearch(\'' + title + '\')">View all ' + items.length + ' &rarr;</span>';
+    }
+    html += '</div>';
+    html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">';
+    showing.forEach(c => { html += renderCard(c); });
+    html += '</div></div>';
+    return html;
+  }
+
+  window.setFilterAndSearch = function(typeLabel) {
+    const typeMap = { 'Case Law': 'judgment', 'Legislation': 'legislation', 'Gazette': 'gazette', 'Bill': 'bill', 'Publication': 'generic_document' };
+    const docType = typeMap[typeLabel] || '';
+    searchFilters.doc_type = docType;
+    const container = document.getElementById('filter-doc-types');
+    if (container) container.querySelectorAll('.filter-chip').forEach(btn => btn.classList.toggle('active', btn.dataset.value === docType));
+    doSearch();
   };
 
   window.doSearch = async function() {
     const q = document.getElementById('search-input').value.trim();
     if (!q && !searchFilters.court && !searchFilters.doc_type) return;
 
+    lastSearchQuery = q;
     const resultsEl = document.getElementById('search-results');
     const loadingEl = document.getElementById('search-loading');
     const emptyEl = document.getElementById('search-empty');
-    const countEl = document.getElementById('search-count');
+    const summaryEl = document.getElementById('results-summary');
 
     resultsEl.innerHTML = '';
     loadingEl.classList.remove('hidden');
     emptyEl.classList.add('hidden');
+    summaryEl.style.display = 'none';
 
     try {
       let url = '/search?q=' + encodeURIComponent(q || '');
@@ -663,43 +792,56 @@ tailwind.config = {
 
       const results = data.results || [];
       const total = data.count || 0;
-      countEl.textContent = total.toLocaleString() + ' results found' + (q ? ' for "' + q + '"' : '');
 
       if (!results.length) {
         emptyEl.classList.remove('hidden');
         return;
       }
 
-      resultsEl.innerHTML = results.map(c => {
-        const typeColor = DOC_TYPE_COLORS[c.doc_type] || 'bg-gray-100 text-gray-800';
-        const typeLabel = c.doc_type_label || c.doc_type || '';
-        const courtBadge = c.court ? '<span class="font-label-xs text-label-xs text-secondary bg-surface-container-low px-2 py-0.5 rounded">' + c.court + '</span>' : '';
-        const dateBadge = c.date ? '<span class="font-label-xs text-label-xs text-tertiary">' + c.date + '</span>' : '';
-        const judgesStr = (c.judges || []).join(', ');
-        const excerpt = c.excerpt ? '<p class="font-body-sm text-body-sm text-secondary line-clamp-2 mt-1">' + c.excerpt.replace(/<[^>]+>/g, '') + '</p>' : '';
-        const linkUrl = c.url || '#';
+      // Show summary
+      let summaryHtml = '';
+      if (q) summaryHtml += '<span class="query-badge">"' + q + '"</span>';
+      summaryHtml += '<span class="total-text">' + total.toLocaleString() + ' result' + (total !== 1 ? 's' : '') + '</span>';
+      if (searchFilters.doc_type) {
+        const m = DOC_TYPE_META[searchFilters.doc_type];
+        if (m) summaryHtml += '<span class="query-badge" style="background:' + m.bg + ';color:' + m.color + ';">' + m.label + '</span>';
+      }
+      if (searchFilters.court) {
+        summaryHtml += '<span class="query-badge">' + searchFilters.court + '</span>';
+      }
+      summaryEl.innerHTML = summaryHtml;
+      summaryEl.style.display = 'flex';
 
-        return '<div onclick="window.open(\'' + linkUrl + '\',\'_blank\')" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-stack-md hover:border-secondary hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">' +
-          '<div>' +
-            '<div class="flex justify-between items-start mb-2 gap-2">' +
-              '<span class="whitespace-nowrap px-2 py-0.5 rounded text-[10px] font-semibold uppercase ' + typeColor + '">' + typeLabel + '</span>' +
-              '<div class="flex gap-2 items-center">' + dateBadge + '</div>' +
-            '</div>' +
-            '<h3 class="font-title-lg text-title-lg text-on-surface mb-1 group-hover:text-primary-container transition-colors line-clamp-3">' + c.title + '</h3>' +
-            '<p class="font-code-snippet text-code-snippet text-secondary mb-1">' + (c.citation || '') + '</p>' +
-            (judgesStr ? '<p class="font-body-sm text-body-sm text-secondary">Judges: ' + judgesStr + '</p>' : '') +
-            excerpt +
-          '</div>' +
-          '<div class="flex gap-2 mt-auto flex-wrap">' +
-            courtBadge +
-            (c.nature ? '<span class="font-label-xs text-label-xs text-secondary bg-surface-variant px-2 py-0.5 rounded">' + c.nature + '</span>' : '') +
-            (c.registry ? '<span class="font-label-xs text-label-xs text-secondary bg-surface-variant px-2 py-0.5 rounded">' + c.registry + '</span>' : '') +
-          '</div>' +
+      // If a specific doc_type filter is active, show flat grid
+      if (searchFilters.doc_type) {
+        resultsEl.innerHTML = '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">' +
+          results.map(c => renderCard(c)).join('') +
         '</div>';
-      }).join('');
+        return;
+      }
+
+      // Group results by doc_type for "All Types" view
+      const groups = {};
+      const groupOrder = ['judgment', 'legislation', 'gazette', 'bill', 'generic_document', 'journal', 'causelist'];
+      results.forEach(c => {
+        const dt = c.doc_type || 'judgment';
+        if (!groups[dt]) groups[dt] = [];
+        groups[dt].push(c);
+      });
+
+      let html = '';
+      groupOrder.forEach(dt => {
+        if (groups[dt] && groups[dt].length) {
+          const meta = DOC_TYPE_META[dt] || { label: dt, icon: 'description' };
+          html += renderSection(meta.label, meta.icon, groups[dt], dt === 'judgment' ? 6 : 4);
+        }
+      });
+
+      resultsEl.innerHTML = html || results.map(c => renderCard(c)).join('');
     } catch (e) {
       loadingEl.classList.add('hidden');
-      countEl.textContent = 'Search failed. Please try again.';
+      emptyEl.classList.remove('hidden');
+      emptyEl.querySelector('p').textContent = 'Search failed. Please try again.';
       console.error('Search error:', e);
     }
   };
