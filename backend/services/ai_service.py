@@ -9,7 +9,7 @@ logger = logging.getLogger("juriscore")
 
 _api_key = ""
 _base_url = "https://integrate.api.nvidia.com/v1"
-_model = "nvidia/llama-3.1-nemotron-70b-instruct"
+_model = "nvidia/nemotron-mini-4b-instruct"
 
 HUMANIZE_SYSTEM = """You are a senior Kenyan legal scholar who writes with genuine authority and a distinct voice. You write like a real person who has spent years in courtrooms and libraries — not like a language model.
 
