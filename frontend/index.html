@@ -64,39 +64,30 @@
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 
-    /* Screen system */
     .screen { display:none; min-height:100dvh; position:relative; }
     .screen.active { display:flex; flex-direction:column; }
 
-    /* Scrollbar */
     ::-webkit-scrollbar { width:6px; height:6px; }
     ::-webkit-scrollbar-track { background:transparent; }
     ::-webkit-scrollbar-thumb { background:#c4c5cf; border-radius:3px; }
     ::-webkit-scrollbar-thumb:hover { background:#74777f; }
 
-    /* Skeleton */
     .skeleton { background:linear-gradient(90deg, #ebedf5 25%, #f0f0f8 50%, #ebedf5 75%); background-size:200% 100%; animation:shimmer 1.5s linear infinite; border-radius:8px; }
-
-    /* Spinner */
     .spinner { width:28px; height:28px; border:3px solid #c4c5cf; border-top-color:#003ec7; border-radius:50%; animation:spin 0.7s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
 
-    /* Glass */
     .glass { background:rgba(255,255,255,0.72); backdrop-filter:blur(20px) saturate(1.8); -webkit-backdrop-filter:blur(20px) saturate(1.8); border:1px solid rgba(255,255,255,0.5); }
     .glass-card { background:rgba(255,255,255,0.65); backdrop-filter:blur(16px) saturate(1.5); border:1px solid rgba(255,255,255,0.4); }
 
-    /* Focus ring */
     .focus-ring:focus-visible { outline:none; box-shadow:0 0 0 3px rgba(66,94,245,0.25); }
     button:focus-visible, input:focus-visible, textarea:focus-visible { outline:none; box-shadow:0 0 0 3px rgba(66,94,245,0.25); }
 
-    /* Toast */
     .toast-wrap { position:fixed; bottom:88px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
-    .toast { padding:12px 20px; border-radius:12px; font-size:13px; font-weight:600; color:#fff; pointer-events:auto; animation:toast-in 0.3s cubic-bezier(0.16,1,0.3,1); box-shadow:0 4px 16px rgba(0,0,0,0.12); white-space:nowrap; }
+    .toast { display:flex; align-items:center; gap:8px; padding:12px 20px; border-radius:12px; font-size:13px; font-weight:600; color:#fff; pointer-events:auto; animation:toast-in 0.3s cubic-bezier(0.16,1,0.3,1); box-shadow:0 4px 16px rgba(0,0,0,0.12); white-space:nowrap; }
     .toast-success { background:#166534; }
     .toast-error { background:#ba1a1a; }
     .toast-info { background:#003ec7; }
 
-    /* Modal */
     .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); z-index:1000; display:flex; align-items:center; justify-content:center; padding:16px; animation:fade-in 0.2s ease-out; }
     .modal-box { background:#fff; border-radius:20px; width:100%; max-width:560px; max-height:85vh; overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,0.16); animation:scale-in 0.25s cubic-bezier(0.16,1,0.3,1); display:flex; flex-direction:column; }
     .modal-header { padding:20px 24px 0; display:flex; justify-content:space-between; align-items:flex-start; }
@@ -108,7 +99,6 @@
     .modal-body p { margin-bottom:12px; }
     .modal-body p:last-child { margin-bottom:0; }
 
-    /* Result card */
     .result-card { background:#fff; border:1px solid #ebedf5; border-radius:14px; padding:20px; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); position:relative; overflow:hidden; }
     .result-card:hover { border-color:#c4c5cf; box-shadow:0 4px 16px rgba(0,62,199,0.06), 0 1px 4px rgba(0,0,0,0.04); transform:translateY(-1px); }
     .card-badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:100px; font-size:11px; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; }
@@ -120,41 +110,42 @@
     .card-actions { display:flex; align-items:center; justify-content:space-between; padding-top:12px; border-top:1px solid #f0f0f8; }
     .btn-primary-sm { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:10px; font-size:12px; font-weight:700; background:#003ec7; color:#fff; border:none; cursor:pointer; transition:all 0.15s; }
     .btn-primary-sm:hover { background:#001b91; box-shadow:0 2px 8px rgba(0,62,199,0.2); }
+    .btn-primary-sm:active { transform:scale(0.96); }
+    .btn-primary-sm:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
     .btn-outline-sm { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:10px; font-size:12px; font-weight:700; background:transparent; color:#003ec7; border:1.5px solid #dde1ff; cursor:pointer; transition:all 0.15s; }
     .btn-outline-sm:hover { background:#dde1ff; }
+    .btn-outline-sm:active { transform:scale(0.96); }
+    .btn-outline-sm:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
 
-    /* Section header */
     .section-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
     .section-hdr h2 { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:700; color:#1a1b20; }
     .section-count { display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:22px; padding:0 6px; border-radius:100px; font-size:11px; font-weight:700; background:#dde1ff; color:#003ec7; }
     .section-more { font-size:13px; font-weight:600; color:#003ec7; cursor:pointer; transition:color 0.15s; }
     .section-more:hover { color:#001b91; }
 
-    /* Filter chips */
     .filter-row { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
     .filter-row::-webkit-scrollbar { display:none; }
     .filter-chip { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:100px; font-size:12px; font-weight:600; white-space:nowrap; border:1.5px solid #ebedf5; background:#fff; color:#737688; cursor:pointer; transition:all 0.15s; flex-shrink:0; }
     .filter-chip:hover { border-color:#c4c5cf; color:#1a1b20; }
+    .filter-chip:active { transform:scale(0.96); }
     .filter-chip.active { border-color:#003ec7; background:#dde1ff; color:#003ec7; }
 
-    /* Tab bar */
     .tab-bar { display:flex; gap:0; border-bottom:2px solid #ebedf5; }
     .tab-item { padding:12px 20px; font-size:13px; font-weight:600; color:#737688; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.15s; white-space:nowrap; }
     .tab-item:hover { color:#1a1b20; }
+    .tab-item:active { transform:scale(0.97); }
     .tab-item.active { color:#003ec7; border-bottom-color:#003ec7; }
 
-    /* Progress bar */
     .progress-track { height:4px; background:#ebedf5; border-radius:2px; overflow:hidden; }
     .progress-fill { height:100%; background:linear-gradient(90deg,#003ec7,#425ef5); border-radius:2px; transition:width 0.4s cubic-bezier(0.16,1,0.3,1); }
 
-    /* Study card */
     .study-card { perspective:1000px; cursor:pointer; }
     .study-card-inner { min-height:240px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; background:#fff; border-radius:20px; border:1.5px solid #ebedf5; transition:all 0.3s cubic-bezier(0.16,1,0.3,1); text-align:center; }
     .study-card:hover .study-card-inner { border-color:#dde1ff; box-shadow:0 4px 20px rgba(0,62,199,0.06); }
+    .study-card:active .study-card-inner { transform:scale(0.98); }
     .study-card-front { font-size:18px; font-weight:650; color:#1a1b20; line-height:1.5; }
     .study-card-back { font-size:15px; color:#44464f; line-height:1.65; }
 
-    /* Bottom nav */
     #app-bottom-nav { background:rgba(255,255,255,0.88); backdrop-filter:blur(24px) saturate(1.8); -webkit-backdrop-filter:blur(24px) saturate(1.8); border-top:1px solid rgba(228,229,235,0.6); }
     .nav-btn { position:relative; padding:6px 0; min-width:56px; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); -webkit-tap-highlight-color:transparent; }
     .nav-btn .material-symbols-outlined { font-size:24px; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); }
@@ -165,72 +156,59 @@
     .nav-btn.active::after { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:24px; height:3px; background:#003ec7; border-radius:0 0 3px 3px; }
     .nav-btn:not(.active) { color:#737688; }
 
-    /* Header */
     #app-header { background:rgba(255,255,255,0.88); backdrop-filter:blur(24px) saturate(1.8); -webkit-backdrop-filter:blur(24px) saturate(1.8); border-bottom:1px solid rgba(228,229,235,0.6); }
 
-    /* Quick action */
     .qa-card { display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px 8px; border-radius:14px; background:#fff; border:1px solid #ebedf5; cursor:pointer; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); text-align:center; }
     .qa-card:hover { border-color:#dde1ff; box-shadow:0 2px 12px rgba(0,62,199,0.06); transform:translateY(-1px); }
+    .qa-card:active { transform:scale(0.96) translateY(0); }
     .qa-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
 
-    /* Case detail */
     .case-hero { background:linear-gradient(135deg, #f0f0f8 0%, #dde1ff 100%); }
 
-    /* Notebook mobile drawer */
     .nb-drawer { position:fixed; inset:0; z-index:200; display:none; }
     .nb-drawer.open { display:block; }
     .nb-drawer-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.3); backdrop-filter:blur(2px); }
     .nb-drawer-panel { position:absolute; left:0; top:0; bottom:0; width:280px; background:#fff; box-shadow:8px 0 32px rgba(0,0,0,0.1); animation:slide-right 0.3s cubic-bezier(0.16,1,0.3,1); overflow-y:auto; }
     @keyframes slide-right { from { transform:translateX(-100%); } to { transform:translateX(0); } }
 
-    /* Constitution chapter */
     .ch-card { border:1px solid #ebedf5; border-radius:14px; overflow:hidden; transition:all 0.2s; background:#fff; }
     .ch-card:hover { border-color:#c4c5cf; }
     .ch-card.expanded { border-color:#dde1ff; box-shadow:0 2px 12px rgba(0,62,199,0.06); }
     .ch-header { display:flex; align-items:center; justify-content:space-between; padding:16px; cursor:pointer; transition:background 0.15s; }
     .ch-header:hover { background:#f9f9ff; }
+    .ch-header:active { background:#f0f0f8; }
     .ch-body { max-height:0; overflow:hidden; transition:max-height 0.35s cubic-bezier(0.16,1,0.3,1); border-top:0 solid #ebedf5; }
     .ch-card.expanded .ch-body { max-height:500px; border-top-width:1px; }
     .ch-card.expanded .expand-icon { transform:rotate(180deg); }
     .expand-icon { transition:transform 0.25s cubic-bezier(0.16,1,0.3,1); color:#737688; }
 
-    /* Profile stat */
     .stat-card { display:flex; flex-direction:column; align-items:center; padding:16px; border-radius:14px; background:#fff; border:1px solid #ebedf5; text-align:center; }
     .stat-val { font-size:22px; font-weight:800; color:#1a1b20; }
     .stat-label { font-size:10px; font-weight:700; color:#737688; text-transform:uppercase; letter-spacing:0.06em; margin-top:4px; }
 
-    /* Settings row */
     .settings-row { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid #f0f0f8; transition:background 0.15s; cursor:pointer; }
     .settings-row:last-child { border-bottom:none; }
     .settings-row:hover { background:#f9f9ff; }
 
-    /* Skeleton cards */
     .skel-card { height:160px; border-radius:14px; }
     .skel-line { height:14px; border-radius:7px; }
     .skel-line.w60 { width:60%; }
     .skel-line.w40 { width:40%; }
     .skel-line.w80 { width:80%; }
 
-    /* Splash bg */
-    .splash-bg { background:linear-gradient(160deg, #001b91 0%, #003ec7 40%, #425ef5 100%); position:relative; overflow:hidden; }
-    .splash-bg::before { content:''; position:absolute; top:-40%; right:-20%; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); animation:float 6s ease-in-out infinite; }
-    .splash-bg::after { content:''; position:absolute; bottom:-30%; left:-10%; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle, rgba(66,94,245,0.2) 0%, transparent 70%); animation:float 8s ease-in-out infinite reverse; }
-
-    /* Input focus */
     .input-premium { border:1.5px solid #ebedf5; border-radius:12px; padding:12px 16px; font-size:14px; width:100%; transition:all 0.2s; background:#fff; color:#1a1b20; font-family:'Inter',sans-serif; }
     .input-premium::placeholder { color:#b0b1b9; }
     .input-premium:focus { outline:none; border-color:#003ec7; box-shadow:0 0 0 3px rgba(66,94,245,0.12); }
 
-    /* Button primary */
     .btn-primary { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 24px; border-radius:12px; font-size:14px; font-weight:700; background:#003ec7; color:#fff; border:none; cursor:pointer; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); font-family:'Inter',sans-serif; }
     .btn-primary:hover { background:#001b91; box-shadow:0 4px 12px rgba(0,62,199,0.2); transform:translateY(-1px); }
-    .btn-primary:active { transform:translateY(0); }
-    .btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+    .btn-primary:active { transform:scale(0.97) translateY(0); }
+    .btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
 
     .btn-ghost { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 24px; border-radius:12px; font-size:14px; font-weight:700; background:transparent; color:#003ec7; border:1.5px solid #dde1ff; cursor:pointer; transition:all 0.15s; font-family:'Inter',sans-serif; }
     .btn-ghost:hover { background:#dde1ff; }
+    .btn-ghost:active { transform:scale(0.97); }
 
-    /* Search input */
     .search-hero { position:relative; }
     .search-hero input { padding:16px 20px 16px 52px; border-radius:16px; font-size:16px; border:2px solid #ebedf5; background:#fff; width:100%; transition:all 0.25s cubic-bezier(0.16,1,0.3,1); font-family:'Inter',sans-serif; color:#1a1b20; box-shadow:0 2px 12px rgba(0,0,0,0.03); }
     .search-hero input::placeholder { color:#b0b1b9; }
@@ -238,7 +216,6 @@
     .search-hero .search-icon { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:#737688; pointer-events:none; transition:color 0.2s; }
     .search-hero input:focus ~ .search-icon { color:#003ec7; }
 
-    /* Stagger animation */
     .stagger > * { animation:fade-in-up 0.4s cubic-bezier(0.16,1,0.3,1) both; }
     .stagger > *:nth-child(1) { animation-delay:0.05s; }
     .stagger > *:nth-child(2) { animation-delay:0.1s; }
@@ -250,53 +227,13 @@
     @media (min-width:768px) {
       .toast-wrap { bottom:24px; }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+    }
   </style>
 </head>
 <body>
-
-<!-- ======================== SPLASH ======================== -->
-<section id="screen-splash" class="screen active splash-bg">
-  <div class="relative z-10 flex flex-col items-center justify-center min-h-dvh px-6 text-center">
-    <div class="mb-8 animate-float">
-      <div class="w-20 h-20 rounded-[22px] bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-lg mx-auto">
-        <span class="material-symbols-outlined filled text-white" style="font-size:36px;">balance</span>
-      </div>
-    </div>
-    <h1 class="text-white font-display text-4xl md:text-5xl font-800 tracking-tight mb-3 animate-fade-in-up" style="animation-delay:0.1s">Juriscore</h1>
-    <p class="text-white/70 text-base md:text-lg font-500 mb-10 animate-fade-in-up" style="animation-delay:0.2s">Kenya's Legal Research Companion</p>
-
-    <div id="splash-auth-buttons" class="w-full max-w-[320px] space-y-3 animate-fade-in-up" style="animation-delay:0.3s">
-      <button onclick="showLogin()" class="btn-primary w-full !bg-white !text-primary hover:!bg-white/90 !shadow-float text-[15px] !py-3.5">
-        <span class="material-symbols-outlined" style="font-size:20px;">login</span> Sign In
-      </button>
-      <button onclick="showSignup()" class="btn-ghost w-full !border-white/25 !text-white hover:!bg-white/10 text-[15px] !py-3.5">
-        Create Account
-      </button>
-    </div>
-
-    <!-- Login Form -->
-    <div id="splash-login-form" class="hidden w-full max-w-[320px] animate-fade-in-up">
-      <div class="space-y-3">
-        <input id="login-email" type="email" placeholder="Email address" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50" autocomplete="email">
-        <input id="login-password" type="password" placeholder="Password" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50" autocomplete="current-password">
-        <button onclick="doLogin()" class="btn-primary w-full !bg-white !text-primary hover:!bg-white/90 !shadow-float text-[15px] !py-3.5">Sign In</button>
-        <button onclick="hideAuthForms()" class="w-full text-white/60 text-sm font-500 hover:text-white transition-colors py-2">Back</button>
-      </div>
-    </div>
-
-    <!-- Signup Form -->
-    <div id="splash-signup-form" class="hidden w-full max-w-[320px] animate-fade-in-up">
-      <div class="space-y-3">
-        <input id="signup-name" type="text" placeholder="Full name" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50" autocomplete="name">
-        <input id="signup-email" type="email" placeholder="Email address" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50" autocomplete="email">
-        <input id="signup-password" type="password" placeholder="Password" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50" autocomplete="new-password">
-        <input id="signup-university" type="text" placeholder="University (optional)" class="input-premium !bg-white/10 !border-white/20 !text-white placeholder:!text-white/50">
-        <button onclick="doSignup()" class="btn-primary w-full !bg-white !text-primary hover:!bg-white/90 !shadow-float text-[15px] !py-3.5">Create Account</button>
-        <button onclick="hideAuthForms()" class="w-full text-white/60 text-sm font-500 hover:text-white transition-colors py-2">Back</button>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ======================== HEADER ======================== -->
 <header id="app-header" class="hidden sticky top-0 z-40">
@@ -322,8 +259,51 @@
 </header>
 
 <!-- ======================== HOME ======================== -->
-<section id="screen-home" class="screen">
-  <main class="flex-1 max-w-5xl mx-auto w-full px-4 md:px-6 py-6 pb-24 md:pb-10">
+<section id="screen-home" class="screen active">
+  <!-- Auth forms (shown when not logged in) -->
+  <div id="home-auth" class="flex-1 flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-[380px] animate-fade-in-up">
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 rounded-[18px] bg-primary flex items-center justify-center mx-auto mb-4 shadow-float">
+          <span class="material-symbols-outlined filled text-white" style="font-size:32px;">balance</span>
+        </div>
+        <h1 class="font-display text-2xl font-800 text-on-surface tracking-tight">Juriscore</h1>
+        <p class="text-secondary text-sm mt-1 font-500">Kenya's Legal Research Companion</p>
+      </div>
+
+      <div id="auth-buttons">
+        <button onclick="showLogin()" class="btn-primary w-full !py-3.5 text-[15px]">
+          <span class="material-symbols-outlined" style="font-size:20px;">login</span> Sign In
+        </button>
+        <button onclick="showSignup()" class="btn-ghost w-full !py-3.5 text-[15px] mt-3">
+          Create Account
+        </button>
+      </div>
+
+      <div id="login-form" class="hidden">
+        <div class="space-y-3">
+          <input id="login-email" type="email" placeholder="Email address" class="input-premium" autocomplete="email">
+          <input id="login-password" type="password" placeholder="Password" class="input-premium" autocomplete="current-password">
+          <button id="login-btn" onclick="doLogin()" class="btn-primary w-full !py-3.5 text-[15px]">Sign In</button>
+          <button onclick="hideAuthForms()" class="w-full text-secondary text-sm font-500 hover:text-on-surface transition-colors py-2">Back</button>
+        </div>
+      </div>
+
+      <div id="signup-form" class="hidden">
+        <div class="space-y-3">
+          <input id="signup-name" type="text" placeholder="Full name" class="input-premium" autocomplete="name">
+          <input id="signup-email" type="email" placeholder="Email address" class="input-premium" autocomplete="email">
+          <input id="signup-password" type="password" placeholder="Password" class="input-premium" autocomplete="new-password">
+          <input id="signup-university" type="text" placeholder="University (optional)" class="input-premium">
+          <button id="signup-btn" onclick="doSignup()" class="btn-primary w-full !py-3.5 text-[15px]">Create Account</button>
+          <button onclick="hideAuthForms()" class="w-full text-secondary text-sm font-500 hover:text-on-surface transition-colors py-2">Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content (shown when logged in) -->
+  <main id="home-main" class="hidden flex-1 max-w-5xl mx-auto w-full px-4 md:px-6 py-6 pb-24 md:pb-10">
     <div class="mb-8 animate-fade-in-up">
       <h1 id="home-greeting" class="font-display text-2xl md:text-3xl font-800 text-on-surface tracking-tight"></h1>
       <p class="text-secondary text-sm mt-1 font-500">What would you like to research today?</p>
@@ -334,7 +314,7 @@
         <input id="home-search-input" type="text" placeholder="Search cases, statutes, regulations..." class="!text-base" onkeydown="if(event.key==='Enter'){homeSearch()}">
         <span class="material-symbols-outlined search-icon" style="font-size:22px;">search</span>
       </div>
-      <button onclick="homeSearch()" class="btn-primary w-full mt-3 !py-3.5 text-[15px]">
+      <button id="home-search-btn" onclick="homeSearch()" class="btn-primary w-full mt-3 !py-3.5 text-[15px]">
         <span class="material-symbols-outlined" style="font-size:20px;">search</span> Search KenyaLaw
       </button>
     </div>
@@ -400,14 +380,46 @@
     <div id="results-summary" class="hidden items-center gap-2 mb-5 text-sm font-600 text-secondary"></div>
     <div id="search-correction"></div>
 
-    <div id="search-loading" class="hidden py-16 text-center">
-      <div class="spinner mx-auto mb-4"></div>
-      <p class="text-secondary text-sm">Searching KenyaLaw.org...</p>
+    <!-- Search loading skeleton -->
+    <div id="search-loading" class="hidden py-6">
+      <div class="space-y-4">
+        <div class="flex gap-3">
+          <div class="w-16 h-5 rounded-full skeleton"></div>
+          <div class="w-24 h-5 rounded-full skeleton"></div>
+          <div class="w-20 h-5 rounded-full skeleton"></div>
+        </div>
+        <div class="space-y-3">
+          <div class="bg-white border border-outline-variant rounded-2xl p-5 space-y-3">
+            <div class="w-20 h-4 rounded-full skeleton"></div>
+            <div class="w-3/4 h-5 rounded-full skeleton"></div>
+            <div class="w-1/2 h-4 rounded-full skeleton" style="opacity:0.6"></div>
+            <div class="w-full h-3 rounded-full skeleton" style="opacity:0.4"></div>
+            <div class="w-2/3 h-3 rounded-full skeleton" style="opacity:0.4"></div>
+          </div>
+          <div class="bg-white border border-outline-variant rounded-2xl p-5 space-y-3">
+            <div class="w-24 h-4 rounded-full skeleton"></div>
+            <div class="w-2/3 h-5 rounded-full skeleton"></div>
+            <div class="w-1/3 h-4 rounded-full skeleton" style="opacity:0.6"></div>
+            <div class="w-5/6 h-3 rounded-full skeleton" style="opacity:0.4"></div>
+          </div>
+          <div class="bg-white border border-outline-variant rounded-2xl p-5 space-y-3">
+            <div class="w-16 h-4 rounded-full skeleton"></div>
+            <div class="w-4/5 h-5 rounded-full skeleton"></div>
+            <div class="w-1/2 h-4 rounded-full skeleton" style="opacity:0.6"></div>
+          </div>
+        </div>
+        <p class="text-secondary text-xs font-500 text-center mt-2">Searching KenyaLaw.org...</p>
+      </div>
     </div>
+
+    <!-- Search empty state -->
     <div id="search-empty" class="hidden py-16 text-center">
       <span class="material-symbols-outlined text-5xl text-outline-variant mb-3 block">search_off</span>
-      <p class="text-secondary text-sm font-500">No results found. Try different keywords.</p>
+      <p class="text-on-surface font-600 text-sm mb-1">No results found</p>
+      <p class="text-secondary text-sm font-500 mb-4">Try different keywords or adjust your filters.</p>
+      <button onclick="document.getElementById('search-input').value='';document.getElementById('search-input').focus()" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Clear search</button>
     </div>
+
     <div id="search-results" class="stagger"></div>
   </main>
 </section>
@@ -415,9 +427,23 @@
 <!-- ======================== CASE DETAIL ======================== -->
 <section id="screen-case-detail" class="screen">
   <main class="flex-1 max-w-4xl mx-auto w-full px-4 md:px-6 py-6 pb-24 md:pb-10">
-    <div id="case-detail-loading" class="py-16 text-center">
-      <div class="spinner mx-auto mb-3"></div>
-      <p class="text-secondary text-sm">Loading case details...</p>
+    <!-- Case detail loading skeleton -->
+    <div id="case-detail-loading" class="py-6">
+      <div class="case-hero rounded-2xl p-6 md:p-8 mb-6 space-y-3">
+        <div class="w-3/4 h-6 rounded-full skeleton"></div>
+        <div class="w-1/2 h-4 rounded-full skeleton" style="opacity:0.6"></div>
+        <div class="flex gap-2 mt-2">
+          <div class="w-16 h-6 rounded-full skeleton"></div>
+          <div class="w-20 h-6 rounded-full skeleton"></div>
+        </div>
+      </div>
+      <div class="space-y-3">
+        <div class="w-1/3 h-5 rounded-full skeleton"></div>
+        <div class="w-full h-4 rounded-full skeleton" style="opacity:0.7"></div>
+        <div class="w-5/6 h-4 rounded-full skeleton" style="opacity:0.7"></div>
+        <div class="w-2/3 h-4 rounded-full skeleton" style="opacity:0.7"></div>
+        <div class="w-3/4 h-4 rounded-full skeleton" style="opacity:0.7"></div>
+      </div>
     </div>
     <div id="case-detail-content" class="hidden animate-fade-in-up">
       <div class="case-hero rounded-2xl p-6 md:p-8 mb-6">
@@ -425,19 +451,19 @@
         <p id="case-detail-citation" class="font-display text-sm text-secondary font-500 mb-4"></p>
         <div id="case-detail-tags" class="flex flex-wrap gap-2"></div>
         <div class="flex gap-2 mt-4">
-          <button onclick="saveCase(currentCaseId)" class="btn-primary-sm !bg-white !text-primary !border !border-primary/20">
+          <button id="case-save-btn" onclick="saveCase(currentCaseId)" class="btn-primary-sm !bg-white !text-primary !border !border-primary/20">
             <span class="material-symbols-outlined" style="font-size:16px;">bookmark_add</span> Save
           </button>
-          <button onclick="addToNotebook()" class="btn-outline-sm">
+          <button id="case-notebook-btn" onclick="addToNotebook()" class="btn-outline-sm">
             <span class="material-symbols-outlined" style="font-size:16px;">note_add</span> Notebook
           </button>
         </div>
       </div>
 
       <div class="tab-bar mb-6">
-        <div class="tab-item active" onclick="showCaseTab('summary')">Summary</div>
-        <div class="tab-item" onclick="showCaseTab('fulltext')">Full Text</div>
-        <div class="tab-item" onclick="showCaseTab('notes')">Notes</div>
+        <div class="tab-item active" onclick="showCaseTab('summary',this)">Summary</div>
+        <div class="tab-item" onclick="showCaseTab('fulltext',this)">Full Text</div>
+        <div class="tab-item" onclick="showCaseTab('notes',this)">Notes</div>
       </div>
 
       <div id="case-tab-summary" class="prose prose-sm max-w-none"></div>
@@ -445,7 +471,7 @@
       <div id="case-tab-notes" class="hidden space-y-3">
         <div class="flex gap-2">
           <input id="case-note-input" type="text" placeholder="Add a note..." class="input-premium flex-1" onkeydown="if(event.key==='Enter')saveCaseNote()">
-          <button onclick="saveCaseNote()" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">add</span></button>
+          <button id="case-note-add-btn" onclick="saveCaseNote()" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">add</span></button>
         </div>
         <div id="case-notes-list" class="space-y-2"></div>
       </div>
@@ -468,10 +494,37 @@
       </div>
     </div>
 
-    <div id="constitution-loading" class="py-12 text-center">
-      <div class="spinner mx-auto mb-3"></div>
-      <p class="text-secondary text-sm">Loading chapters...</p>
+    <!-- Constitution loading skeleton -->
+    <div id="constitution-loading" class="py-6">
+      <div class="space-y-2.5">
+        <div class="bg-white border border-outline-variant rounded-2xl p-4 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg skeleton"></div>
+          <div class="w-2/3 h-4 rounded-full skeleton"></div>
+        </div>
+        <div class="bg-white border border-outline-variant rounded-2xl p-4 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg skeleton"></div>
+          <div class="w-1/2 h-4 rounded-full skeleton"></div>
+        </div>
+        <div class="bg-white border border-outline-variant rounded-2xl p-4 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg skeleton"></div>
+          <div class="w-3/4 h-4 rounded-full skeleton"></div>
+        </div>
+        <div class="bg-white border border-outline-variant rounded-2xl p-4 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg skeleton"></div>
+          <div class="w-1/3 h-4 rounded-full skeleton"></div>
+        </div>
+        <p class="text-secondary text-xs font-500 text-center mt-2">Loading chapters...</p>
+      </div>
     </div>
+
+    <!-- Constitution error state -->
+    <div id="constitution-error" class="hidden py-16 text-center">
+      <span class="material-symbols-outlined text-5xl text-error mb-3 block">error</span>
+      <p class="text-on-surface font-600 text-sm mb-1">Could not load constitution</p>
+      <p class="text-secondary text-sm font-500 mb-4">Something went wrong. Please try again.</p>
+      <button onclick="loadConstitution()" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Retry</button>
+    </div>
+
     <div id="constitution-chapters" class="space-y-2.5 stagger"></div>
     <div id="constitution-search-results" class="hidden space-y-2.5"></div>
   </main>
@@ -485,7 +538,7 @@
         <h1 class="font-display text-xl md:text-2xl font-700 text-on-surface tracking-tight">Study Decks</h1>
         <p class="text-secondary text-sm font-500 mt-0.5">Spaced repetition for legal concepts</p>
       </div>
-      <button onclick="showNewDeckForm()" class="btn-primary-sm !px-4 !py-2.5">
+      <button id="new-deck-toggle-btn" onclick="showNewDeckForm()" class="btn-primary-sm !px-4 !py-2.5">
         <span class="material-symbols-outlined" style="font-size:18px;">add</span> New Deck
       </button>
     </div>
@@ -495,14 +548,27 @@
       <input id="deck-title-input" type="text" placeholder="Deck title (e.g. Constitutional Law)" class="input-premium mb-2.5">
       <input id="deck-subject-input" type="text" placeholder="Subject area (optional)" class="input-premium mb-3">
       <div class="flex gap-2">
-        <button onclick="createDeck()" class="btn-primary-sm">Create</button>
+        <button id="deck-create-btn" onclick="createDeck()" class="btn-primary-sm">Create</button>
         <button onclick="hideNewDeckForm()" class="btn-outline-sm">Cancel</button>
       </div>
     </div>
 
-    <div id="flashcards-loading" class="py-12 text-center">
-      <div class="spinner mx-auto mb-3"></div>
-      <p class="text-secondary text-sm">Loading decks...</p>
+    <!-- Flashcards loading skeleton -->
+    <div id="flashcards-loading" class="py-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="bg-white border border-outline-variant rounded-2xl p-5 space-y-3"><div class="w-16 h-3 rounded-full skeleton"></div><div class="w-2/3 h-5 rounded-full skeleton"></div><div class="w-full h-px skeleton mt-4"></div><div class="flex justify-between"><div class="w-16 h-4 rounded-full skeleton"></div><div class="w-14 h-6 rounded-lg skeleton"></div></div></div>
+        <div class="bg-white border border-outline-variant rounded-2xl p-5 space-y-3"><div class="w-20 h-3 rounded-full skeleton"></div><div class="w-1/2 h-5 rounded-full skeleton"></div><div class="w-full h-px skeleton mt-4"></div><div class="flex justify-between"><div class="w-20 h-4 rounded-full skeleton"></div><div class="w-14 h-6 rounded-lg skeleton"></div></div></div>
+        <div class="bg-white border border-outline-variant rounded-2xl p-5 space-y-3"><div class="w-12 h-3 rounded-full skeleton"></div><div class="w-3/4 h-5 rounded-full skeleton"></div><div class="w-full h-px skeleton mt-4"></div><div class="flex justify-between"><div class="w-14 h-4 rounded-full skeleton"></div><div class="w-14 h-6 rounded-lg skeleton"></div></div></div>
+      </div>
+      <p class="text-secondary text-xs font-500 text-center mt-3">Loading decks...</p>
+    </div>
+
+    <!-- Flashcards error state -->
+    <div id="flashcards-error" class="hidden py-16 text-center">
+      <span class="material-symbols-outlined text-5xl text-error mb-3 block">error</span>
+      <p class="text-on-surface font-600 text-sm mb-1">Could not load decks</p>
+      <p class="text-secondary text-sm font-500 mb-4">Something went wrong. Please try again.</p>
+      <button onclick="loadFlashcards()" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Retry</button>
     </div>
 
     <div id="study-session" class="hidden py-8">
@@ -520,17 +586,20 @@
         </div>
         <p id="study-tap-hint" class="text-secondary text-xs font-500 mb-4">Tap card to reveal answer</p>
         <div id="study-actions" class="hidden flex justify-center gap-3">
-          <button onclick="rateCard('again')" class="flex-1 max-w-[110px] py-2.5 rounded-xl text-sm font-700 border-1.5 border-outline-variant bg-white text-secondary hover:bg-error-container/30 hover:text-error hover:border-error/30 transition-all">Again</button>
-          <button onclick="rateCard('good')" class="flex-1 max-w-[110px] py-2.5 rounded-xl text-sm font-700 bg-primary text-white hover:bg-primary-dark transition-all">Good</button>
-          <button onclick="rateCard('easy')" class="flex-1 max-w-[110px] py-2.5 rounded-xl text-sm font-700 bg-success-container text-success hover:opacity-90 transition-all">Easy</button>
+          <button onclick="rateCard('again')" class="flex-1 max-w-[110px] py-2.5 rounded-xl text-sm font-700 border-1.5 border-outline-variant bg-white text-secondary hover:bg-error-container/30 hover:text-error hover:border-error/30 transition-all active:scale-95">Again</button>
+          <button onclick="rateCard('good')" class="flex-1 max-w-[110px] py-2.5 rounded-xl text-sm font-700 bg-primary text-white hover:bg-primary-dark transition-all active:scale-95">Good</button>
+          <button onclick="rateCard('easy')" class="flex-1 max-w-[110px] py-2.5 rounded-xl text-sm font-700 bg-success-container text-success hover:opacity-90 transition-all active:scale-95">Easy</button>
         </div>
       </div>
     </div>
 
     <div id="flashcards-decks" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger"></div>
+
+    <!-- Flashcards empty state -->
     <div id="flashcards-empty" class="hidden py-16 text-center">
       <span class="material-symbols-outlined text-5xl text-outline-variant mb-3 block">school</span>
-      <p class="text-secondary text-sm font-500 mb-4">No decks yet. Create your first study deck.</p>
+      <p class="text-on-surface font-600 text-sm mb-1">No decks yet</p>
+      <p class="text-secondary text-sm font-500 mb-4">Create your first study deck to start learning.</p>
       <button onclick="showNewDeckForm()" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">add</span> Create Deck</button>
     </div>
   </main>
@@ -543,13 +612,13 @@
       <div class="sticky top-20">
         <h2 class="text-sm font-700 text-secondary uppercase tracking-wider mb-3">Folders</h2>
         <div id="notebook-folders-list" class="space-y-1"></div>
-        <button onclick="createNotebookFolder()" class="mt-3 w-full py-2.5 border-1.5 border-dashed border-outline-variant rounded-xl flex items-center justify-center gap-2 text-sm font-600 text-primary hover:bg-surface-container transition-colors">
+        <button onclick="createNotebookFolder()" class="mt-3 w-full py-2.5 border-1.5 border-dashed border-outline-variant rounded-xl flex items-center justify-center gap-2 text-sm font-600 text-primary hover:bg-surface-container transition-colors active:scale-98">
           <span class="material-symbols-outlined" style="font-size:18px;">add</span> New Folder
         </button>
       </div>
     </aside>
 
-    <button onclick="openNotebookDrawer()" class="md:hidden fixed left-4 bottom-20 z-30 w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center shadow-float">
+    <button onclick="openNotebookDrawer()" class="md:hidden fixed left-4 bottom-20 z-30 w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center shadow-float active:scale-95 transition-transform">
       <span class="material-symbols-outlined" style="font-size:22px;">folder_open</span>
     </button>
 
@@ -560,11 +629,31 @@
           <p id="notebook-entry-count" class="text-xs font-500 text-secondary mt-0.5"></p>
         </div>
       </div>
-      <div id="notebook-loading" class="py-12 text-center"><div class="spinner mx-auto mb-3"></div><p class="text-secondary text-sm">Loading...</p></div>
+
+      <!-- Notebook loading skeleton -->
+      <div id="notebook-loading" class="py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <div class="bg-white border border-outline-variant rounded-xl p-4 space-y-2"><div class="w-12 h-4 rounded-full skeleton"></div><div class="w-full h-3 rounded-full skeleton" style="opacity:0.7"></div></div>
+          <div class="bg-white border border-outline-variant rounded-xl p-4 space-y-2"><div class="w-14 h-4 rounded-full skeleton"></div><div class="w-5/6 h-3 rounded-full skeleton" style="opacity:0.7"></div></div>
+          <div class="bg-white border border-outline-variant rounded-xl p-4 space-y-2"><div class="w-10 h-4 rounded-full skeleton"></div><div class="w-3/4 h-3 rounded-full skeleton" style="opacity:0.7"></div></div>
+        </div>
+      </div>
+
+      <!-- Notebook error state -->
+      <div id="notebook-error" class="hidden py-16 text-center">
+        <span class="material-symbols-outlined text-5xl text-error mb-3 block">error</span>
+        <p class="text-on-surface font-600 text-sm mb-1">Could not load notebook</p>
+        <p class="text-secondary text-sm font-500 mb-4">Something went wrong. Please try again.</p>
+        <button onclick="loadNotebook()" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Retry</button>
+      </div>
+
       <div id="notebook-entries" class="grid grid-cols-1 lg:grid-cols-2 gap-3 stagger"></div>
+
+      <!-- Notebook empty state -->
       <div id="notebook-empty" class="hidden py-16 text-center">
         <span class="material-symbols-outlined text-5xl text-outline-variant mb-3 block">book</span>
-        <p class="text-secondary text-sm font-500">No entries yet. Save cases from search results.</p>
+        <p class="text-on-surface font-600 text-sm mb-1">No entries yet</p>
+        <p class="text-secondary text-sm font-500">Save cases from search results to get started.</p>
       </div>
     </section>
   </main>
@@ -615,7 +704,7 @@
       </div>
     </div>
 
-    <button onclick="doLogout()" class="w-full py-3 rounded-xl border-1.5 border-error/20 bg-white text-error font-700 text-sm hover:bg-error-container/30 transition-all flex items-center justify-center gap-2 animate-fade-in-up" style="animation-delay:0.15s">
+    <button onclick="doLogout()" class="w-full py-3 rounded-xl border-1.5 border-error/20 bg-white text-error font-700 text-sm hover:bg-error-container/30 transition-all flex items-center justify-center gap-2 animate-fade-in-up active:scale-98" style="animation-delay:0.15s">
       <span class="material-symbols-outlined" style="font-size:18px;">logout</span> Log Out
     </button>
   </main>
@@ -656,7 +745,7 @@
       <button onclick="closeNotebookDrawer()" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-secondary" style="font-size:20px;">close</span></button>
     </div>
     <div id="nb-drawer-folders" class="space-y-1"></div>
-    <button onclick="createNotebookFolder()" class="mt-4 w-full py-2.5 border-1.5 border-dashed border-outline-variant rounded-xl flex items-center justify-center gap-2 text-sm font-600 text-primary hover:bg-surface-container transition-colors">
+    <button onclick="createNotebookFolder()" class="mt-4 w-full py-2.5 border-1.5 border-dashed border-outline-variant rounded-xl flex items-center justify-center gap-2 text-sm font-600 text-primary hover:bg-surface-container transition-colors active:scale-98">
       <span class="material-symbols-outlined" style="font-size:18px;">add</span> New Folder
     </button>
   </div>
@@ -670,64 +759,79 @@
 (function() {
   'use strict';
 
-  const API_BASE = '/api';
-  const screens = ['splash','home','search','case-detail','constitution','flashcards','notebook','profile'];
-  const headerEl = document.getElementById('app-header');
-  const bottomNav = document.getElementById('app-bottom-nav');
-  let currentCaseId = null;
-  let currentNotebookFolderId = null;
-  let studyState = { deckId:null, cards:[], currentIndex:0, flipped:false };
+  var API_BASE = '/api';
+  var screens = ['home','search','case-detail','constitution','flashcards','notebook','profile'];
+  var headerEl = document.getElementById('app-header');
+  var bottomNav = document.getElementById('app-bottom-nav');
+  var currentCaseId = null;
+  var currentNotebookFolderId = null;
+  var studyState = { deckId:null, cards:[], currentIndex:0, flipped:false };
+  var _inFlight = {};
 
   // ---- Auth ----
-  function getUser() { try { return JSON.parse(localStorage.getItem('juriscore_user')); } catch { return null; } }
+  function getUser() { try { return JSON.parse(localStorage.getItem('juriscore_user')); } catch(e) { return null; } }
   function setUser(u) { localStorage.setItem('juriscore_user', JSON.stringify(u)); }
   function clearUser() { localStorage.removeItem('juriscore_user'); }
 
-  // ---- Toast ----
+  // ---- Toast with icon ----
   window.toast = function(msg, type) {
     type = type || 'success';
-    const el = document.createElement('div');
+    var icons = { success:'check_circle', error:'error', info:'info' };
+    var el = document.createElement('div');
     el.className = 'toast toast-' + type;
-    el.textContent = msg;
+    el.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">' + (icons[type] || 'info') + '</span>' + msg;
     document.getElementById('toast-container').appendChild(el);
     setTimeout(function() { el.style.opacity = '0'; el.style.transform = 'translateY(8px) scale(0.95)'; el.style.transition = 'all 0.2s'; setTimeout(function() { el.remove(); }, 200); }, 2800);
   };
 
+  // ---- Button loading helper ----
+  function setBtnLoading(btnId, loading) {
+    var btn = document.getElementById(btnId);
+    if (!btn) return;
+    if (loading) {
+      btn.dataset.origHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="width:18px;height:18px;border-width:2px;"></div> Please wait...';
+    } else {
+      btn.disabled = false;
+      if (btn.dataset.origHtml) btn.innerHTML = btn.dataset.origHtml;
+    }
+  }
+
+  // ---- Prevent double-fire ----
+  function guard(key, fn) {
+    if (_inFlight[key]) return Promise.resolve();
+    _inFlight[key] = true;
+    return fn().finally(function() { _inFlight[key] = false; });
+  }
+
   // ---- API helper ----
-  async function api(path, opts) {
+  function api(path, opts) {
     opts = opts || {};
-    try {
-      const resp = await fetch(API_BASE + path, {
-        headers: Object.assign({ 'Content-Type':'application/json' }, opts.headers || {}),
-        method: opts.method || 'GET',
-        body: opts.body || undefined,
-      });
-      if (!resp.ok) { const err = await resp.json().catch(function() { return {}; }); throw new Error(err.detail || 'Request failed'); }
-      return await resp.json();
-    } catch (e) { console.error('API error:', path, e); throw e; }
+    return fetch(API_BASE + path, {
+      headers: Object.assign({ 'Content-Type':'application/json' }, opts.headers || {}),
+      method: opts.method || 'GET',
+      body: opts.body || undefined,
+    }).then(function(resp) {
+      if (!resp.ok) return resp.json().then(function(e) { throw new Error(e.detail || 'Request failed'); }).catch(function(e) { if (e.message !== 'Request failed') throw e; throw new Error('Request failed (' + resp.status + ')'); });
+      return resp.json();
+    }).catch(function(e) { console.error('API error:', path, e); throw e; });
   }
 
   // ---- Navigation ----
   window.navigate = function(route) {
-    if (!getUser() && route !== 'splash') route = 'splash';
+    if (!getUser() && route !== 'home') route = 'home';
     screens.forEach(function(s) { var el = document.getElementById('screen-' + s); if (el) el.classList.remove('active'); });
     var target = document.getElementById('screen-' + route);
     if (target) target.classList.add('active');
 
-    if (route === 'splash') {
-      headerEl.classList.add('hidden');
-      bottomNav.classList.add('hidden');
-    } else {
-      headerEl.classList.remove('hidden');
-      bottomNav.classList.remove('hidden');
-    }
+    headerEl.classList.toggle('hidden', !getUser());
+    bottomNav.classList.toggle('hidden', !getUser());
 
-    // Bottom nav active
     bottomNav.querySelectorAll('.nav-btn').forEach(function(btn) { btn.classList.remove('active'); });
     var activeNav = bottomNav.querySelector('[data-nav="' + route + '"]');
     if (activeNav) activeNav.classList.add('active');
 
-    // Header nav active
     headerEl.querySelectorAll('.hdr-nav').forEach(function(btn) {
       btn.classList.remove('text-on-surface', 'bg-surface-container', 'font-700');
       btn.classList.add('text-secondary');
@@ -746,37 +850,48 @@
   };
 
   function handleRoute() {
-    var hash = window.location.hash.replace('#', '') || 'splash';
-    navigate(screens.includes(hash) ? hash : 'splash');
+    var hash = window.location.hash.replace('#', '') || 'home';
+    navigate(screens.indexOf(hash) !== -1 ? hash : 'home');
   }
 
-  // ---- Auth forms ----
+  // ---- Auth UI ----
   window.showLogin = function() {
-    document.getElementById('splash-auth-buttons').classList.add('hidden');
-    document.getElementById('splash-login-form').classList.remove('hidden');
-    document.getElementById('splash-signup-form').classList.add('hidden');
+    document.getElementById('auth-buttons').classList.add('hidden');
+    document.getElementById('login-form').classList.remove('hidden');
+    document.getElementById('signup-form').classList.add('hidden');
+    document.getElementById('login-email').focus();
   };
   window.showSignup = function() {
-    document.getElementById('splash-auth-buttons').classList.add('hidden');
-    document.getElementById('splash-login-form').classList.add('hidden');
-    document.getElementById('splash-signup-form').classList.remove('hidden');
+    document.getElementById('auth-buttons').classList.add('hidden');
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('signup-form').classList.remove('hidden');
+    document.getElementById('signup-name').focus();
   };
   window.hideAuthForms = function() {
-    document.getElementById('splash-auth-buttons').classList.remove('hidden');
-    document.getElementById('splash-login-form').classList.add('hidden');
-    document.getElementById('splash-signup-form').classList.add('hidden');
+    document.getElementById('auth-buttons').classList.remove('hidden');
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('signup-form').classList.add('hidden');
   };
 
   window.doLogin = function() {
     var email = document.getElementById('login-email').value.trim();
     var password = document.getElementById('login-password').value.trim();
     if (!email || !password) { toast('Please fill in all fields', 'error'); return; }
-    var users = JSON.parse(localStorage.getItem('juriscore_users') || '[]');
-    var user = users.find(function(u) { return u.email === email; });
-    if (!user) { toast('User not found. Please sign up.', 'error'); return; }
-    setUser(user);
-    toast('Welcome back, ' + user.name + '!');
-    navigate('home');
+    setBtnLoading('login-btn', true);
+    guard('login', function() {
+      return new Promise(function(resolve) {
+        setTimeout(function() {
+          var users = JSON.parse(localStorage.getItem('juriscore_users') || '[]');
+          var user = users.find(function(u) { return u.email === email; });
+          if (!user) { toast('User not found. Please sign up.', 'error'); setBtnLoading('login-btn', false); resolve(); return; }
+          setUser(user);
+          toast('Welcome back, ' + user.name + '!');
+          setBtnLoading('login-btn', false);
+          navigate('home');
+          resolve();
+        }, 300);
+      });
+    });
   };
 
   window.doSignup = function() {
@@ -785,35 +900,59 @@
     var password = document.getElementById('signup-password').value.trim();
     var university = document.getElementById('signup-university').value.trim();
     if (!name || !email || !password) { toast('Please fill in all fields', 'error'); return; }
-    var users = JSON.parse(localStorage.getItem('juriscore_users') || '[]');
-    if (users.find(function(u) { return u.email === email; })) { toast('Email already registered', 'error'); return; }
-    var user = { id:'user_' + Date.now(), name:name, email:email, university:university, created_at:new Date().toISOString() };
-    users.push(user);
-    localStorage.setItem('juriscore_users', JSON.stringify(users));
-    setUser(user);
-    toast('Account created! Welcome, ' + name);
-    navigate('home');
+    setBtnLoading('signup-btn', true);
+    guard('signup', function() {
+      return new Promise(function(resolve) {
+        setTimeout(function() {
+          var users = JSON.parse(localStorage.getItem('juriscore_users') || '[]');
+          if (users.find(function(u) { return u.email === email; })) { toast('Email already registered', 'error'); setBtnLoading('signup-btn', false); resolve(); return; }
+          var user = { id:'user_' + Date.now(), name:name, email:email, university:university, created_at:new Date().toISOString() };
+          users.push(user);
+          localStorage.setItem('juriscore_users', JSON.stringify(users));
+          setUser(user);
+          toast('Account created! Welcome, ' + name);
+          setBtnLoading('signup-btn', false);
+          navigate('home');
+          resolve();
+        }, 300);
+      });
+    });
   };
 
   window.doLogout = function() {
     clearUser();
     toast('Logged out');
-    navigate('splash');
+    navigate('home');
   };
 
   // ---- Home ----
   function loadHome() {
     var user = getUser();
-    if (!user) return;
+    var authEl = document.getElementById('home-auth');
+    var mainEl = document.getElementById('home-main');
+
+    if (!user) {
+      authEl.classList.remove('hidden');
+      mainEl.classList.add('hidden');
+      return;
+    }
+    authEl.classList.add('hidden');
+    mainEl.classList.remove('hidden');
+
     var hour = new Date().getHours();
     var greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
     document.getElementById('home-greeting').textContent = greeting + ', ' + user.name.split(' ')[0];
 
+    var container = document.getElementById('home-recent-cases');
+    container.innerHTML = '<div class="skel-card skeleton"></div><div class="skel-card skeleton" style="height:80px"></div><div class="skel-card skeleton" style="height:80px"></div>';
+
     api('/cases/recent?limit=5').then(function(cases) {
-      var container = document.getElementById('home-recent-cases');
-      if (!cases.length) { container.innerHTML = '<div class="text-center py-8"><span class="material-symbols-outlined text-4xl text-outline-variant mb-2 block">gavel</span><p class="text-secondary text-sm font-500">No recent cases yet. Try searching!</p></div>'; return; }
+      if (!cases.length) {
+        container.innerHTML = '<div class="text-center py-8 bg-white border border-outline-variant rounded-xl"><span class="material-symbols-outlined text-4xl text-outline-variant mb-2 block">gavel</span><p class="text-on-surface font-600 text-sm mb-1">No recent cases yet</p><p class="text-secondary text-sm font-500">Try searching for cases, legislation, or regulations.</p></div>';
+        return;
+      }
       container.innerHTML = cases.map(function(c) {
-        return '<div onclick="viewCase(\'' + c.id + '\')" class="bg-white border border-outline-variant rounded-xl p-4 hover:border-outline hover:shadow-card-hover transition-all cursor-pointer flex items-center gap-4 group">' +
+        return '<div onclick="viewCase(\'' + c.id + '\')" class="bg-white border border-outline-variant rounded-xl p-4 hover:border-outline hover:shadow-card-hover transition-all cursor-pointer flex items-center gap-4 group active:scale-[0.99]">' +
           '<div class="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-primary" style="font-size:20px;">gavel</span></div>' +
           '<div class="flex-1 min-w-0">' +
             '<h3 class="text-sm font-600 text-on-surface truncate">' + c.title + '</h3>' +
@@ -823,7 +962,7 @@
         '</div>';
       }).join('');
     }).catch(function() {
-      document.getElementById('home-recent-cases').innerHTML = '<p class="text-secondary text-sm text-center py-8">Could not load recent cases.</p>';
+      container.innerHTML = '<div class="text-center py-8 bg-white border border-outline-variant rounded-xl"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Could not load recent cases</p><button onclick="loadHome()" class="text-sm font-700 text-primary mt-2 hover:underline">Try again</button></div>';
     });
   }
 
@@ -892,7 +1031,7 @@
             '<span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> Visit' +
           '</button>' +
           '<button onclick="event.stopPropagation();summarizeCard(\'' + cardData + '\')" class="btn-outline-sm">' +
-            '<span class="material-symbols-outlined" style="font-size:14px;">auto_awesome</span> Summarize' +
+            '<span class="material-symbols-outlined" style="font-size:14px;">description</span> Summarize' +
           '</button>' +
         '</div>' +
         '<span class="text-[11px] text-secondary">' + (c.registry || '') + '</span>' +
@@ -950,17 +1089,16 @@
       var results = data.results || [];
       var total = data.count || 0;
 
-      // Show AI correction if query was corrected
       if (data.query_corrected && data.corrected_query && data.corrected_query !== q) {
         var corrHtml = '<div class="flex items-center gap-2 p-3 rounded-xl bg-primary/5 border border-primary/15 mb-4 animate-fade-in">' +
-          '<span class="material-symbols-outlined text-primary" style="font-size:18px;">auto_awesome</span>' +
+          '<span class="material-symbols-outlined text-primary" style="font-size:18px;">edit_note</span>' +
           '<span class="text-sm text-on-surface-variant">Showing results for <strong class="text-primary">' + data.corrected_query + '</strong></span>' +
           '<span class="text-xs text-secondary ml-1">(corrected from "' + q + '")</span>' +
           '</div>';
         if (data.suggestions && data.suggestions.length) {
           corrHtml += '<div class="flex flex-wrap gap-1.5 mb-3">';
           data.suggestions.forEach(function(s) {
-            corrHtml += '<button onclick="document.getElementById(\'search-input\').value=\'' + s.replace(/'/g, "\\'") + '\';doSearch()" class="text-xs font-600 text-primary bg-primary/8 px-2.5 py-1 rounded-lg hover:bg-primary/15 transition-colors">Try: ' + s + '</button>';
+            corrHtml += '<button onclick="document.getElementById(\'search-input\').value=\'' + s.replace(/'/g, "\\'") + '\';doSearch()" class="text-xs font-600 text-primary bg-primary/8 px-2.5 py-1 rounded-lg hover:bg-primary/15 transition-colors active:scale-95">Try: ' + s + '</button>';
           });
           corrHtml += '</div>';
         }
@@ -1016,7 +1154,7 @@
       if (body) body.innerHTML = resp.summary.split('\n').filter(function(p) { return p.trim(); }).map(function(p) { return '<p>' + p + '</p>'; }).join('');
     }).catch(function() {
       var body = document.querySelector('.modal-body');
-      if (body) body.innerHTML = '<div class="text-center py-6"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-error text-sm font-600">Failed to generate summary. Please try again.</p></div>';
+      if (body) body.innerHTML = '<div class="text-center py-6"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Failed to generate summary</p><p class="text-secondary text-sm font-500 mb-3">Something went wrong. Please try again.</p><button onclick="summarizeCard(\'' + encodedData + '\')" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Retry</button></div>';
     });
   };
 
@@ -1059,7 +1197,7 @@
 
       var summaryTab = document.getElementById('case-tab-summary');
       summaryTab.innerHTML = '<div class="py-8 text-center"><div class="spinner mx-auto mb-2"></div><p class="text-secondary text-sm">Loading summary...</p></div>';
-      showCaseTab('summary');
+      showCaseTab('summary', document.querySelector('.tab-item'));
 
       api('/cases/' + caseId + '/summary').then(function(summary) {
         var html = '';
@@ -1070,19 +1208,21 @@
         if (summary.obiter) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Obiter Dicta</h3><p class="text-sm text-on-surface-variant leading-relaxed">' + summary.obiter + '</p></div>';
         if (summary.cases_cited && summary.cases_cited.length) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Cases Cited</h3><ul class="list-disc pl-5 space-y-1.5 text-sm text-on-surface-variant leading-relaxed">' + summary.cases_cited.map(function(c) { return '<li>' + c + '</li>'; }).join('') + '</ul></div>';
         summaryTab.innerHTML = html || '<p class="text-secondary text-sm">No summary available for this case.</p>';
-      }).catch(function() { summaryTab.innerHTML = '<p class="text-secondary text-sm">Could not load summary.</p>'; });
+      }).catch(function() {
+        summaryTab.innerHTML = '<div class="text-center py-8"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Could not load summary</p><p class="text-secondary text-sm font-500 mb-3">Something went wrong.</p><button onclick="viewCase(\'' + caseId + '\')" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Retry</button></div>';
+      });
 
       document.getElementById('case-tab-fulltext').textContent = c.full_text || 'Full text not available.';
     }).catch(function() {
       document.getElementById('case-detail-loading').classList.add('hidden');
-      document.getElementById('case-detail-content').innerHTML = '<div class="text-center py-16"><span class="material-symbols-outlined text-5xl text-outline-variant mb-3 block">search_off</span><p class="text-secondary text-sm font-500">Case not found.</p></div>';
+      document.getElementById('case-detail-content').innerHTML = '<div class="text-center py-16"><span class="material-symbols-outlined text-5xl text-error mb-3 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Case not found</p><p class="text-secondary text-sm font-500 mb-4">This case could not be loaded.</p><button onclick="navigate(\'home\')" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">home</span> Go Home</button></div>';
       document.getElementById('case-detail-content').classList.remove('hidden');
     });
   };
 
-  window.showCaseTab = function(tab) {
+  window.showCaseTab = function(tab, el) {
     document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
-    event.target.classList.add('active');
+    if (el) el.classList.add('active');
     ['summary','fulltext','notes'].forEach(function(t) {
       document.getElementById('case-tab-' + t).classList.toggle('hidden', t !== tab);
     });
@@ -1098,21 +1238,25 @@
       listEl.innerHTML = caseNotes.length ? caseNotes.map(function(n) {
         return '<div class="bg-surface-container-low border border-outline-variant rounded-xl p-3 flex items-start justify-between gap-3">' +
           '<p class="text-sm text-on-surface flex-1">' + n.note_text + '</p>' +
-          '<button onclick="deleteNote(\'' + n.id + '\')" class="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-secondary hover:text-error hover:bg-error-container/30 transition-all"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>' +
+          '<button onclick="deleteNote(\'' + n.id + '\')" class="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-secondary hover:text-error hover:bg-error-container/30 transition-all active:scale-95"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>' +
         '</div>';
-      }).join('') : '<p class="text-secondary text-sm text-center py-6">No notes yet.</p>';
-    }).catch(function() { listEl.innerHTML = '<p class="text-secondary text-sm">Could not load notes.</p>'; });
+      }).join('') : '<div class="text-center py-6"><span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">sticky_note_2</span><p class="text-secondary text-sm font-500">No notes yet. Add your first note above.</p></div>';
+    }).catch(function() { listEl.innerHTML = '<div class="text-center py-6"><span class="material-symbols-outlined text-3xl text-error mb-2 block">error</span><p class="text-secondary text-sm font-500">Could not load notes.</p></div>'; });
   }
 
   window.saveCaseNote = function() {
     var text = document.getElementById('case-note-input').value.trim();
     if (!text || !currentCaseId) return;
+    var btn = document.getElementById('case-note-add-btn');
     var user = getUser();
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px;border-top-color:#fff;"></div>';
     api('/study/notes?user_id=' + user.id, { method:'POST', body:JSON.stringify({ case_id:currentCaseId, note_text:text }) }).then(function() {
       document.getElementById('case-note-input').value = '';
       toast('Note saved');
       loadCaseNotes();
-    }).catch(function() { toast('Failed to save note', 'error'); });
+    }).catch(function() { toast('Failed to save note', 'error'); })
+    .finally(function() { btn.disabled = false; btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">add</span>'; });
   };
 
   window.deleteNote = function(noteId) {
@@ -1120,30 +1264,44 @@
   };
 
   window.saveCase = function(caseId) {
-    api('/cases/' + caseId + '/save', { method:'POST' }).then(function() { toast('Case saved'); }).catch(function() { toast('Failed to save case', 'error'); });
+    var btn = document.getElementById('case-save-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px;border-top-color:#fff;"></div>';
+    api('/cases/' + caseId + '/save', { method:'POST' }).then(function() {
+      toast('Case saved');
+      btn.innerHTML = '<span class="material-symbols-outlined filled" style="font-size:16px;">bookmark</span> Saved';
+    }).catch(function() {
+      toast('Failed to save case', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">bookmark_add</span> Save';
+    });
   };
 
   window.addToNotebook = function() {
     if (!currentCaseId) return;
+    var btn = document.getElementById('case-notebook-btn');
+    btn.disabled = true;
     var user = getUser();
     api('/notebook/folders?user_id=' + user.id).then(function(folders) {
-      if (!folders.length) { toast('Create a notebook folder first', 'error'); return; }
-      return api('/notebook/folders/' + folders[0].id + '/entries', { method:'POST', body:JSON.stringify({ case_id:currentCaseId }) }).then(function() { toast('Added to notebook: ' + folders[0].name); });
-    }).catch(function() { toast('Failed to add to notebook', 'error'); });
+      if (!folders.length) { toast('Create a notebook folder first', 'error'); btn.disabled = false; return; }
+      return api('/notebook/folders/' + folders[0].id + '/entries', { method:'POST', body:JSON.stringify({ case_id:currentCaseId }) }).then(function() { toast('Added to notebook: ' + folders[0].name); btn.disabled = false; });
+    }).catch(function() { toast('Failed to add to notebook', 'error'); btn.disabled = false; });
   };
 
   // ---- Constitution ----
   function loadConstitution() {
     var loadingEl = document.getElementById('constitution-loading');
+    var errorEl = document.getElementById('constitution-error');
     var chaptersEl = document.getElementById('constitution-chapters');
     var searchResultsEl = document.getElementById('constitution-search-results');
     loadingEl.classList.remove('hidden');
+    errorEl.classList.add('hidden');
     chaptersEl.innerHTML = '';
     searchResultsEl.classList.add('hidden');
 
     api('/constitution/chapters').then(function(chapters) {
       loadingEl.classList.add('hidden');
-      if (!chapters.length) { chaptersEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Could not load constitution.</p>'; return; }
+      if (!chapters.length) { chaptersEl.innerHTML = '<div class="text-center py-8"><span class="material-symbols-outlined text-4xl text-outline-variant mb-2 block">menu_book</span><p class="text-on-surface font-600 text-sm mb-1">No chapters found</p><p class="text-secondary text-sm font-500">The constitution data may not be loaded yet.</p></div>'; return; }
       chaptersEl.innerHTML = chapters.map(function(ch, i) {
         return '<div class="ch-card" onclick="this.classList.toggle(\'expanded\')">' +
           '<div class="ch-header">' +
@@ -1161,7 +1319,7 @@
       }).join('');
     }).catch(function() {
       loadingEl.classList.add('hidden');
-      chaptersEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Failed to load constitution.</p>';
+      errorEl.classList.remove('hidden');
     });
   }
 
@@ -1175,12 +1333,15 @@
     searchResultsEl.innerHTML = '<div class="py-8 text-center"><div class="spinner mx-auto mb-2"></div><p class="text-secondary text-sm">Searching...</p></div>';
 
     api('/constitution/search?q=' + encodeURIComponent(q)).then(function(data) {
-      if (!data.results || !data.results.length) { searchResultsEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">No results found for "' + q + '"</p>'; return; }
+      if (!data.results || !data.results.length) {
+        searchResultsEl.innerHTML = '<div class="text-center py-8"><span class="material-symbols-outlined text-4xl text-outline-variant mb-2 block">search_off</span><p class="text-on-surface font-600 text-sm mb-1">No results found</p><p class="text-secondary text-sm font-500">No articles match "' + q + '"</p></div>';
+        return;
+      }
       searchResultsEl.innerHTML = '<h3 class="text-sm font-700 text-on-surface mb-3">' + data.results.length + ' results for "' + q + '"</h3>' +
         data.results.map(function(r) {
           return '<div class="bg-white border border-outline-variant rounded-xl p-4 mb-2.5"><p class="text-sm text-on-surface-variant leading-relaxed">' + r.substring(0, 500) + (r.length > 500 ? '...' : '') + '</p></div>';
         }).join('');
-    }).catch(function() { searchResultsEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Search failed.</p>'; });
+    }).catch(function() { searchResultsEl.innerHTML = '<div class="text-center py-8"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Search failed</p><p class="text-secondary text-sm font-500 mb-3">Something went wrong.</p><button onclick="searchConstitution()" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Retry</button></div>'; });
   };
 
   // ---- Flashcards ----
@@ -1188,9 +1349,11 @@
     var user = getUser();
     if (!user) return;
     var loadingEl = document.getElementById('flashcards-loading');
+    var errorEl = document.getElementById('flashcards-error');
     var decksEl = document.getElementById('flashcards-decks');
     var emptyEl = document.getElementById('flashcards-empty');
     loadingEl.classList.remove('hidden');
+    errorEl.classList.add('hidden');
     decksEl.innerHTML = '';
 
     api('/flashcards/decks?user_id=' + user.id).then(function(decks) {
@@ -1206,23 +1369,23 @@
           return '<div class="bg-white border border-outline-variant rounded-2xl p-5 hover:border-outline hover:shadow-card-hover transition-all cursor-pointer group">' +
             '<div class="flex justify-between items-start mb-3">' +
               '<span class="text-[10px] font-700 text-secondary uppercase tracking-widest">' + (d.subject || 'General') + '</span>' +
-              '<button onclick="event.stopPropagation();deleteDeck(\'' + d.id + '\')" class="w-7 h-7 rounded-lg flex items-center justify-center text-secondary opacity-0 group-hover:opacity-100 hover:text-error hover:bg-error-container/30 transition-all"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>' +
+              '<button onclick="event.stopPropagation();deleteDeck(\'' + d.id + '\')" class="w-7 h-7 rounded-lg flex items-center justify-center text-secondary opacity-0 group-hover:opacity-100 hover:text-error hover:bg-error-container/30 transition-all active:scale-95"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>' +
             '</div>' +
             '<h3 class="text-base font-700 text-on-surface mb-3">' + d.title + '</h3>' +
             '<div class="flex items-center justify-between pt-3 border-t border-outline-variant">' +
               '<span class="text-xs font-500 text-secondary">' + dueCount + ' cards due</span>' +
-              '<button onclick="event.stopPropagation();startStudy(\'' + d.id + '\')" class="text-xs font-700 text-primary bg-primary/8 px-3.5 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-all">Study</button>' +
+              '<button onclick="event.stopPropagation();startStudy(\'' + d.id + '\')" class="text-xs font-700 text-primary bg-primary/8 px-3.5 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-all active:scale-95">Study</button>' +
             '</div>' +
           '</div>';
         }).join('');
       });
     }).catch(function() {
       loadingEl.classList.add('hidden');
-      decksEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Failed to load decks.</p>';
+      errorEl.classList.remove('hidden');
     });
   }
 
-  window.showNewDeckForm = function() { document.getElementById('new-deck-form').classList.remove('hidden'); };
+  window.showNewDeckForm = function() { document.getElementById('new-deck-form').classList.remove('hidden'); document.getElementById('deck-title-input').focus(); };
   window.hideNewDeckForm = function() { document.getElementById('new-deck-form').classList.add('hidden'); };
 
   window.createDeck = function() {
@@ -1230,13 +1393,15 @@
     var subject = document.getElementById('deck-subject-input').value.trim();
     if (!title) { toast('Please enter a deck title', 'error'); return; }
     var user = getUser();
+    setBtnLoading('deck-create-btn', true);
     api('/flashcards/decks?user_id=' + user.id, { method:'POST', body:JSON.stringify({ title:title, subject:subject || null }) }).then(function() {
       document.getElementById('deck-title-input').value = '';
       document.getElementById('deck-subject-input').value = '';
       hideNewDeckForm();
       toast('Deck created');
       loadFlashcards();
-    }).catch(function() { toast('Failed to create deck', 'error'); });
+    }).catch(function() { toast('Failed to create deck', 'error'); })
+    .finally(function() { setBtnLoading('deck-create-btn', false); });
   };
 
   window.deleteDeck = function(deckId) {
@@ -1299,9 +1464,11 @@
     var user = getUser();
     if (!user) return;
     var loadingEl = document.getElementById('notebook-loading');
+    var errorEl = document.getElementById('notebook-error');
     var entriesEl = document.getElementById('notebook-entries');
     var emptyEl = document.getElementById('notebook-empty');
     loadingEl.classList.remove('hidden');
+    errorEl.classList.add('hidden');
     entriesEl.innerHTML = '';
 
     api('/notebook/folders?user_id=' + user.id).then(function(folders) {
@@ -1314,9 +1481,9 @@
             '<span class="material-symbols-outlined" style="font-size:18px;">' + (isActive ? 'folder_open' : 'folder') + '</span>' +
             '<span>' + f.name + '</span>' +
           '</div>' +
-          '<button onclick="event.stopPropagation();deleteNotebookFolder(\'' + f.id + '\')" class="w-6 h-6 rounded flex items-center justify-center text-secondary hover:text-error transition-colors"><span class="material-symbols-outlined" style="font-size:14px;">delete</span></button>' +
+          '<button onclick="event.stopPropagation();deleteNotebookFolder(\'' + f.id + '\')" class="w-6 h-6 rounded flex items-center justify-center text-secondary hover:text-error transition-colors active:scale-95"><span class="material-symbols-outlined" style="font-size:14px;">delete</span></button>' +
         '</button>';
-      }).join('') + '<button onclick="createNotebookFolder()" class="mt-3 w-full py-2.5 border-1.5 border-dashed border-outline-variant rounded-xl flex items-center justify-center gap-2 text-sm font-600 text-primary hover:bg-surface-container transition-colors"><span class="material-symbols-outlined" style="font-size:18px;">add</span> New Folder</button>';
+      }).join('') + '<button onclick="createNotebookFolder()" class="mt-3 w-full py-2.5 border-1.5 border-dashed border-outline-variant rounded-xl flex items-center justify-center gap-2 text-sm font-600 text-primary hover:bg-surface-container transition-colors active:scale-98"><span class="material-symbols-outlined" style="font-size:18px;">add</span> New Folder</button>';
       foldersList.innerHTML = folderHtml;
       drawerFolders.innerHTML = folderHtml;
 
@@ -1326,7 +1493,7 @@
       emptyEl.classList.remove('hidden');
     }).catch(function() {
       loadingEl.classList.add('hidden');
-      entriesEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Failed to load notebook.</p>';
+      errorEl.classList.remove('hidden');
     });
   }
 
@@ -1355,14 +1522,14 @@
         return '<article class="bg-white border border-outline-variant rounded-xl p-4 hover:shadow-card-hover hover:border-outline transition-all cursor-pointer group">' +
           '<div class="flex justify-between items-start mb-2">' +
             '<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-primary/8 text-primary text-[10px] font-700 uppercase tracking-wider">' + (e.case_id ? 'Case' : e.statute_id ? 'Statute' : 'Note') + '</span>' +
-            '<button onclick="event.stopPropagation();deleteNotebookEntry(\'' + e.id + '\')" class="w-6 h-6 rounded flex items-center justify-center text-secondary opacity-0 group-hover:opacity-100 hover:text-error transition-all"><span class="material-symbols-outlined" style="font-size:14px;">delete</span></button>' +
+            '<button onclick="event.stopPropagation();deleteNotebookEntry(\'' + e.id + '\')" class="w-6 h-6 rounded flex items-center justify-center text-secondary opacity-0 group-hover:opacity-100 hover:text-error transition-all active:scale-95"><span class="material-symbols-outlined" style="font-size:14px;">delete</span></button>' +
           '</div>' +
           '<p class="text-sm text-secondary leading-relaxed">' + (e.note_text || 'No notes') + '</p>' +
         '</article>';
       }).join('');
     }).catch(function() {
       loadingEl.classList.add('hidden');
-      entriesEl.innerHTML = '<p class="text-secondary text-sm text-center py-8">Failed to load entries.</p>';
+      entriesEl.innerHTML = '<div class="text-center py-8 col-span-full"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Failed to load entries</p><button onclick="loadNotebookEntries(\'' + folderId + '\')" class="text-sm font-700 text-primary mt-2 hover:underline">Try again</button></div>';
     });
   }
 
@@ -1415,7 +1582,7 @@
   // ---- Init ----
   window.addEventListener('hashchange', handleRoute);
   window.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
-  if (getUser()) handleRoute(); else navigate('splash');
+  handleRoute();
 
 })();
 </script>
