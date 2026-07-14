@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Juriscore — Legal Research Companion</title>
+<meta name="description" content="Smart legal research for Kenyan law students" />
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div id="app">
+
+  <div id="loading-screen" class="screen active">
+    <div class="loading-content">
+      <div class="loading-icon">⚖️</div>
+      <h1 class="loading-title">Juriscore</h1>
+      <p class="loading-subtitle">Your legal research companion</p>
+      <div class="loading-spinner"></div>
+    </div>
+  </div>
+
+  <div id="onboarding-screen" class="screen">
+    <div class="onboarding-slides" id="onboardingSlides">
+      <div class="slide active">
+        <div class="slide-icon">🔍</div>
+        <h2>Find cases instantly</h2>
+        <p>Search thousands of Kenyan cases and statutes by keyword, subject, or court.</p>
+      </div>
+      <div class="slide">
+        <div class="slide-icon">📚</div>
+        <h2>Study smarter, not harder</h2>
+        <p>Get structured case briefs, AI summaries, and study notes in one click.</p>
+      </div>
+      <div class="slide">
+        <div class="slide-icon">📁</div>
+        <h2>Research, organized</h2>
+        <p>Save cases, build your notebook, and create flashcards — all in one place.</p>
+      </div>
+    </div>
+    <div class="onboarding-dots" id="onboardingDots">
+      <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+    </div>
+    <button class="onboarding-btn" id="onboardingNextBtn">Get Started</button>
+    <button class="onboarding-skip" id="onboardingSkipBtn">Skip</button>
+  </div>
+
+  <div id="login-screen" class="screen auth-screen">
+    <div class="auth-container">
+      <div class="auth-header">
+        <div class="auth-logo">⚖️</div>
+        <h1>Juriscore</h1>
+        <p>Your legal research companion</p>
+      </div>
+      <form id="loginForm" class="auth-form">
+        <div class="input-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="your@email.com" required autocomplete="email" />
+        </div>
+        <div class="input-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter password" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
+          <span class="btn-text">Log In</span>
+          <span class="btn-spinner" style="display:none"></span>
+        </button>
+      </form>
+      <div class="auth-divider"><span>or</span></div>
+      <button class="btn btn-google" id="googleLoginBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.3v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.08z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+      <p class="auth-link">Don't have an account? <a href="#" id="goToSignup">Sign Up</a></p>
+    </div>
+  </div>
+
+  <div id="signup-screen" class="screen auth-screen">
+    <div class="auth-container">
+      <div class="auth-header">
+        <div class="auth-logo">⚖️</div>
+        <h1>Juriscore</h1>
+        <p>Create your account</p>
+      </div>
+      <form id="signupForm" class="auth-form">
+        <div class="input-group">
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" placeholder="John Doe" required autocomplete="name" />
+        </div>
+        <div class="input-group">
+          <label>University</label>
+          <div class="uni-chips" id="uniChips">
+            <button type="button" class="uni-chip active" data-uni="Kabarak University">Kabarak</button>
+            <button type="button" class="uni-chip" data-uni="Strathmore University">Strathmore</button>
+            <button type="button" class="uni-chip" data-uni="University of Nairobi">UoN</button>
+            <button type="button" class="uni-chip" data-uni="JKUAT">JKUAT</button>
+            <button type="button" class="uni-chip" data-uni="Moi University">Moi</button>
+            <button type="button" class="uni-chip" data-uni="Others">Others</button>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="signupEmail">University Email</label>
+          <input type="email" id="signupEmail" placeholder="your@university.ac.ke" required autocomplete="email" />
+        </div>
+        <div class="input-group">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="Min. 6 characters" required minlength="6" autocomplete="new-password" />
+        </div>
+        <div class="input-group">
+          <label for="signupConfirm">Confirm Password</label>
+          <input type="password" id="signupConfirm" placeholder="Confirm password" required autocomplete="new-password" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="signupBtn">
+          <span class="btn-text">Create Account</span>
+          <span class="btn-spinner" style="display:none"></span>
+        </button>
+      </form>
+      <div class="auth-divider"><span>or</span></div>
+      <button class="btn btn-google" id="googleSignupBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.3v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.08z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+      <p class="auth-link">Already have an account? <a href="#" id="goToLogin">Log In</a></p>
+    </div>
+  </div>
+
+  <div id="main-app" class="screen">
+    <header class="top-bar" id="topBar">
+      <h1 id="topBarTitle">Juriscore</h1>
+      <div class="top-bar-actions">
+        <button class="icon-btn" id="logoutBtn" title="Log out">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="bottom-nav" id="bottomNav">
+      <button class="nav-item active" data-route="home">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" data-route="search">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Search</span>
+      </button>
+      <button class="nav-item" data-route="constitution">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="13" x2="8" y2="13" stroke="#fff" stroke-width="2"/><line x1="16" y1="17" x2="8" y2="17" stroke="#fff" stroke-width="2"/></svg>
+        <span>Constitution</span>
+      </button>
+      <button class="nav-item" data-route="notebook">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        <span>Notebook</span>
+      </button>
+      <button class="nav-item" data-route="flashcards">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="12" y1="6" x2="12" y2="18" stroke="var(--accent)" stroke-width="2"/></svg>
+        <span>Flashcards</span>
+      </button>
+      <button class="nav-item" data-route="profile">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+
+    <main class="content" id="contentArea">
+      <section class="page active" id="page-home">
+        <div class="container">
+          <div class="greeting-section">
+            <h2 id="greetingText">Good morning, Student</h2>
+            <div class="search-bar" id="homeSearchBar">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" placeholder="Search cases, statutes, topics..." id="homeSearchInput" />
+            </div>
+          </div>
+          <div class="section">
+            <h3 class="section-title">Quick Actions</h3>
+            <div class="quick-actions">
+              <button class="quick-action" data-route="search">
+                <div class="quick-icon" style="background:#E8EEF5;color:var(--primary)">🕐</div>
+                <span>Recent Cases</span>
+              </button>
+              <button class="quick-action" data-route="notebook">
+                <div class="quick-icon" style="background:#F0E6D3;color:var(--accent)">📁</div>
+                <span>My Notebook</span>
+              </button>
+              <button class="quick-action" data-route="flashcards">
+                <div class="quick-icon" style="background:#FEF3C7;color:#F59E0B">💡</div>
+                <span>Flashcards</span>
+              </button>
+              <button class="quick-action" data-route="constitution">
+                <div class="quick-icon" style="background:#D1FAE5;color:#10B981">📄</div>
+                <span>Constitution</span>
+              </button>
+            </div>
+          </div>
+          <div class="section">
+            <h3 class="section-title">Continue Studying</h3>
+            <div class="horizontal-scroll" id="recentCasesScroll"></div>
+          </div>
+          <div class="section">
+            <h3 class="section-title">Recommended for You</h3>
+            <div class="vertical-list" id="recommendedList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-search">
+        <div class="container">
+          <div class="search-header">
+            <div class="search-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" placeholder="Search cases, statutes..." id="searchInput" />
+              <button class="clear-btn" id="searchClear" style="display:none">✕</button>
+            </div>
+            <button class="sort-toggle" id="sortToggle">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="9" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="sort-panel" id="sortPanel" style="display:none">
+            <button class="sort-chip active" data-sort="relevance">Relevance</button>
+            <button class="sort-chip" data-sort="newest">Newest First</button>
+            <button class="sort-chip" data-sort="oldest">Oldest First</button>
+          </div>
+          <div class="filter-chips" id="filterChips">
+            <button class="filter-chip active" data-court="All">All</button>
+            <button class="filter-chip" data-court="Supreme Court">Supreme Court</button>
+            <button class="filter-chip" data-court="Court of Appeal">Court of Appeal</button>
+            <button class="filter-chip" data-court="High Court">High Court</button>
+            <button class="filter-chip" data-court="Statutes">Statutes</button>
+          </div>
+          <div class="loading-indicator" id="searchLoading" style="display:none"><div class="spinner"></div><p>Searching...</p></div>
+          <div class="results-list" id="searchResults"></div>
+          <div class="empty-state" id="searchEmpty" style="display:none"><div class="empty-icon">🔍</div><p>No cases found. Try different keywords.</p></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-constitution">
+        <div class="container">
+          <h2 class="page-title">Constitution of Kenya, 2010</h2>
+          <p class="page-subtitle">The supreme law of the Republic</p>
+          <div class="chapter-scroll" id="chapterChips"></div>
+          <div class="loading-indicator" id="constLoading" style="display:none"><div class="spinner"></div></div>
+          <div class="article-list" id="articleList"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-notebook">
+        <div class="container">
+          <div class="page-header">
+            <h2>My Notebook</h2>
+            <button class="btn btn-primary btn-sm" id="newFolderBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New Folder
+            </button>
+          </div>
+          <div class="loading-indicator" id="notebookLoading" style="display:none"><div class="spinner"></div></div>
+          <div class="empty-state" id="notebookEmpty" style="display:none">
+            <div class="empty-icon">📁</div><p>No folders yet</p><span>Tap "New Folder" to create your first study folder</span>
+          </div>
+          <div class="folders-list" id="foldersList"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-flashcards">
+        <div class="container">
+          <div class="page-header">
+            <h2>Flashcards</h2>
+            <button class="btn btn-primary btn-sm" id="newDeckBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New Deck
+            </button>
+          </div>
+          <div class="loading-indicator" id="flashcardsLoading" style="display:none"><div class="spinner"></div></div>
+          <div class="empty-state" id="flashcardsEmpty" style="display:none">
+            <div class="empty-icon">💡</div><p>No decks yet</p><span>Create one to start studying</span>
+          </div>
+          <div class="decks-list" id="decksList"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-profile">
+        <div class="container">
+          <div class="profile-header">
+            <div class="avatar" id="profileAvatar">S</div>
+            <h2 id="profileName">Student</h2>
+            <span class="uni-badge" id="profileUni">University</span>
+          </div>
+          <div class="stats-row">
+            <div class="stat-card"><span class="stat-num" id="statSaved">0</span><span class="stat-label">Cases Saved</span></div>
+            <div class="stat-card"><span class="stat-num" id="statDecks">0</span><span class="stat-label">Flashcards</span></div>
+            <div class="stat-card"><span class="stat-num" id="statNotes">0</span><span class="stat-label">Notes</span></div>
+          </div>
+          <div class="settings-list">
+            <button class="setting-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Edit Profile
+            </button>
+            <button class="setting-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Notifications
+            </button>
+            <button class="setting-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Offline Storage
+            </button>
+            <button class="setting-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              About Juriscore
+            </button>
+            <button class="setting-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Terms of Service
+            </button>
+            <button class="setting-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--textSecondary)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Privacy Policy
+            </button>
+          </div>
+          <button class="btn btn-logout" id="logoutBtn2">Log Out</button>
+          <p class="version-text">Juriscore v1.0.0</p>
+        </div>
+      </section>
+    </main>
+
+    <div id="caseDetailOverlay" class="overlay" style="display:none">
+      <div class="overlay-header">
+        <button class="icon-btn" id="caseDetailBack">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <h3>Case Detail</h3>
+        <div style="width:36px"></div>
+      </div>
+      <div class="overlay-content" id="caseDetailContent"></div>
+      <div class="overlay-actions-bar">
+        <button class="overlay-action" id="saveCaseBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>Save
+        </button>
+        <button class="overlay-action" id="cardsCaseBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>Cards
+        </button>
+        <button class="overlay-action" id="exportCaseBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export
+        </button>
+      </div>
+    </div>
+
+    <div id="studyOverlay" class="overlay study-overlay" style="display:none">
+      <div class="study-header">
+        <button class="icon-btn" id="studyBackBtn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <h3 id="studyTitle">Study Session</h3>
+        <span class="study-counter" id="studyCounter">1/10</span>
+      </div>
+      <div class="study-progress-bar"><div class="study-progress-fill" id="studyProgressFill"></div></div>
+      <div class="study-content">
+        <div id="studyEmptyState" class="empty-state" style="display:none">
+          <div class="empty-icon">✅</div><p>All caught up!</p><span>No cards due for review.</span>
+          <button class="btn btn-primary" id="studyDoneBtn">Go Back</button>
+        </div>
+        <div id="studyLoadingState" class="empty-state"><div class="spinner"></div><p>Loading cards...</p></div>
+        <div id="studyCardArea" style="display:none">
+          <div class="flashcard" id="studyFlashcard">
+            <div class="flashcard-inner" id="flashcardInner">
+              <div class="flashcard-front">
+                <span class="flashcard-label">Question</span>
+                <p class="flashcard-text" id="flashcardFrontText">Loading...</p>
+              </div>
+              <div class="flashcard-back">
+                <span class="flashcard-label" style="color:var(--accent)">Answer</span>
+                <p class="flashcard-text" id="flashcardBackText">Loading...</p>
+              </div>
+            </div>
+            <p class="tap-hint" id="tapHint">Tap card to reveal answer</p>
+          </div>
+          <div class="study-actions" id="studyActions" style="display:none">
+            <button class="study-btn study-btn-hard" data-quality="1"><span>Hard</span></button>
+            <button class="study-btn study-btn-good" data-quality="3"><span>Good</span></button>
+            <button class="study-btn study-btn-easy" data-quality="5"><span>Easy</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>
