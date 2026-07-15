@@ -33,7 +33,7 @@
     },
     {
       "src": "/",
-      "dest": "/public/login.html"
+      "dest": "/public/app.html"
     }
   ]
 }

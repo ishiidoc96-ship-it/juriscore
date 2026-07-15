@@ -13,7 +13,7 @@ async function apiFetch(endpoint, options = {}) {
     if (res.status === 401) {
       localStorage.removeItem('juriscore_token');
       localStorage.removeItem('juriscore_user');
-      window.location.href = '/login.html';
+      window.location.href = '/app.html';
       return null;
     }
     if (!res.ok) {

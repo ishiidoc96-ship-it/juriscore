@@ -225,5 +225,5 @@ function toggleMobileMenu() {
 
 function handleLogout() {
   localStorage.removeItem('juriscore_user');
-  window.location.href = '/login.html';
+  window.location.href = '/app.html#home';
 }
