@@ -1209,12 +1209,20 @@
       if (homeSearchBtn && homeSearchInput) {
         homeSearchBtn.addEventListener('click', function() {
           const q = homeSearchInput.value.trim();
-          if (q) navigateTo('search');
+          if (q) {
+            document.getElementById('search-main-input').value = q;
+            navigateTo('search');
+            doSearch();
+          }
         });
         homeSearchInput.addEventListener('keydown', function(e) {
           if (e.key === 'Enter') {
             const q = homeSearchInput.value.trim();
-            if (q) navigateTo('search');
+            if (q) {
+              document.getElementById('search-main-input').value = q;
+              navigateTo('search');
+              doSearch();
+            }
           }
         });
       }
@@ -1257,6 +1265,127 @@
         input.focus();
       }
     }
+
+    /* ===========================
+       SEARCH FUNCTIONALITY
+       =========================== */
+    let currentJurisdiction = 'kenya';
+    let currentDocType = '';
+    let currentCourt = '';
+
+    async function doSearch() {
+      const input = document.getElementById('search-main-input');
+      const query = input ? input.value.trim() : '';
+      if (!query) { showToast('Please enter a search query', 'error'); return; }
+
+      const resultsDiv = document.getElementById('search-results');
+      const countEl = document.getElementById('search-count');
+      const summaryEl = document.getElementById('search-results-summary');
+
+      // Show loading
+      resultsDiv.innerHTML = '<div class="space-y-3">' +
+        '<div class="bg-surface border border-border rounded-2xl p-5 space-y-3"><div class="w-20 h-4 rounded-full skeleton"></div><div class="w-3/4 h-5 rounded-full skeleton"></div><div class="w-1/2 h-4 rounded-full skeleton" style="opacity:0.6"></div></div>' +
+        '<div class="bg-surface border border-border rounded-2xl p-5 space-y-3"><div class="w-24 h-4 rounded-full skeleton"></div><div class="w-2/3 h-5 rounded-full skeleton"></div><div class="w-1/3 h-4 rounded-full skeleton" style="opacity:0.6"></div></div>' +
+        '</div>';
+      if (summaryEl) summaryEl.classList.remove('hidden');
+
+      try {
+        let url = '/api/search?q=' + encodeURIComponent(query) + '&jurisdiction=' + currentJurisdiction;
+        if (currentDocType && currentDocType !== 'all') url += '&doc_type=' + encodeURIComponent(currentDocType);
+        if (currentCourt && currentCourt !== 'all') url += '&court=' + encodeURIComponent(currentCourt);
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Search failed');
+        const data = await res.json();
+
+        const results = data.results || data || [];
+        const count = data.count || results.length || 0;
+        if (countEl) countEl.textContent = count;
+
+        if (!results.length) {
+          resultsDiv.innerHTML = '<div class="py-16 text-center">' +
+            '<svg class="w-16 h-16 mx-auto text-on-muted/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>' +
+            '<p class="text-sm font-semibold text-on-surface mb-1">No results found</p>' +
+            '<p class="text-sm text-on-muted">Try different keywords or adjust your filters</p></div>';
+          return;
+        }
+
+        resultsDiv.innerHTML = results.map(function(r) {
+          var title = r.title || 'Untitled';
+          var citation = r.citation || '';
+          var court = r.court || '';
+          var year = r.year || '';
+          var excerpt = r.excerpt || r.summary || '';
+          if (typeof excerpt === 'object') excerpt = excerpt.facts || JSON.stringify(excerpt);
+          var docType = r.doc_type || r.type || 'case';
+          var tags = (r.subject_tags || r.topics || []).slice(0, 3);
+
+          var badgeColor = 'bg-primary/10 text-primary';
+          if (docType === 'legislation' || docType === 'statute') badgeColor = 'bg-green-50 text-green-700';
+          else if (docType === 'gazette') badgeColor = 'bg-amber-50 text-amber-700';
+
+          return '<div class="bg-surface border border-border rounded-2xl p-5 hover:border-primary/20 hover:shadow-md transition-all cursor-pointer">' +
+            '<div class="flex items-start justify-between gap-3 mb-2">' +
+              '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wide ' + badgeColor + '">' + docType + '</span>' +
+              (court ? '<span class="text-xs text-on-muted">' + court + '</span>' : '') +
+            '</div>' +
+            '<h3 class="text-sm font-bold text-on-surface mb-1 hover:text-primary transition-colors">' + title + '</h3>' +
+            (citation ? '<p class="text-xs text-on-muted font-mono mb-2">' + citation + '</p>' : '') +
+            (excerpt ? '<p class="text-sm text-on-muted leading-relaxed line-clamp-2 mb-3">' + excerpt.substring(0, 200) + '</p>' : '') +
+            '<div class="flex items-center gap-2 flex-wrap">' +
+              tags.map(function(t) { return '<span class="px-2 py-0.5 bg-surface-alt rounded text-[10px] font-semibold text-on-muted">' + t + '</span>'; }).join('') +
+              (year ? '<span class="text-[11px] text-on-muted ml-auto">' + year + '</span>' : '') +
+            '</div>' +
+          '</div>';
+        }).join('');
+
+      } catch (err) {
+        console.error('Search error:', err);
+        resultsDiv.innerHTML = '<div class="py-16 text-center">' +
+          '<svg class="w-16 h-16 mx-auto text-on-muted/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>' +
+          '<p class="text-sm font-semibold text-on-surface mb-1">Search unavailable</p>' +
+          '<p class="text-sm text-on-muted">The search service is temporarily unavailable. Please try again.</p></div>';
+      }
+    }
+
+    /* Search event listeners */
+    document.addEventListener('DOMContentLoaded', function() {
+      var searchBtn = document.getElementById('search-main-btn');
+      var searchInput = document.getElementById('search-main-input');
+      if (searchBtn) searchBtn.addEventListener('click', doSearch);
+      if (searchInput) searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(); });
+
+      /* Jurisdiction tabs */
+      document.querySelectorAll('.jurisdiction-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('.jurisdiction-tab').forEach(function(t) {
+            t.classList.remove('active', 'bg-surface', 'text-primary', 'shadow-sm');
+            t.classList.add('text-on-muted');
+          });
+          tab.classList.add('active', 'bg-surface', 'text-primary', 'shadow-sm');
+          tab.classList.remove('text-on-muted');
+          currentJurisdiction = tab.dataset.jurisdiction || 'kenya';
+        });
+      });
+
+      /* Doc type filters */
+      document.querySelectorAll('[data-doctype]').forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          document.querySelectorAll('[data-doctype]').forEach(function(c) { c.classList.remove('active'); });
+          chip.classList.add('active');
+          currentDocType = chip.dataset.doctype || '';
+        });
+      });
+
+      /* Court filters */
+      document.querySelectorAll('[data-court]').forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          document.querySelectorAll('[data-court]').forEach(function(c) { c.classList.remove('active'); });
+          chip.classList.add('active');
+          currentCourt = chip.dataset.court || '';
+        });
+      });
+    });
 
     /* ===========================
        HASH ROUTING
