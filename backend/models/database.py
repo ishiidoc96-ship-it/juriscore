@@ -36,7 +36,7 @@ class Case(Base):
     court: Mapped[str]
     year: Mapped[int]
     subject_tags: Mapped[dict | None] = mapped_column(JSON, nullable=True)
-    full_text: Mapped[str]
+    full_text: Mapped[str] = mapped_column(String, default="")
     summary: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     ratio: Mapped[str | None]
     judges: Mapped[list | None] = mapped_column(JSON, nullable=True)
@@ -112,3 +112,17 @@ class StudyNote(Base):
     note_text: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+from sqlalchemy import Index
+
+Index("ix_cases_title", Case.title)
+Index("ix_cases_court", Case.court)
+Index("ix_cases_year", Case.year)
+Index("ix_statutes_title", Statute.title)
+Index("ix_notebook_folders_user", Notebook.user_id)
+Index("ix_notebook_entries_notebook", NotebookEntry.notebook_id)
+Index("ix_flashcard_decks_user", FlashcardDeck.user_id)
+Index("ix_flashcards_deck", Flashcard.deck_id)
+Index("ix_study_notes_user", StudyNote.user_id)
+Index("ix_study_notes_case", StudyNote.case_id)

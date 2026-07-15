@@ -829,8 +829,6 @@
   var currentNotebookFolderId = null;
   var studyState = { deckId:null, cards:[], currentIndex:0, flipped:false };
   var _inFlight = {};
-  var _searchDebounce = null;
-
   // ---- HTML escaping (XSS prevention) ----
   function esc(s) {
     if (!s) return '';
@@ -845,6 +843,10 @@
       document.getElementById('search-input').value = val;
       doSearch();
     }
+    var moreBtn = e.target.closest('.section-more-btn');
+    if (moreBtn) {
+      setFilterAndSearch(moreBtn.dataset.type || '');
+    }
   });
 
   // ---- Auth ----
@@ -858,7 +860,7 @@
     var icons = { success:'check_circle', error:'error', info:'info' };
     var el = document.createElement('div');
     el.className = 'toast toast-' + type;
-    el.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">' + (icons[type] || 'info') + '</span>' + msg;
+    el.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">' + (icons[type] || 'info') + '</span>' + esc(msg);
     document.getElementById('toast-container').appendChild(el);
     setTimeout(function() { el.style.opacity = '0'; el.style.transform = 'translateY(8px) scale(0.95)'; el.style.transition = 'all 0.2s'; setTimeout(function() { el.remove(); }, 200); }, 2800);
   };
@@ -1175,8 +1177,8 @@
     var remaining = items.length - maxShow;
 
     var html = '<div class="mb-8">';
-    html += '<div class="section-hdr"><h2><span class="material-symbols-outlined text-primary" style="font-size:20px;">' + icon + '</span> ' + title + ' <span class="section-count">' + items.length + '</span></h2>';
-    if (remaining > 0) html += '<span class="section-more" onclick="setFilterAndSearch(\'' + title + '\')">View all ' + items.length + ' &rarr;</span>';
+    html += '<div class="section-hdr"><h2><span class="material-symbols-outlined text-primary" style="font-size:20px;">' + icon + '</span> ' + esc(title) + ' <span class="section-count">' + items.length + '</span></h2>';
+    if (remaining > 0) html += '<span class="section-more section-more-btn" data-type="' + esc(title) + '">View all ' + items.length + ' &rarr;</span>';
     html += '</div>';
     html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
     showing.forEach(function(c) { html += renderCard(c); });
@@ -1230,8 +1232,8 @@
       if (data.query_corrected && data.corrected_query && data.corrected_query !== q) {
         var corrHtml = '<div class="flex items-center gap-2 p-3 rounded-xl bg-primary/5 border border-primary/15 mb-4 animate-fade-in">' +
           '<span class="material-symbols-outlined text-primary" style="font-size:18px;">edit_note</span>' +
-          '<span class="text-sm text-on-surface-variant">Showing results for <strong class="text-primary">' + data.corrected_query + '</strong></span>' +
-          '<span class="text-xs text-secondary ml-1">(corrected from "' + q + '")</span>' +
+          '<span class="text-sm text-on-surface-variant">Showing results for <strong class="text-primary">' + esc(data.corrected_query) + '</strong></span>' +
+          '<span class="text-xs text-secondary ml-1">(corrected from "' + esc(q) + '")</span>' +
           '</div>';
         if (data.suggestions && data.suggestions.length) {
           corrHtml += '<div class="flex flex-wrap gap-1.5 mb-3">';
@@ -1247,7 +1249,7 @@
 
       var summaryHtml = '';
       var displayQuery = data.query_corrected ? data.corrected_query : q;
-      if (displayQuery) summaryHtml += '<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-primary/8 text-primary text-xs font-700">"' + displayQuery + '"</span>';
+      if (displayQuery) summaryHtml += '<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-primary/8 text-primary text-xs font-700">"' + esc(displayQuery) + '"</span>';
       summaryHtml += '<span class="text-secondary">' + results.length + ' result' + (results.length !== 1 ? 's' : '') + ' shown</span>';
       if (total > results.length) summaryHtml += '<span class="text-secondary text-xs">(of ' + total.toLocaleString() + ' total)</span>';
       if (searchFilters.doc_type) {
@@ -1291,7 +1293,7 @@
       body: JSON.stringify({ title:data.title, citation:data.citation, court:data.court, date:data.date, doc_type:data.doc_type, excerpt:data.excerpt, url:data.url }),
     }).then(function(resp) {
       var body = document.querySelector('.modal-body');
-      if (body) body.innerHTML = resp.summary.split('\n').filter(function(p) { return p.trim(); }).map(function(p) { return '<p>' + p + '</p>'; }).join('');
+      if (body) body.innerHTML = resp.summary.split('\n').filter(function(p) { return p.trim(); }).map(function(p) { return '<p>' + esc(p) + '</p>'; }).join('');
     }).catch(function() {
       var body = document.querySelector('.modal-body');
       if (body) body.innerHTML = '<div class="text-center py-6"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Failed to generate summary</p><p class="text-secondary text-sm font-500 mb-3">Something went wrong. Please try again.</p><button onclick="summarizeCard(\'' + encodedData + '\')" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Retry</button></div>';
@@ -1387,7 +1389,7 @@
       var caseNotes = notes.filter(function(n) { return n.case_id === currentCaseId; });
       listEl.innerHTML = caseNotes.length ? caseNotes.map(function(n) {
         return '<div class="bg-surface-container-low border border-outline-variant rounded-xl p-3 flex items-start justify-between gap-3">' +
-          '<p class="text-sm text-on-surface flex-1">' + n.note_text + '</p>' +
+          '<p class="text-sm text-on-surface flex-1">' + esc(n.note_text) + '</p>' +
           '<button onclick="deleteNote(\'' + n.id + '\')" class="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-secondary hover:text-error hover:bg-error-container/30 transition-all active:scale-95"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>' +
         '</div>';
       }).join('') : '<div class="text-center py-6"><span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">sticky_note_2</span><p class="text-secondary text-sm font-500">No notes yet. Add your first note above.</p></div>';
@@ -1457,12 +1459,12 @@
           '<div class="ch-header">' +
             '<div class="flex items-center gap-3">' +
               '<span class="w-8 h-8 rounded-lg bg-primary/8 flex items-center justify-center text-sm font-700 text-primary">' + (i + 1) + '</span>' +
-              '<span class="text-sm font-600 text-on-surface">' + (ch.chapter || 'Chapter ' + (i+1)) + '</span>' +
+              '<span class="text-sm font-600 text-on-surface">' + esc(ch.chapter || 'Chapter ' + (i+1)) + '</span>' +
             '</div>' +
             '<span class="material-symbols-outlined expand-icon" style="font-size:20px;">expand_more</span>' +
           '</div>' +
           '<div class="ch-body"><div class="p-5 text-sm text-on-surface-variant leading-relaxed max-h-[400px] overflow-y-auto">' +
-            (ch.articles || []).slice(0, 10).map(function(a) { return '<p class="mb-2">' + a.substring(0, 300) + (a.length > 300 ? '...' : '') + '</p>'; }).join('') +
+            (ch.articles || []).slice(0, 10).map(function(a) { return '<p class="mb-2">' + esc(a.substring(0, 300)) + (a.length > 300 ? '...' : '') + '</p>'; }).join('') +
             (ch.articles && ch.articles.length > 10 ? '<p class="text-primary text-xs font-600 mt-2">...and ' + (ch.articles.length - 10) + ' more articles</p>' : '') +
           '</div></div>' +
         '</div>';
@@ -1518,10 +1520,10 @@
           var dueCount = deckCards[i] ? deckCards[i].length : 0;
           return '<div class="bg-white border border-outline-variant rounded-2xl p-5 hover:border-outline hover:shadow-card-hover transition-all cursor-pointer group">' +
             '<div class="flex justify-between items-start mb-3">' +
-              '<span class="text-[10px] font-700 text-secondary uppercase tracking-widest">' + (d.subject || 'General') + '</span>' +
+              '<span class="text-[10px] font-700 text-secondary uppercase tracking-widest">' + esc(d.subject || 'General') + '</span>' +
               '<button onclick="event.stopPropagation();deleteDeck(\'' + d.id + '\')" class="w-7 h-7 rounded-lg flex items-center justify-center text-secondary opacity-0 group-hover:opacity-100 hover:text-error hover:bg-error-container/30 transition-all active:scale-95"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>' +
             '</div>' +
-            '<h3 class="text-base font-700 text-on-surface mb-3">' + d.title + '</h3>' +
+            '<h3 class="text-base font-700 text-on-surface mb-3">' + esc(d.title) + '</h3>' +
             '<div class="flex items-center justify-between pt-3 border-t border-outline-variant">' +
               '<span class="text-xs font-500 text-secondary">' + dueCount + ' cards due</span>' +
               '<button onclick="event.stopPropagation();startStudy(\'' + d.id + '\')" class="text-xs font-700 text-primary bg-primary/8 px-3.5 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-all active:scale-95">Study</button>' +
