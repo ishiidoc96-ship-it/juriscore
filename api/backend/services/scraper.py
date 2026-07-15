@@ -77,8 +77,8 @@ async def _get(
     url: str,
     params: Optional[Dict] = None,
     headers: Optional[Dict] = None,
-    timeout: int = 25,
-    retries: int = 3,
+    timeout: int = 10,
+    retries: int = 2,
 ) -> httpx.Response:
     """Fetch URL with retry logic, exponential backoff, and realistic headers."""
     hdrs = headers or API_HEADERS

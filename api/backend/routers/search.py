@@ -2,6 +2,7 @@ from fastapi import APIRouter, Query, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from services.scraper import search_all, search_kenyalaw
+from services.brain import brain_search, brain_get_case, brain_get_related_cases, brain_get_statutes, brain_stats, load_brain
 from services.africa_law_scraper import search_africanlii, search_african_court, get_african_jurisdictions, get_african_courts
 from services.world_law_scraper import search_worldlii, search_global_case_law, get_world_jurisdictions, get_world_sources, get_legal_systems
 from services.ai_service import (
@@ -15,6 +16,12 @@ import logging
 
 logger = logging.getLogger("juriscore")
 router = APIRouter()
+
+# Try to load brain at startup
+try:
+    load_brain()
+except Exception as e:
+    logger.warning(f"Brain data not loaded: {e}")
 
 
 class SummarizeRequest(BaseModel):
@@ -46,8 +53,17 @@ async def universal_search(
 
     jurisdiction = jurisdiction.lower().strip()
 
-    # Kenya Law search
+    # Kenya Law search — brain first, then live fallback
     if jurisdiction == "kenya" or jurisdiction == "ke":
+        # Try brain (instant local search)
+        brain_result = brain_search(q, doc_type=doc_type, court=court, limit=limit)
+        if brain_result.get("count", 0) > 0 and brain_result.get("source") == "brain":
+            brain_result["jurisdiction"] = "kenya"
+            logger.info(f"Brain returned {brain_result['count']} results for '{q}'")
+            return brain_result
+
+        # Fall back to live search if brain has no results
+        logger.info(f"Brain empty for '{q}', falling back to live search")
         filters = {
             "doc_type": doc_type,
             "court": court,
@@ -495,3 +511,9 @@ async def get_daily_updates(
         "courts": list(by_court.keys()),
         "by_court": by_court,
     }
+
+
+@router.get("/brain/stats")
+async def get_brain_stats():
+    """Get brain data statistics."""
+    return brain_stats()

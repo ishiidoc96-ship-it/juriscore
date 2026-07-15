@@ -9,8 +9,8 @@ logger = logging.getLogger("juriscore")
 
 _api_key = ""
 _base_url = "https://integrate.api.nvidia.com/v1"
-_model = "stepfun-ai/step-3.7-flash"
-_fallback_model = "nvidia/llama-3.3-nemotron-super-49b-v1"  # Reliable text fallback
+_model = "nvidia/nemotron-3-nano-30b-a3b"
+_fallback_model = "stepfun-ai/step-3.7-flash"
 
 HUMANIZE_SYSTEM = """You are a senior Kenyan legal scholar who writes with genuine authority and a distinct voice. You write like a real person who has spent years in courtrooms and libraries — not like a language model.
 
