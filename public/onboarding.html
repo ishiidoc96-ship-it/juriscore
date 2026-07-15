@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juriscore – Get Started</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#00327d',
+            'primary-light': '#004aad',
+            'primary-dark': '#002254',
+            surface: '#ffffff',
+            muted: '#c3c6d5',
+            cta: '#0A0A0A',
+          },
+          fontFamily: {
+            serif: ['"EB Garamond"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem 3rem;
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .slide.exit-left {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background-color: #c3c6d5;
+      transition: background-color 0.35s ease, width 0.35s ease;
+    }
+
+    .dot.active {
+      background-color: #00327d;
+      width: 24px;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .illustration-wrapper svg {
+      width: 160px;
+      height: 160px;
+    }
+
+    @media (min-width: 768px) {
+      .illustration-wrapper svg {
+        width: 200px;
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body class="bg-surface h-screen overflow-hidden flex flex-col">
+
+  <!-- Header -->
+  <header class="flex items-center justify-center pt-10 pb-4 shrink-0">
+    <span class="font-serif text-3xl md:text-4xl font-semibold text-primary tracking-tight select-none">
+      Juriscore
+    </span>
+  </header>
+
+  <!-- Carousel -->
+  <main class="relative flex-1 flex flex-col items-center justify-center overflow-hidden">
+
+    <!-- Slide 1 -->
+    <div class="slide active" data-step="0">
+      <div class="illustration-wrapper mb-8">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="100" cy="100" r="96" fill="#EBF0FA" stroke="#00327d" stroke-width="1.5"/>
+          <g transform="translate(42,34)">
+            <!-- Scales of Justice -->
+            <rect x="56" y="8" width="4" height="110" rx="2" fill="#00327d"/>
+            <rect x="40" y="8" width="36" height="4" rx="2" fill="#00327d"/>
+            <!-- Top triangle -->
+            <polygon points="58,4 50,12 66,12" fill="#00327d"/>
+            <!-- Left pan -->
+            <line x1="42" y1="12" x2="22" y2="50" stroke="#00327d" stroke-width="2.5" stroke-linecap="round"/>
+            <ellipse cx="22" cy="54" rx="18" ry="6" fill="#004aad" opacity="0.25" stroke="#00327d" stroke-width="2"/>
+            <!-- Right pan -->
+            <line x1="74" y1="12" x2="94" y2="50" stroke="#00327d" stroke-width="2.5" stroke-linecap="round"/>
+            <ellipse cx="94" cy="54" rx="18" ry="6" fill="#004aad" opacity="0.25" stroke="#00327d" stroke-width="2"/>
+            <!-- Base -->
+            <rect x="32" y="118" width="52" height="6" rx="3" fill="#00327d"/>
+            <rect x="44" y="118" width="28" height="4" rx="2" fill="#004aad" opacity="0.3"/>
+          </g>
+        </svg>
+      </div>
+      <h1 class="font-serif text-[32px] md:text-[48px] font-semibold text-primary leading-tight text-center max-w-md mb-4 slide-heading">
+        Fast Legal Search
+      </h1>
+      <p class="font-sans text-[15px] md:text-[17px] text-gray-500 leading-relaxed text-center max-w-sm slide-body">
+        Search across thousands of Kenyan cases, statutes, and gazette notices in milliseconds.
+      </p>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="slide" data-step="1">
+      <div class="illustration-wrapper mb-8">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="100" cy="100" r="96" fill="#EBF0FA" stroke="#00327d" stroke-width="1.5"/>
+          <g transform="translate(40,36)">
+            <!-- Brain / AI icon -->
+            <circle cx="60" cy="44" r="36" fill="#004aad" opacity="0.12" stroke="#00327d" stroke-width="2"/>
+            <!-- Neural nodes -->
+            <circle cx="60" cy="30" r="5" fill="#00327d"/>
+            <circle cx="42" cy="44" r="5" fill="#00327d"/>
+            <circle cx="78" cy="44" r="5" fill="#00327d"/>
+            <circle cx="50" cy="62" r="5" fill="#00327d"/>
+            <circle cx="70" cy="62" r="5" fill="#00327d"/>
+            <circle cx="60" cy="50" r="4" fill="#004aad"/>
+            <!-- Connections -->
+            <line x1="60" y1="30" x2="42" y2="44" stroke="#00327d" stroke-width="1.5"/>
+            <line x1="60" y1="30" x2="78" y2="44" stroke="#00327d" stroke-width="1.5"/>
+            <line x1="42" y1="44" x2="50" y2="62" stroke="#00327d" stroke-width="1.5"/>
+            <line x1="78" y1="44" x2="70" y2="62" stroke="#00327d" stroke-width="1.5"/>
+            <line x1="50" y1="62" x2="70" y2="62" stroke="#00327d" stroke-width="1.5"/>
+            <line x1="42" y1="44" x2="60" y2="50" stroke="#00327d" stroke-width="1"/>
+            <line x1="78" y1="44" x2="60" y2="50" stroke="#00327d" stroke-width="1"/>
+            <line x1="60" y1="30" x2="60" y2="50" stroke="#00327d" stroke-width="1"/>
+            <!-- Sparkle -->
+            <path d="M100 18 l3 6 6 3-6 3-3 6-3-6-6-3 6-3z" fill="#00327d" opacity="0.5"/>
+            <path d="M14 26 l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" fill="#00327d" opacity="0.35"/>
+          </g>
+        </svg>
+      </div>
+      <h1 class="font-serif text-[32px] md:text-[48px] font-semibold text-primary leading-tight text-center max-w-md mb-4 slide-heading">
+        AI-Powered Research
+      </h1>
+      <p class="font-sans text-[15px] md:text-[17px] text-gray-500 leading-relaxed text-center max-w-sm slide-body">
+        Get instant case summaries, IRAC analysis, and intelligent research assistance.
+      </p>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="slide" data-step="2">
+      <div class="illustration-wrapper mb-8">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="100" cy="100" r="96" fill="#EBF0FA" stroke="#00327d" stroke-width="1.5"/>
+          <g transform="translate(44,32)">
+            <!-- Notebook -->
+            <rect x="12" y="10" width="88" height="116" rx="8" fill="#ffffff" stroke="#00327d" stroke-width="2"/>
+            <!-- Spiral binding -->
+            <rect x="8" y="24" width="8" height="8" rx="4" fill="#00327d"/>
+            <rect x="8" y="44" width="8" height="8" rx="4" fill="#00327d"/>
+            <rect x="8" y="64" width="8" height="8" rx="4" fill="#00327d"/>
+            <rect x="8" y="84" width="8" height="8" rx="4" fill="#00327d"/>
+            <rect x="8" y="104" width="8" height="8" rx="4" fill="#00327d"/>
+            <!-- Lines -->
+            <line x1="28" y1="32" x2="84" y2="32" stroke="#c3c6d5" stroke-width="1.5"/>
+            <line x1="28" y1="50" x2="84" y2="50" stroke="#c3c6d5" stroke-width="1.5"/>
+            <line x1="28" y1="68" x2="84" y2="68" stroke="#c3c6d5" stroke-width="1.5"/>
+            <line x1="28" y1="86" x2="70" y2="86" stroke="#c3c6d5" stroke-width="1.5"/>
+            <!-- Bookmark -->
+            <polygon points="76,8 76,30 86,24 96,30 96,8" fill="#00327d" opacity="0.2" stroke="#00327d" stroke-width="1.5" stroke-linejoin="round"/>
+          </g>
+        </svg>
+      </div>
+      <h1 class="font-serif text-[32px] md:text-[48px] font-semibold text-primary leading-tight text-center max-w-md mb-4 slide-heading">
+        Organize Your Work
+      </h1>
+      <p class="font-sans text-[15px] md:text-[17px] text-gray-500 leading-relaxed text-center max-w-sm slide-body">
+        Create notebooks, flashcards, and research workspaces to ace your studies.
+      </p>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide" data-step="3">
+      <div class="illustration-wrapper mb-8">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="100" cy="100" r="96" fill="#EBF0FA" stroke="#00327d" stroke-width="1.5"/>
+          <g transform="translate(44,30)">
+            <!-- Bell -->
+            <path d="M56 16 C56 16 56 8 56 4 C56 0 64 0 64 4 C64 8 64 16 64 16" fill="#00327d"/>
+            <path d="M38 16 L38 90 L74 90 L74 16 C74 16 88 16 88 32 C88 48 88 60 88 64 L24 64 C24 60 24 48 24 32 C24 16 38 16 38 16Z" fill="#004aad" opacity="0.15" stroke="#00327d" stroke-width="2.5" stroke-linejoin="round"/>
+            <!-- Clapper -->
+            <rect x="42" y="90" width="28" height="6" rx="3" fill="#00327d"/>
+            <circle cx="56" cy="108" r="8" fill="#00327d" opacity="0.15" stroke="#00327d" stroke-width="2"/>
+            <!-- Pulse rings -->
+            <circle cx="56" cy="50" r="18" fill="none" stroke="#00327d" stroke-width="1" opacity="0.2"/>
+            <circle cx="56" cy="50" r="28" fill="none" stroke="#00327d" stroke-width="1" opacity="0.1"/>
+            <!-- Alert dot -->
+            <circle cx="74" cy="18" r="7" fill="#00327d"/>
+            <text x="74" y="22" text-anchor="middle" fill="#fff" font-size="10" font-weight="bold" font-family="Inter, sans-serif">3</text>
+          </g>
+        </svg>
+      </div>
+      <h1 class="font-serif text-[32px] md:text-[48px] font-semibold text-primary leading-tight text-center max-w-md mb-4 slide-heading">
+        Stay Updated
+      </h1>
+      <p class="font-sans text-[15px] md:text-[17px] text-gray-500 leading-relaxed text-center max-w-sm slide-body">
+        Track new decisions, gazette notices, and legal developments in real time.
+      </p>
+    </div>
+
+    <!-- Progress Dots -->
+    <div class="flex items-center gap-2 mt-8" id="progress-dots">
+      <div class="dot active" data-dot="0"></div>
+      <div class="dot" data-dot="1"></div>
+      <div class="dot" data-dot="2"></div>
+      <div class="dot" data-dot="3"></div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="flex flex-col items-center gap-4 pb-10 pt-4 shrink-0">
+    <button
+      id="next-btn"
+      class="inline-flex items-center justify-center gap-2 bg-cta text-white font-sans font-medium text-[15px] rounded-full w-[260px] h-[52px] hover:bg-gray-800 active:scale-[0.98] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cta"
+    >
+      <span id="next-label">Next</span>
+      <span class="material-symbols-outlined text-[20px] leading-none" id="next-icon">arrow_forward</span>
+    </button>
+    <button
+      id="skip-btn"
+      class="font-sans text-[14px] text-gray-400 hover:text-gray-600 transition-colors duration-200 focus:outline-none"
+    >
+      Skip
+    </button>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const TOTAL_STEPS = 4;
+      const STORAGE_KEY = 'juriscore_onboarding_completed';
+
+      // Redirect if already completed
+      if (localStorage.getItem(STORAGE_KEY) === 'true') {
+        window.location.replace('/login.html');
+        return;
+      }
+
+      const slides = document.querySelectorAll('.slide');
+      const dots = document.querySelectorAll('.dot');
+      const nextBtn = document.getElementById('next-btn');
+      const nextLabel = document.getElementById('next-label');
+      const nextIcon = document.getElementById('next-icon');
+      const skipBtn = document.getElementById('skip-btn');
+
+      let currentStep = 0;
+      let animating = false;
+
+      function updateUI() {
+        // Update slides
+        slides.forEach(function (slide, i) {
+          slide.classList.remove('active', 'exit-left');
+          if (i === currentStep) {
+            slide.classList.add('active');
+          } else if (i < currentStep) {
+            slide.classList.add('exit-left');
+          }
+        });
+
+        // Update dots
+        dots.forEach(function (dot, i) {
+          dot.classList.toggle('active', i === currentStep);
+        });
+
+        // Update button text on last step
+        if (currentStep === TOTAL_STEPS - 1) {
+          nextLabel.textContent = 'Get Started';
+          nextIcon.textContent = 'check';
+        } else {
+          nextLabel.textContent = 'Next';
+          nextIcon.textContent = 'arrow_forward';
+        }
+      }
+
+      function goNext() {
+        if (animating) return;
+
+        if (currentStep < TOTAL_STEPS - 1) {
+          animating = true;
+          currentStep++;
+          updateUI();
+          setTimeout(function () {
+            animating = false;
+          }, 460);
+        } else {
+          complete();
+        }
+      }
+
+      function complete() {
+        localStorage.setItem(STORAGE_KEY, 'true');
+        window.location.href = '/login.html';
+      }
+
+      // Event listeners
+      nextBtn.addEventListener('click', goNext);
+
+      skipBtn.addEventListener('click', function () {
+        complete();
+      });
+
+      // Keyboard support
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          goNext();
+        } else if (e.key === 'Escape') {
+          complete();
+        }
+      });
+
+      // Touch swipe support
+      let touchStartX = 0;
+      let touchStartY = 0;
+
+      document.addEventListener('touchstart', function (e) {
+        touchStartX = e.changedTouches[0].clientX;
+        touchStartY = e.changedTouches[0].clientY;
+      }, { passive: true });
+
+      document.addEventListener('touchend', function (e) {
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        var dy = e.changedTouches[0].clientY - touchStartY;
+
+        // Only register horizontal swipes
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+          if (dx < 0) {
+            // Swipe left → next
+            goNext();
+          } else if (dx > 0 && currentStep > 0) {
+            // Swipe right → previous
+            currentStep--;
+            updateUI();
+          }
+        }
+      }, { passive: true });
+
+      // Initialize
+      updateUI();
+    })();
+  </script>
+
+</body>
+</html>

@@ -61,6 +61,8 @@ class User(Base):
     name: Mapped[str]
     email: Mapped[str]
     university: Mapped[str | None]
+    password_hash: Mapped[str | None] = mapped_column(String, nullable=True)
+    salt: Mapped[str | None] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 

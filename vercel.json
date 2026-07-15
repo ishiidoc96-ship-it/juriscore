@@ -16,12 +16,24 @@
       "dest": "/api/index.py"
     },
     {
-      "src": "/(.*\\.(html|css|js|png|jpg|svg|ico|json|txt))",
+      "src": "/(.*\\.(css|js|png|jpg|svg|ico|json|txt|woff|woff2|ttf|eot))",
       "dest": "/public/$1"
     },
     {
+      "src": "/login",
+      "dest": "/public/login.html"
+    },
+    {
+      "src": "/onboarding",
+      "dest": "/public/onboarding.html"
+    },
+    {
+      "src": "/app",
+      "dest": "/public/app.html"
+    },
+    {
       "src": "/",
-      "dest": "/public/index.html"
+      "dest": "/public/login.html"
     }
   ]
 }

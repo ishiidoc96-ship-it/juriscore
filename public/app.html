@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juriscore - Kenya Legal Research</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary": "#00327d",
+            "primary-container": "#0047ab",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#a5bdff",
+            "surface-tint": "#2559bd",
+            "surface": "#f9f9f9",
+            "surface-bright": "#f9f9f9",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f3f3f3",
+            "surface-container": "#eeeeee",
+            "surface-container-high": "#e8e8e8",
+            "surface-container-highest": "#e2e2e2",
+            "on-surface": "#1a1c1c",
+            "on-surface-variant": "#434653",
+            "outline": "#737784",
+            "outline-variant": "#c3c6d5",
+            "tertiary": "#651f00",
+            "tertiary-container": "#8b2e01",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a",
+            "secondary": "#5f5e5e",
+            "secondary-container": "#e5e2e1",
+            "on-secondary-container": "#656464",
+            "background": "#f9f9f9",
+            "on-background": "#1a1c1c"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "display-lg": ["EB Garamond", "serif"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "body-reading": ["EB Garamond", "serif"],
+            "body-ui": ["Inter", "sans-serif"],
+            "label-caps": ["Inter", "sans-serif"],
+            "headline-lg-mobile": ["EB Garamond", "serif"]
+          },
+          "fontSize": {
+            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-reading": ["20px", { "lineHeight": "32px", "fontWeight": "400" }],
+            "body-ui": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/css/tokens.css">
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 0; overflow-x: hidden; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .toast-container {
+      position: fixed; top: 24px; right: 24px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
+      box-shadow: 0 8px 30px rgba(0,0,0,.12); animation: toastIn .3s ease;
+      max-width: 360px;
+    }
+    .toast.success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .toast.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .toast.info { background: #ffdad6; color: #ba1a1a; border: 1px solid #ffdad6; }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-12px) scale(.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4);
+      z-index: 40; backdrop-filter: blur(2px);
+    }
+    .sidebar-overlay.active { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp .35s ease both; }
+    .fade-up-delay-1 { animation-delay: .05s; }
+    .fade-up-delay-2 { animation-delay: .1s; }
+    .fade-up-delay-3 { animation-delay: .15s; }
+    .fade-up-delay-4 { animation-delay: .2s; }
+    .flashcard-inner {
+      transition: transform 0.5s; transform-style: preserve-3d;
+      position: relative; width: 100%; min-height: 280px;
+    }
+    .flashcard-inner.flipped { transform: rotateY(180deg); }
+    .flashcard-front, .flashcard-back {
+      position: absolute; inset: 0; backface-visibility: hidden;
+      border-radius: 16px; padding: 32px; display: flex;
+      flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+    }
+    .flashcard-back { transform: rotateY(180deg); }
+    .skeleton { background: linear-gradient(90deg, #e8e8e8 25%, #eeeeee 50%, #e8e8e8 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .chapter-accordion .chapter-content { max-height: 0; overflow: hidden;
+      transition: max-height .3s ease, padding .3s ease; }
+    .chapter-accordion.open .chapter-content { max-height: 2000px; }
+    .chapter-accordion .accordion-icon { transition: transform .3s ease; }
+    .chapter-accordion.open .accordion-icon { transform: rotate(180deg); }
+    .nav-item { transition: all .15s ease; }
+    .nav-item:hover { background: #f3f3f3; }
+    .nav-item.active { background: #0047ab; color: #ffffff; font-weight: 600; }
+    .nav-item.active .nav-icon { color: #ffffff; }
+    .filter-chip {
+      padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+      border: 1px solid #c3c6d5; background: #fff; color: #434653;
+      cursor: pointer; transition: all .15s ease; white-space: nowrap;
+    }
+    .filter-chip:hover { border-color: #0047ab; color: #00327d; }
+    .filter-chip.active { background: #00327d; color: #fff; border-color: #00327d; }
+    .note-card { transition: box-shadow .2s ease, transform .2s ease; }
+    .note-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); transform: translateY(-2px); }
+    .bookmark-card { transition: box-shadow .2s ease; }
+    .bookmark-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+    .bento-card { transition: box-shadow .2s ease, transform .2s ease; }
+    .bento-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.1); transform: translateY(-2px); }
+    .timeline-dot { width: 10px; height: 10px; border-radius: 50%;
+      background: #0047ab; flex-shrink: 0; position: relative; }
+    .timeline-dot::after { content: ''; position: absolute; left: 50%; top: 14px;
+      width: 2px; height: calc(100% + 20px); background: #c3c6d5; transform: translateX(-50%); }
+    .timeline-item:last-child .timeline-dot::after { display: none; }
+    .status-badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+    .status-badge.good-law { background: #dcfce7; color: #166534; }
+    .status-badge.overruled { background: #fee2e2; color: #991b1b; }
+    .status-badge.caution { background: #fef3c7; color: #92400e; }
+    .status-badge.current { background: #0047ab; color: #ffffff; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+    
+    /* Design system compatibility mappings */
+    .bg-surface { background-color: #ffffff; }
+    .bg-surface-alt { background-color: #f3f3f3; }
+    .border-border { border-color: #c3c6d5; }
+    .border-border-light { border-color: #e8e8e8; }
+    .text-on-muted { color: #434653; }
+    .text-primary-dark { color: #001946; }
+    .hover\:bg-surface-alt:hover { background-color: #f3f3f3; }
+    .hover\:border-primary\/20:hover { border-color: rgba(0,50,125,0.2); }
+    .hover\:border-primary\/30:hover { border-color: rgba(0,50,125,0.3); }
+    .hover\:border-green-300:hover { border-color: #86efac; }
+    .hover\:border-amber-300:hover { border-color: #fcd34d; }
+    .hover\:border-purple-300:hover { border-color: #c4b5fd; }
+    .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    .font-serif { font-family: 'EB Garamond', serif; }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-ui antialiased">
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
+  <div id="sidebar-container"></div>
+  <div class="md:ml-64 min-h-screen">
+    <div id="topbar-container"></div>
+    <main class="max-w-[1200px] mx-auto px-4 md:px-8 py-6 pb-24 md:pb-8">
+
+      <!-- HOME SCREEN -->
+      <div id="screen-home" class="screen active">
+        <div class="mb-8 fade-up">
+          <h1 id="home-greeting" class="text-2xl md:text-3xl font-bold text-on-background">Good morning, Researcher</h1>
+          <p class="text-on-muted mt-1 text-sm md:text-base">What would you like to research today?</p>
+        </div>
+        <div class="fade-up fade-up-delay-1 mb-8">
+          <div class="relative">
+            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input id="home-search-input" type="text" placeholder="Search cases, legislation, gazettes..." class="w-full pl-12 pr-24 py-4 rounded-2xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm text-sm">
+            <button id="home-search-btn" class="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2.5 bg-primary text-on-primary rounded-xl font-semibold text-sm hover:bg-primary-dark transition-colors">Search</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10 fade-up fade-up-delay-2">
+          <button onclick="navigateTo('constitution')" class="flex flex-col items-center gap-2 p-5 rounded-2xl bg-surface border border-border hover:border-primary/30 hover:shadow-md transition-all group">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+              <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-on-surface">Constitution</span>
+          </button>
+          <button onclick="navigateTo('flashcards')" class="flex flex-col items-center gap-2 p-5 rounded-2xl bg-surface border border-border hover:border-green-300 hover:shadow-md transition-all group">
+            <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center group-hover:bg-green-100 transition-colors">
+              <svg class="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-on-surface">Flashcards</span>
+          </button>
+          <button onclick="navigateTo('notebook')" class="flex flex-col items-center gap-2 p-5 rounded-2xl bg-surface border border-border hover:border-amber-300 hover:shadow-md transition-all group">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
+              <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-on-surface">Notebook</span>
+          </button>
+          <button onclick="navigateTo('history')" class="flex flex-col items-center gap-2 p-5 rounded-2xl bg-surface border border-border hover:border-purple-300 hover:shadow-md transition-all group">
+            <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center group-hover:bg-purple-100 transition-colors">
+              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-on-surface">Recent</span>
+          </button>
+        </div>
+        <div class="mb-10 fade-up fade-up-delay-3">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-on-background">Daily Updates</h2>
+            <button class="text-xs font-semibold text-primary hover:underline">View all</button>
+          </div>
+          <div id="home-court-filters" class="flex gap-2 mb-4 overflow-x-auto pb-2">
+            <button class="filter-chip active" data-court="all">All Courts</button>
+            <button class="filter-chip" data-court="supreme">Supreme Court</button>
+            <button class="filter-chip" data-court="court-of-appeal">Court of Appeal</button>
+            <button class="filter-chip" data-court="high-court">High Court</button>
+            <button class="filter-chip" data-court="environment">Environment &amp; Land</button>
+            <button class="filter-chip" data-court="employment">Employment &amp; Labour</button>
+          </div>
+          <div id="home-daily-updates" class="space-y-3">
+            <div class="skeleton h-24 w-full rounded-xl"></div>
+            <div class="skeleton h-24 w-full rounded-xl"></div>
+            <div class="skeleton h-24 w-full rounded-xl"></div>
+          </div>
+        </div>
+        <div class="fade-up fade-up-delay-4">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-on-background">Recent Searches</h2>
+            <button class="text-xs font-semibold text-primary hover:underline">Clear all</button>
+          </div>
+          <div id="home-recent-searches" class="space-y-2">
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+              <svg class="w-4 h-4 text-on-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span class="text-sm text-on-surface truncate">Constitutional interpretation of article 43</span>
+              <span class="text-xs text-on-muted ml-auto flex-shrink-0">2h ago</span>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+              <svg class="w-4 h-4 text-on-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span class="text-sm text-on-surface truncate">Employment Act 2007 section 35</span>
+              <span class="text-xs text-on-muted ml-auto flex-shrink-0">Yesterday</span>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+              <svg class="w-4 h-4 text-on-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span class="text-sm text-on-surface truncate">Land Act compulsory acquisition</span>
+              <span class="text-xs text-on-muted ml-auto flex-shrink-0">3 days ago</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEARCH SCREEN -->
+      <div id="screen-search" class="screen">
+        <div class="mb-6">
+          <div class="relative">
+            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input id="search-main-input" type="text" placeholder="Search cases, legislation, gazettes..." class="w-full pl-12 pr-24 py-4 rounded-2xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm text-sm">
+            <button id="search-main-btn" class="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2.5 bg-primary text-on-primary rounded-xl font-semibold text-sm hover:bg-primary-dark transition-colors">Search</button>
+          </div>
+        </div>
+        <div class="flex gap-1 p-1 bg-surface-alt rounded-xl mb-4">
+          <button class="jurisdiction-tab active flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all bg-surface text-primary shadow-sm" data-jurisdiction="kenya">Kenya Law</button>
+          <button class="jurisdiction-tab flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-on-muted hover:text-on-surface" data-jurisdiction="africa">Africa Law</button>
+          <button class="jurisdiction-tab flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-on-muted hover:text-on-surface" data-jurisdiction="world">World Law</button>
+        </div>
+        <div class="flex gap-2 mb-3 overflow-x-auto pb-2">
+          <button class="filter-chip active" data-doctype="all">All</button>
+          <button class="filter-chip" data-doctype="cases">Cases</button>
+          <button class="filter-chip" data-doctype="legislation">Legislation</button>
+          <button class="filter-chip" data-doctype="gazette">Gazette</button>
+          <button class="filter-chip" data-doctype="bills">Bills</button>
+          <button class="filter-chip" data-doctype="publications">Publications</button>
+        </div>
+        <div id="search-court-filters" class="flex gap-2 mb-4 overflow-x-auto pb-2">
+          <button class="filter-chip active" data-court="all">All Courts</button>
+          <button class="filter-chip" data-court="supreme">Supreme Court</button>
+          <button class="filter-chip" data-court="court-of-appeal">Court of Appeal</button>
+          <button class="filter-chip" data-court="high-court">High Court</button>
+          <button class="filter-chip" data-court="environment">Environment &amp; Land</button>
+          <button class="filter-chip" data-court="employment">Employment &amp; Labour</button>
+        </div>
+        <div id="search-results-summary" class="flex items-center justify-between mb-4">
+          <p class="text-sm text-on-muted"><span id="search-count" class="font-semibold text-on-surface">0</span> results found</p>
+          <button id="search-sort-btn" class="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/></svg>
+            Relevance
+          </button>
+        </div>
+        <div id="search-results" class="space-y-3"></div>
+        <div id="search-loading" class="space-y-3 hidden">
+          <div class="skeleton h-32 w-full rounded-xl"></div>
+          <div class="skeleton h-32 w-full rounded-xl"></div>
+          <div class="skeleton h-32 w-full rounded-xl"></div>
+        </div>
+        <div id="search-empty" class="hidden text-center py-16">
+          <svg class="w-16 h-16 mx-auto text-on-muted/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <h3 class="text-lg font-semibold text-on-surface mb-1">No results found</h3>
+          <p class="text-sm text-on-muted">Try different keywords or adjust your filters</p>
+        </div>
+      </div>
+
+      <!-- CONSTITUTION SCREEN -->
+      <div id="screen-constitution" class="screen">
+        <div class="mb-6">
+          <h1 class="text-2xl md:text-3xl font-bold text-on-background font-serif">The Constitution of Kenya</h1>
+          <p class="text-on-muted mt-1 text-sm">2010 &mdash; with amendments through 2024</p>
+        </div>
+        <div class="relative mb-6">
+          <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input id="constitution-search" type="text" placeholder="Search the Constitution..." class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
+        </div>
+        <div id="constitution-chapters" class="space-y-2">
+          <div class="chapter-accordion bg-surface border border-border rounded-xl overflow-hidden">
+            <button class="accordion-trigger w-full flex items-center justify-between p-4 text-left hover:bg-surface-alt transition-colors" onclick="toggleAccordion(this)">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-bold text-primary uppercase tracking-wider">Chapter 1</span>
+                <span class="text-sm font-semibold text-on-surface">Supremacy of the Constitution</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-on-muted bg-surface-alt px-2 py-1 rounded-full">3 articles</span>
+                <svg class="accordion-icon w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </button>
+            <div class="chapter-content px-4">
+              <div class="py-4 space-y-4 border-t border-border-light">
+                <div class="p-4 rounded-xl bg-surface-alt/50">
+                  <span class="text-xs font-bold text-primary uppercase tracking-wider">Article 1</span>
+                  <h4 class="text-sm font-bold text-on-surface mt-1">All sovereign power belongs to the people</h4>
+                  <p class="text-sm text-on-muted mt-2 font-serif leading-relaxed">(1) All sovereign power belongs to the people of Kenya and shall be exercised only in accordance with this Constitution.</p>
+                  <p class="text-sm text-on-muted mt-1 font-serif leading-relaxed">(2) The people may exercise their sovereign power directly or through their democratically elected representatives.</p>
+                  <p class="text-sm text-on-muted mt-1 font-serif leading-relaxed">(3) This Constitution is the Supreme law of the Republic and any other law inconsistent with it is void to the extent of the inconsistency.</p>
+                </div>
+                <div class="p-4 rounded-xl bg-surface-alt/50">
+                  <span class="text-xs font-bold text-primary uppercase tracking-wider">Article 2</span>
+                  <h4 class="text-sm font-bold text-on-surface mt-1">Supremacy of this Constitution</h4>
+                  <p class="text-sm text-on-muted mt-2 font-serif leading-relaxed">(1) This Constitution is the Supreme law of the Republic and any other law inconsistent with it is void to the extent of the inconsistency.</p>
+                  <p class="text-sm text-on-muted mt-1 font-serif leading-relaxed">(2) Any person, a State organ or county government has the right to institute court proceedings, claiming that this Constitution has been contravened.</p>
+                </div>
+                <div class="p-4 rounded-xl bg-surface-alt/50">
+                  <span class="text-xs font-bold text-primary uppercase tracking-wider">Article 3</span>
+                  <h4 class="text-sm font-bold text-on-surface mt-1">Defence of this Constitution</h4>
+                  <p class="text-sm text-on-muted mt-2 font-serif leading-relaxed">(1) Every person has a duty to respect, uphold and defend this Constitution.</p>
+                  <p class="text-sm text-on-muted mt-1 font-serif leading-relaxed">(2) Any attempt to establish a government otherwise than in compliance with this Constitution is unlawful.</p>
+                </div>
+                <div class="mt-4">
+                  <h4 class="text-xs font-bold text-on-muted uppercase tracking-wider mb-2">Related Case Law</h4>
+                  <div class="space-y-2">
+                    <div class="p-3 rounded-lg bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+                      <p class="text-sm font-semibold text-on-surface">Njoya &amp; Others v Attorney General &amp; Others</p>
+                      <p class="text-xs text-on-muted mt-1">[2004] eKLR &mdash; Supreme Court</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chapter-accordion bg-surface border border-border rounded-xl overflow-hidden">
+            <button class="accordion-trigger w-full flex items-center justify-between p-4 text-left hover:bg-surface-alt transition-colors" onclick="toggleAccordion(this)">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-bold text-primary uppercase tracking-wider">Chapter 2</span>
+                <span class="text-sm font-semibold text-on-surface">The Republic</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-on-muted bg-surface-alt px-2 py-1 rounded-full">6 articles</span>
+                <svg class="accordion-icon w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </button>
+            <div class="chapter-content px-4">
+              <div class="py-4 space-y-4 border-t border-border-light">
+                <div class="p-4 rounded-xl bg-surface-alt/50">
+                  <span class="text-xs font-bold text-primary uppercase tracking-wider">Article 4</span>
+                  <h4 class="text-sm font-bold text-on-surface mt-1">Republic of Kenya</h4>
+                  <p class="text-sm text-on-muted mt-2 font-serif leading-relaxed">(1) Kenya is a sovereign Republic.</p>
+                  <p class="text-sm text-on-muted mt-1 font-serif leading-relaxed">(2) The Republic of Kenya is founded on the national values and principles of governance in Article 10.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chapter-accordion bg-surface border border-border rounded-xl overflow-hidden">
+            <button class="accordion-trigger w-full flex items-center justify-between p-4 text-left hover:bg-surface-alt transition-colors" onclick="toggleAccordion(this)">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-bold text-primary uppercase tracking-wider">Chapter 4</span>
+                <span class="text-sm font-semibold text-on-surface">Bill of Rights</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-on-muted bg-surface-alt px-2 py-1 rounded-full">31 articles</span>
+                <svg class="accordion-icon w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </button>
+            <div class="chapter-content px-4">
+              <div class="py-4 space-y-4 border-t border-border-light">
+                <div class="p-4 rounded-xl bg-surface-alt/50">
+                  <span class="text-xs font-bold text-primary uppercase tracking-wider">Article 19</span>
+                  <h4 class="text-sm font-bold text-on-surface mt-1">Rights and fundamental freedoms</h4>
+                  <p class="text-sm text-on-muted mt-2 font-serif leading-relaxed">(1) The Bill of Rights is an integral part of Kenya's democratic state and is the framework for social, economic and cultural policies.</p>
+                </div>
+                <div class="p-4 rounded-xl bg-surface-alt/50">
+                  <span class="text-xs font-bold text-primary uppercase tracking-wider">Article 43</span>
+                  <h4 class="text-sm font-bold text-on-surface mt-1">Economic and social rights</h4>
+                  <p class="text-sm text-on-muted mt-2 font-serif leading-relaxed">(1) Every person has the right&mdash; (a) to the highest attainable standard of health; (b) to accessible and adequate housing; (c) to freedom from hunger and adequate food of acceptable quality.</p>
+                </div>
+                <div class="mt-4">
+                  <h4 class="text-xs font-bold text-on-muted uppercase tracking-wider mb-2">Related Case Law</h4>
+                  <div class="space-y-2">
+                    <div class="p-3 rounded-lg bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+                      <p class="text-sm font-semibold text-on-surface">Federation of Women Lawyers Kenya (FIDA-K) &amp; Others v Attorney General</p>
+                      <p class="text-xs text-on-muted mt-1">[2011] eKLR &mdash; High Court</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chapter-accordion bg-surface border border-border rounded-xl overflow-hidden">
+            <button class="accordion-trigger w-full flex items-center justify-between p-4 text-left hover:bg-surface-alt transition-colors" onclick="toggleAccordion(this)">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-bold text-primary uppercase tracking-wider">Chapter 5</span>
+                <span class="text-sm font-semibold text-on-surface">Land and Environment</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-on-muted bg-surface-alt px-2 py-1 rounded-full">12 articles</span>
+                <svg class="accordion-icon w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </button>
+            <div class="chapter-content px-4"><div class="py-4 text-sm text-on-muted">Loading articles...</div></div>
+          </div>
+          <div class="chapter-accordion bg-surface border border-border rounded-xl overflow-hidden">
+            <button class="accordion-trigger w-full flex items-center justify-between p-4 text-left hover:bg-surface-alt transition-colors" onclick="toggleAccordion(this)">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-bold text-primary uppercase tracking-wider">Chapter 6</span>
+                <span class="text-sm font-semibold text-on-surface">Leadership and Integrity</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-on-muted bg-surface-alt px-2 py-1 rounded-full">8 articles</span>
+                <svg class="accordion-icon w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </button>
+            <div class="chapter-content px-4"><div class="py-4 text-sm text-on-muted">Loading articles...</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTEBOOK SCREEN -->
+      <div id="screen-notebook" class="screen">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="text-2xl md:text-3xl font-bold text-on-background">Notebook</h1>
+        </div>
+        <div class="flex gap-1 p-1 bg-surface-alt rounded-xl mb-4">
+          <button class="notebook-tab active flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all bg-surface text-primary shadow-sm" data-tab="all">All Notes</button>
+          <button class="notebook-tab flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-on-muted hover:text-on-surface" data-tab="folders">Folders</button>
+        </div>
+        <div class="relative mb-6">
+          <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input id="notebook-search" type="text" placeholder="Search notes..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
+        </div>
+        <div id="notebook-notes-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer">
+            <h3 class="text-sm font-bold text-on-surface mb-2">Constitutional Law Notes</h3>
+            <p class="text-xs text-on-muted line-clamp-3 mb-3">Notes on chapter 4 bill of rights, article 43 economic rights, and related case law.</p>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-0.5 rounded-full bg-blue-50 text-primary text-xs font-medium">Constitutional</span>
+              <span class="px-2 py-0.5 rounded-full bg-green-50 text-secondary text-xs font-medium">Important</span>
+            </div>
+            <p class="text-xs text-on-muted">2 hours ago</p>
+          </div>
+          <div class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer">
+            <h3 class="text-sm font-bold text-on-surface mb-2">Contract Law Summary</h3>
+            <p class="text-xs text-on-muted line-clamp-3 mb-3">Key principles of contract formation, offer and acceptance, consideration.</p>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 text-xs font-medium">Contract</span>
+            </div>
+            <p class="text-xs text-on-muted">Yesterday</p>
+          </div>
+          <div class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer">
+            <h3 class="text-sm font-bold text-on-surface mb-2">Land Act Research</h3>
+            <p class="text-xs text-on-muted line-clamp-3 mb-3">Research on compulsory acquisition procedures and compensation requirements.</p>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-0.5 rounded-full bg-amber-50 text-accent text-xs font-medium">Land</span>
+            </div>
+            <p class="text-xs text-on-muted">3 days ago</p>
+          </div>
+        </div>
+        <button id="notebook-fab" class="fixed bottom-24 md:bottom-8 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors z-30">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </button>
+      </div>
+
+      <!-- FLASHCARDS SCREEN -->
+      <div id="screen-flashcards" class="screen">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="text-2xl md:text-3xl font-bold text-on-background">Flashcards</h1>
+          <button id="create-deck-btn" class="px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-semibold hover:bg-primary-dark transition-colors">Create Deck</button>
+        </div>
+        <div id="flashcard-decks" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-primary/30 hover:shadow-md transition-all" data-deck="1">
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-1 rounded-lg bg-blue-50 text-primary text-xs font-bold">Constitutional Law</span>
+              <span class="text-xs text-on-muted">42 cards</span>
+            </div>
+            <h3 class="text-sm font-bold text-on-surface mb-1">Bill of Rights</h3>
+            <p class="text-xs text-on-muted mb-4">Articles 19-59 of the Constitution of Kenya</p>
+            <div class="w-full bg-surface-alt rounded-full h-1.5"><div class="bg-primary h-1.5 rounded-full" style="width:65%"></div></div>
+            <p class="text-xs text-on-muted mt-2">27/42 studied</p>
+          </div>
+          <div class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-green-300 hover:shadow-md transition-all" data-deck="2">
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-1 rounded-lg bg-green-50 text-secondary text-xs font-bold">Contract Law</span>
+              <span class="text-xs text-on-muted">28 cards</span>
+            </div>
+            <h3 class="text-sm font-bold text-on-surface mb-1">Formation of Contracts</h3>
+            <p class="text-xs text-on-muted mb-4">Offer, acceptance, consideration</p>
+            <div class="w-full bg-surface-alt rounded-full h-1.5"><div class="bg-secondary h-1.5 rounded-full" style="width:30%"></div></div>
+            <p class="text-xs text-on-muted mt-2">8/28 studied</p>
+          </div>
+          <div class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-amber-300 hover:shadow-md transition-all" data-deck="3">
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-1 rounded-lg bg-amber-50 text-accent text-xs font-bold">Land Law</span>
+              <span class="text-xs text-on-muted">35 cards</span>
+            </div>
+            <h3 class="text-sm font-bold text-on-surface mb-1">Land Ownership</h3>
+            <p class="text-xs text-on-muted mb-4">Freehold, leasehold, community land</p>
+            <div class="w-full bg-surface-alt rounded-full h-1.5"><div class="bg-accent h-1.5 rounded-full" style="width:10%"></div></div>
+            <p class="text-xs text-on-muted mt-2">4/35 studied</p>
+          </div>
+        </div>
+        <div id="flashcard-study-mode" class="hidden">
+          <button id="exit-study-btn" class="flex items-center gap-2 text-sm font-semibold text-on-muted hover:text-on-surface mb-6 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Back to Decks
+          </button>
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-semibold text-on-surface">Card <span id="study-current">1</span> of <span id="study-total">42</span></span>
+              <span class="text-sm text-on-muted"><span id="study-percent">0</span>% complete</span>
+            </div>
+            <div class="w-full bg-surface-alt rounded-full h-2"><div id="study-progress" class="bg-primary h-2 rounded-full transition-all" style="width:0%"></div></div>
+          </div>
+          <div class="mb-8" style="perspective:1000px;">
+            <div id="flashcard-inner" class="flashcard-inner cursor-pointer" onclick="flipFlashcard()" style="min-height:320px;">
+              <div class="flashcard-front bg-surface border-2 border-primary/20 shadow-lg">
+                <span class="text-xs font-bold text-primary uppercase tracking-wider mb-4">Question</span>
+                <h3 id="flashcard-question" class="text-lg md:text-xl font-bold text-on-surface">What is the supreme law of Kenya?</h3>
+                <p class="text-xs text-on-muted mt-6">Tap to reveal answer</p>
+              </div>
+              <div class="flashcard-back bg-primary text-on-primary shadow-lg">
+                <span class="text-xs font-bold uppercase tracking-wider mb-4 opacity-70">Answer</span>
+                <p id="flashcard-answer" class="text-base md:text-lg font-medium leading-relaxed">The Constitution of Kenya (Article 2(1)) is the Supreme law of the Republic.</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-3 justify-center">
+            <button class="flex-1 max-w-[120px] py-3 rounded-xl bg-red-50 text-error font-semibold text-sm hover:bg-red-100 transition-colors border border-red-200">Hard</button>
+            <button class="flex-1 max-w-[120px] py-3 rounded-xl bg-blue-50 text-primary font-semibold text-sm hover:bg-blue-100 transition-colors border border-blue-200">Good</button>
+            <button class="flex-1 max-w-[120px] py-3 rounded-xl bg-green-50 text-secondary font-semibold text-sm hover:bg-green-100 transition-colors border border-green-200">Easy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOOKMARKS SCREEN -->
+      <div id="screen-bookmarks" class="screen">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="text-2xl md:text-3xl font-bold text-on-background">Bookmarks</h1>
+        </div>
+        <div class="flex gap-8">
+          <div class="hidden md:block w-48 flex-shrink-0">
+            <nav class="space-y-1">
+              <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-primary/10 text-primary font-semibold text-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>Bookmarks</a>
+              <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-muted hover:bg-surface-alt text-sm font-medium transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Recent History</a>
+              <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-muted hover:bg-surface-alt text-sm font-medium transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>Downloads</a>
+              <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-muted hover:bg-surface-alt text-sm font-medium transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Collections</a>
+            </nav>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex gap-1 p-1 bg-surface-alt rounded-xl mb-4 overflow-x-auto">
+              <button class="bookmark-tab active px-4 py-2.5 rounded-lg text-sm font-semibold transition-all bg-surface text-primary shadow-sm whitespace-nowrap" data-tab="cases">Cases</button>
+              <button class="bookmark-tab px-4 py-2.5 rounded-lg text-sm font-semibold transition-all text-on-muted hover:text-on-surface whitespace-nowrap" data-tab="statutes">Statutes</button>
+              <button class="bookmark-tab px-4 py-2.5 rounded-lg text-sm font-semibold transition-all text-on-muted hover:text-on-surface whitespace-nowrap" data-tab="gazettes">Gazettes</button>
+              <button class="bookmark-tab px-4 py-2.5 rounded-lg text-sm font-semibold transition-all text-on-muted hover:text-on-surface whitespace-nowrap" data-tab="notes">Notes</button>
+            </div>
+            <div class="relative mb-4">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <input type="text" placeholder="Search bookmarks..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
+            </div>
+            <div class="space-y-3">
+              <div class="bookmark-card bg-surface border border-border rounded-xl p-4">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1"><span class="status-badge good-law">Good Law</span><span class="text-xs text-on-muted">Case</span></div>
+                    <h3 class="text-sm font-bold text-on-surface mb-1">Republic v Director of Public Prosecutions &amp; Another</h3>
+                    <p class="text-xs text-on-muted">[2020] eKLR &mdash; High Court at Nairobi</p>
+                  </div>
+                  <button class="p-2 rounded-lg hover:bg-surface-alt transition-colors"><svg class="w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg></button>
+                </div>
+              </div>
+              <div class="bookmark-card bg-surface border border-border rounded-xl p-4">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1"><span class="status-badge current">Current</span><span class="text-xs text-on-muted">Statute</span></div>
+                    <h3 class="text-sm font-bold text-on-surface mb-1">Employment Act, No. 11 of 2007</h3>
+                    <p class="text-xs text-on-muted">As amended through 2024</p>
+                  </div>
+                  <button class="p-2 rounded-lg hover:bg-surface-alt transition-colors"><svg class="w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORY SCREEN -->
+      <div id="screen-history" class="screen">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="text-2xl md:text-3xl font-bold text-on-background">Research History</h1>
+          <div class="flex gap-2">
+            <button class="px-3 py-2 rounded-xl border border-border text-sm font-semibold text-on-muted hover:bg-surface-alt transition-colors">Filter</button>
+            <button class="px-3 py-2 rounded-xl border border-error/20 text-sm font-semibold text-error hover:bg-red-50 transition-colors">Clear</button>
+          </div>
+        </div>
+        <div class="relative mb-6">
+          <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" placeholder="Search history..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
+        </div>
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-sm font-bold text-on-surface mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary"></span>Today</h3>
+            <div class="space-y-4 ml-1">
+              <div class="timeline-item flex gap-4">
+                <div class="timeline-dot mt-1.5"></div>
+                <div class="flex-1 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+                  <div class="flex items-center gap-2 mb-1"><svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><span class="text-xs font-semibold text-primary">Search</span><span class="text-xs text-on-muted ml-auto">10:32 AM</span></div>
+                  <p class="text-sm text-on-surface">Constitutional interpretation of article 43</p>
+                </div>
+              </div>
+              <div class="timeline-item flex gap-4">
+                <div class="timeline-dot mt-1.5"></div>
+                <div class="flex-1 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+                  <div class="flex items-center gap-2 mb-1"><svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg><span class="text-xs font-semibold text-green-600">Viewed</span><span class="text-xs text-on-muted ml-auto">10:28 AM</span></div>
+                  <p class="text-sm text-on-surface">Republic v Director of Public Prosecutions [2020] eKLR</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-on-surface mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-on-muted"></span>Yesterday</h3>
+            <div class="space-y-4 ml-1">
+              <div class="timeline-item flex gap-4">
+                <div class="timeline-dot mt-1.5"></div>
+                <div class="flex-1 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+                  <div class="flex items-center gap-2 mb-1"><svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><span class="text-xs font-semibold text-primary">Search</span><span class="text-xs text-on-muted ml-auto">3:45 PM</span></div>
+                  <p class="text-sm text-on-surface">Employment Act 2007 section 35</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAZETTES SCREEN -->
+      <div id="screen-gazettes" class="screen">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="text-2xl md:text-3xl font-bold text-on-background">Gazette Notices</h1>
+        </div>
+        <div class="relative mb-4">
+          <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" placeholder="Search gazettes..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
+        </div>
+        <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+          <button class="filter-chip active">All Categories</button>
+          <button class="filter-chip">Legal Notices</button>
+          <button class="filter-chip">Special Issue</button>
+          <button class="filter-chip">Land Reports</button>
+          <button class="filter-chip">Government</button>
+        </div>
+        <div class="space-y-3 mb-6">
+          <div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
+            <div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg bg-blue-50 text-primary text-xs font-bold">Legal Notice</span><span class="text-xs text-on-muted">12 July 2024</span></div>
+            <h3 class="text-sm font-bold text-on-surface mb-1">The Land (Extension and Renewal of Leases) Rules</h3>
+            <p class="text-xs text-on-muted line-clamp-2">GN No. 123/2024 &mdash; Rules relating to the extension and renewal of leases of public land under the Land Act.</p>
+          </div>
+          <div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
+            <div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg bg-green-50 text-secondary text-xs font-bold">Special Issue</span><span class="text-xs text-on-muted">10 July 2024</span></div>
+            <h3 class="text-sm font-bold text-on-surface mb-1">Appointment of Judges &mdash; High Court</h3>
+            <p class="text-xs text-on-muted line-clamp-2">Vol. CXXVI No. 120 &mdash; Appointment of twelve judges to the High Court of Kenya.</p>
+          </div>
+          <div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
+            <div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg bg-amber-50 text-accent text-xs font-bold">Land Report</span><span class="text-xs text-on-muted">8 July 2024</span></div>
+            <h3 class="text-sm font-bold text-on-surface mb-1">Adjudication Notice &mdash; Kiambu County</h3>
+            <p class="text-xs text-on-muted line-clamp-2">LR No. 23456 &mdash; Notice of adjudication of land in Kiambu County under the Land Adjudication Act.</p>
+          </div>
+        </div>
+        <div class="flex items-center justify-center gap-2">
+          <button class="px-3 py-2 rounded-lg border border-border text-sm font-medium text-on-muted hover:bg-surface-alt transition-colors">Previous</button>
+          <button class="px-3 py-2 rounded-lg bg-primary text-on-primary text-sm font-semibold">1</button>
+          <button class="px-3 py-2 rounded-lg border border-border text-sm font-medium text-on-surface hover:bg-surface-alt transition-colors">2</button>
+          <button class="px-3 py-2 rounded-lg border border-border text-sm font-medium text-on-surface hover:bg-surface-alt transition-colors">3</button>
+          <span class="text-on-muted">...</span>
+          <button class="px-3 py-2 rounded-lg border border-border text-sm font-medium text-on-surface hover:bg-surface-alt transition-colors">12</button>
+          <button class="px-3 py-2 rounded-lg border border-border text-sm font-medium text-on-muted hover:bg-surface-alt transition-colors">Next</button>
+        </div>
+      </div>
+
+      <!-- LEGISLATION SCREEN -->
+      <div id="screen-legislation" class="screen">
+        <div class="flex items-center justify-between mb-4">
+          <div><h1 class="text-2xl md:text-3xl font-bold text-on-background font-serif">Companies Act</h1><p class="text-sm text-on-muted mt-1">No. 17 of 2015 &mdash; as amended through 2024</p></div>
+          <div class="flex gap-2">
+            <button class="p-2.5 rounded-xl border border-border hover:bg-surface-alt transition-colors"><svg class="w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg></button>
+            <button class="p-2.5 rounded-xl border border-border hover:bg-surface-alt transition-colors"><svg class="w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></button>
+          </div>
+        </div>
+        <div class="flex gap-6">
+          <div class="hidden md:block w-56 flex-shrink-0">
+            <div class="sticky top-6">
+              <h3 class="text-xs font-bold text-on-muted uppercase tracking-wider mb-3">Contents</h3>
+              <nav class="space-y-1 max-h-[calc(100vh-120px)] overflow-y-auto pr-2">
+                <a href="#" class="block px-3 py-2 rounded-lg bg-primary/10 text-primary text-xs font-semibold">Part I &mdash; Preliminary</a>
+                <a href="#" class="block px-3 py-2 rounded-lg text-on-muted hover:bg-surface-alt text-xs font-medium transition-colors">Part II &mdash; Incorporation</a>
+                <a href="#" class="block px-3 py-2 rounded-lg text-on-muted hover:bg-surface-alt text-xs font-medium transition-colors">Part III &mdash; Constitution</a>
+                <a href="#" class="block px-3 py-2 rounded-lg text-on-muted hover:bg-surface-alt text-xs font-medium transition-colors">Part IV &mdash; Share Capital</a>
+                <a href="#" class="block px-3 py-2 rounded-lg text-on-muted hover:bg-surface-alt text-xs font-medium transition-colors">Part V &mdash; Directors</a>
+                <a href="#" class="block px-3 py-2 rounded-lg text-on-muted hover:bg-surface-alt text-xs font-medium transition-colors">Part VI &mdash; Meetings</a>
+              </nav>
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="md:hidden relative mb-4"><svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><input type="text" placeholder="Search this Act..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"></div>
+            <div class="mb-8">
+              <h2 class="text-sm font-bold text-primary uppercase tracking-wider mb-4">Part I &mdash; Preliminary</h2>
+              <div class="space-y-4">
+                <div class="p-4 rounded-xl bg-surface border border-border group hover:border-primary/20 transition-all relative">
+                  <span class="text-xs font-bold text-primary">Section 1</span>
+                  <h4 class="text-sm font-bold text-on-surface mt-1">Short title</h4>
+                  <p class="text-sm text-on-muted mt-2 font-serif leading-relaxed">This Act may be cited as the Companies Act, 2015.</p>
+                  <div class="absolute top-3 right-3 hidden group-hover:flex items-center gap-1">
+                    <button class="p-1.5 rounded-lg hover:bg-surface-alt transition-colors" title="Bookmark"><svg class="w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg></button>
+                    <button class="p-1.5 rounded-lg hover:bg-surface-alt transition-colors" title="Add Note"><svg class="w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+                  </div>
+                </div>
+                <div class="p-4 rounded-xl bg-surface border border-border group hover:border-primary/20 transition-all relative">
+                  <span class="text-xs font-bold text-primary">Section 2</span>
+                  <h4 class="text-sm font-bold text-on-surface mt-1">Interpretation</h4>
+                  <p class="text-sm text-on-muted mt-2 font-serif leading-relaxed">In this Act, unless the context otherwise requires&mdash;</p>
+                  <div class="mt-3 p-3 rounded-lg bg-surface-alt border border-border-light cursor-pointer hover:bg-blue-50/50 transition-colors" onclick="this.querySelector('.def-list').classList.toggle('hidden')">
+                    <div class="flex items-center justify-between"><span class="text-xs font-semibold text-on-surface">Key Definitions</span><svg class="w-4 h-4 text-on-muted transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+                    <div class="def-list hidden mt-3 space-y-2">
+                      <p class="text-sm text-on-muted"><span class="font-semibold text-on-surface">"company"</span> means a company formed and registered under this Act;</p>
+                      <p class="text-sm text-on-muted"><span class="font-semibold text-on-surface">"director"</span> means a person who holds the office of director of a company;</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-4 rounded-xl bg-surface border border-border group hover:border-primary/20 transition-all relative">
+                  <span class="text-xs font-bold text-primary">Section 3</span>
+                  <h4 class="text-sm font-bold text-on-surface mt-1">Application of Act</h4>
+                  <p class="text-sm text-on-muted mt-2 font-serif leading-relaxed">(1) This Act applies to all companies incorporated or registered under this Act.</p>
+                  <p class="text-sm text-on-muted mt-1 font-serif leading-relaxed">(2) This Act does not affect any right, privilege, obligation or liability acquired or incurred before the commencement of this Act.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRIBUNALS SCREEN -->
+      <div id="screen-tribunals" class="screen">
+        <div class="flex items-center justify-between mb-6"><h1 class="text-2xl md:text-3xl font-bold text-on-background">Kenya Tribunal Decisions</h1></div>
+        <div class="flex gap-6">
+          <div class="hidden md:block w-56 flex-shrink-0">
+            <div class="sticky top-6 space-y-6">
+              <div>
+                <h3 class="text-xs font-bold text-on-muted uppercase tracking-wider mb-3">Tribunal Type</h3>
+                <div class="space-y-2">
+                  <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary"><span class="text-sm text-on-surface">Environment &amp; Land</span></label>
+                  <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary"><span class="text-sm text-on-surface">Employment &amp; Labour</span></label>
+                  <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary"><span class="text-sm text-on-surface">Tax Appeals</span></label>
+                </div>
+              </div>
+              <div>
+                <h3 class="text-xs font-bold text-on-muted uppercase tracking-wider mb-3">Year</h3>
+                <select class="w-full px-3 py-2.5 rounded-xl border border-border bg-surface text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary"><option value="">All Years</option><option>2024</option><option>2023</option><option>2022</option></select>
+              </div>
+              <button class="w-full py-2.5 rounded-xl bg-primary text-on-primary text-sm font-semibold hover:bg-primary-dark transition-colors">Apply Filters</button>
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="md:hidden mb-4"><button class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border text-sm font-semibold text-on-surface hover:bg-surface-alt transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>Filters</button></div>
+            <div class="space-y-3">
+              <div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
+                <div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg bg-green-50 text-secondary text-xs font-bold">Environment &amp; Land</span><span class="text-xs text-on-muted">Tribunal Case No. 234 of 2023</span></div>
+                <h3 class="text-sm font-bold text-on-surface mb-1">Jane Wanjiku v County Government of Nairobi</h3>
+                <p class="text-xs text-on-muted line-clamp-2 mb-2">Dispute over compulsory acquisition of land for public purpose and adequacy of compensation.</p>
+                <div class="flex gap-2"><span class="px-2 py-0.5 rounded-full bg-surface-alt text-on-muted text-xs">Compulsory Acquisition</span><span class="px-2 py-0.5 rounded-full bg-surface-alt text-on-muted text-xs">Compensation</span></div>
+              </div>
+              <div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
+                <div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg bg-purple-50 text-purple-600 text-xs font-bold">Employment &amp; Labour</span><span class="text-xs text-on-muted">Cause No. 1892 of 2022</span></div>
+                <h3 class="text-sm font-bold text-on-surface mb-1">Peter Ochieng v Kenya Airways Ltd</h3>
+                <p class="text-xs text-on-muted line-clamp-2 mb-2">Unfair termination claim and remedies under the Employment Act 2007.</p>
+                <div class="flex gap-2"><span class="px-2 py-0.5 rounded-full bg-surface-alt text-on-muted text-xs">Unfair Termination</span><span class="px-2 py-0.5 rounded-full bg-surface-alt text-on-muted text-xs">Back Pay</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKSPACE SCREEN -->
+      <div id="screen-workspace" class="screen">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3"><h1 class="text-2xl md:text-3xl font-bold text-on-background">Republic vs ABC Ltd</h1><span class="px-2.5 py-1 rounded-lg bg-green-50 text-secondary text-xs font-bold">Active Matter</span></div>
+          <button class="px-4 py-2.5 rounded-xl border border-border text-sm font-semibold text-on-surface hover:bg-surface-alt transition-colors flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>Export</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="bento-card bg-surface border border-border rounded-2xl p-5">
+            <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center"><svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg></div><div><h3 class="text-sm font-bold text-on-surface">Saved Cases</h3><p class="text-xs text-on-muted">8 cases</p></div></div>
+            <div class="space-y-2">
+              <div class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Republic v DPP [2020] eKLR</p></div>
+              <div class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Njoya v AG [2004] eKLR</p></div>
+            </div>
+          </div>
+          <div class="bento-card bg-surface border border-border rounded-2xl p-5">
+            <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center"><svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><div><h3 class="text-sm font-bold text-on-surface">Saved Acts</h3><p class="text-xs text-on-muted">4 statutes</p></div></div>
+            <div class="space-y-2">
+              <div class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Companies Act, 2015</p></div>
+              <div class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Employment Act, 2007</p></div>
+            </div>
+          </div>
+          <div class="bento-card bg-surface border border-border rounded-2xl p-5">
+            <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></div><div><h3 class="text-sm font-bold text-on-surface">Research Notes</h3><p class="text-xs text-on-muted">6 notes</p></div></div>
+            <div class="space-y-2">
+              <div class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Key Arguments &mdash; Applicant</p></div>
+            </div>
+          </div>
+          <div class="bento-card bg-surface border border-border rounded-2xl p-5">
+            <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center"><svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div><div><h3 class="text-sm font-bold text-on-surface">Files &amp; Downloads</h3><p class="text-xs text-on-muted">3 files</p></div></div>
+            <div class="space-y-2">
+              <div class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors flex items-center gap-2"><svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg><div><p class="text-xs font-semibold text-on-surface">pleadings.pdf</p></div></div>
+            </div>
+          </div>
+          <div class="bento-card bg-surface border border-border rounded-2xl p-5 md:col-span-2">
+            <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center"><svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><h3 class="text-sm font-bold text-on-surface">Activity Timeline</h3><p class="text-xs text-on-muted">Recent activity</p></div></div>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span><p class="text-xs text-on-surface">Research note updated</p><span class="text-xs text-on-muted ml-auto">2h ago</span></div>
+              <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-secondary flex-shrink-0"></span><p class="text-xs text-on-surface">Downloaded Republic v DPP [2020] eKLR</p><span class="text-xs text-on-muted ml-auto">5h ago</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE SCREEN -->
+      <div id="screen-profile" class="screen">
+        <div class="max-w-lg mx-auto">
+          <div class="text-center mb-8">
+            <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3"><svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div>
+            <h1 class="text-xl font-bold text-on-background" id="profile-name">Researcher</h1>
+            <p class="text-sm text-on-muted" id="profile-email">researcher@juriscore.co.ke</p>
+          </div>
+          <div class="space-y-2">
+            <button class="w-full flex items-center gap-4 p-4 rounded-xl bg-surface border border-border hover:border-primary/20 transition-all text-left"><div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center"><svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div><div class="flex-1"><p class="text-sm font-semibold text-on-surface">Account</p><p class="text-xs text-on-muted">Personal details, email, password</p></div><svg class="w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+            <button class="w-full flex items-center gap-4 p-4 rounded-xl bg-surface border border-border hover:border-primary/20 transition-all text-left"><div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center"><svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg></div><div class="flex-1"><p class="text-sm font-semibold text-on-surface">Notifications</p><p class="text-xs text-on-muted">Push, email, in-app alerts</p></div><svg class="w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+            <button class="w-full flex items-center gap-4 p-4 rounded-xl bg-surface border border-border hover:border-primary/20 transition-all text-left"><div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center"><svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg></div><div class="flex-1"><p class="text-sm font-semibold text-on-surface">Appearance</p><p class="text-xs text-on-muted">Theme, font size, display</p></div><svg class="w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+            <button class="w-full flex items-center gap-4 p-4 rounded-xl bg-surface border border-border hover:border-primary/20 transition-all text-left"><div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div><div class="flex-1"><p class="text-sm font-semibold text-on-surface">Data &amp; Privacy</p><p class="text-xs text-on-muted">Export, delete, privacy settings</p></div><svg class="w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+            <button class="w-full flex items-center gap-4 p-4 rounded-xl bg-surface border border-border hover:border-primary/20 transition-all text-left"><div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center"><svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div class="flex-1"><p class="text-sm font-semibold text-on-surface">About</p><p class="text-xs text-on-muted">Version, terms, credits</p></div><svg class="w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+          </div>
+          <button id="logout-btn" class="w-full mt-6 py-3.5 rounded-xl border border-error/20 bg-error/5 text-error text-sm font-semibold hover:bg-error/10 transition-colors">Log Out</button>
+          <p class="text-center text-xs text-on-muted mt-6">Juriscore v1.0.0</p>
+        </div>
+      </div>
+
+      <!-- CASE DETAIL SCREEN -->
+      <div id="screen-case-detail" class="screen">
+        <button onclick="history.back()" class="flex items-center gap-2 text-sm font-semibold text-on-muted hover:text-on-surface mb-4 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          Back to results
+        </button>
+        <div class="mb-6">
+          <div class="flex flex-wrap items-center gap-2 mb-2"><span class="status-badge good-law">Good Law</span><span class="px-2 py-0.5 rounded-lg bg-surface-alt text-on-muted text-xs font-medium">High Court</span></div>
+          <h1 class="text-2xl md:text-3xl font-bold text-on-background font-serif mb-2">Republic v Director of Public Prosecutions &amp; Another</h1>
+          <p class="text-sm text-on-muted">[2020] eKLR &mdash; High Court at Nairobi</p>
+          <div class="flex flex-wrap gap-2 mt-3">
+            <span class="px-2 py-0.5 rounded-full bg-blue-50 text-primary text-xs font-medium">Constitutional Law</span>
+            <span class="px-2 py-0.5 rounded-full bg-green-50 text-secondary text-xs font-medium">Criminal Procedure</span>
+          </div>
+        </div>
+        <div class="flex gap-1 p-1 bg-surface-alt rounded-xl mb-6">
+          <button class="case-tab active flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all bg-surface text-primary shadow-sm" data-tab="summary">Summary</button>
+          <button class="case-tab flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-on-muted hover:text-on-surface" data-tab="fulltext">Full Text</button>
+          <button class="case-tab flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-on-muted hover:text-on-surface" data-tab="notes">Notes</button>
+        </div>
+        <div id="case-summary" class="case-content">
+          <div class="space-y-4">
+            <div class="p-4 rounded-xl bg-surface border border-border"><h3 class="text-sm font-bold text-on-surface mb-2">Facts</h3><p class="text-sm text-on-muted font-serif leading-relaxed">The applicant sought orders to enforce fundamental rights and freedoms under the Constitution. The matter involved the interpretation of Article 43 on economic and social rights.</p></div>
+            <div class="p-4 rounded-xl bg-surface border border-border"><h3 class="text-sm font-bold text-on-surface mb-2">Issue</h3><p class="text-sm text-on-muted font-serif leading-relaxed">Whether the state's failure to provide adequate healthcare facilities constitutes a violation of the right to the highest attainable standard of health under Article 43(1)(a).</p></div>
+            <div class="p-4 rounded-xl bg-surface border border-border"><h3 class="text-sm font-bold text-on-surface mb-2">Holding</h3><p class="text-sm text-on-muted font-serif leading-relaxed">The court held that the right to health is justiciable and the state has an immediate obligation to take reasonable measures within its available resources to achieve the full realization of this right.</p></div>
+            <div class="p-4 rounded-xl bg-surface border border-border"><h3 class="text-sm font-bold text-on-surface mb-2">Ratio Decidendi</h3><p class="text-sm text-on-muted font-serif leading-relaxed">The doctrine of progressive realization does not render socioeconomic rights non-justiciable.</p></div>
+          </div>
+        </div>
+        <div id="case-fulltext" class="case-content hidden">
+          <div class="font-serif text-on-muted leading-relaxed space-y-6 text-[15px]">
+            <p class="font-bold text-on-surface text-lg">REPUBLIC OF KENYA</p>
+            <p class="font-bold text-on-surface">IN THE HIGH COURT OF KENYA AT NAIROBI</p>
+            <p>MISC. CONSTITUTIONAL APPLICATION NO. 456 OF 2019</p>
+            <div class="my-6 border-t border-border"></div>
+            <p><strong>BETWEEN</strong></p>
+            <p class="font-bold">REPUBLIC <span class="font-normal">............................................. APPLICANT</span></p>
+            <p class="mt-2"><strong>AND</strong></p>
+            <p class="font-bold">DIRECTOR OF PUBLIC PROSECUTIONS <span class="font-normal">...... RESPONDENT</span></p>
+            <div class="my-6 border-t border-border"></div>
+            <p class="font-bold">JUDGMENT OF THE COURT</p>
+            <p><strong>INTRODUCTION</strong></p>
+            <p>1. This judgment is delivered pursuant to the parties' written submissions and oral arguments presented on 15th October 2019.</p>
+            <p><strong>FACTUAL BACKGROUND</strong></p>
+            <p>2. The applicant is a citizen of Kenya who brought this matter in the public interest seeking declarations and orders regarding the enforcement of fundamental rights and freedoms guaranteed under the Constitution of Kenya, 2010.</p>
+            <p><strong>ISSUES FOR DETERMINATION</strong></p>
+            <p>3. The court identifies the following issues for determination:</p>
+            <p class="ml-6">(a) Whether the right to health under Article 43(1)(a) is justiciable;</p>
+            <p class="ml-6">(b) Whether the state has an immediate obligation to provide minimum core health services;</p>
+            <p class="ml-6">(c) What remedies are appropriate.</p>
+            <p><strong>ANALYSIS AND DETERMINATION</strong></p>
+            <p>4. On the first issue, the court has carefully considered the submissions of both parties and the relevant constitutional provisions and case law.</p>
+          </div>
+        </div>
+        <div id="case-notes" class="case-content hidden">
+          <div class="mb-6">
+            <textarea id="case-note-input" rows="3" placeholder="Add a note about this case..." class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm resize-none"></textarea>
+            <button class="mt-2 px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-semibold hover:bg-primary-dark transition-colors">Save Note</button>
+          </div>
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant">
+              <p class="text-sm text-on-surface">Key point: Article 43 right to health is justiciable per this judgment.</p>
+              <p class="text-xs text-on-surface-variant mt-2">Added 2 hours ago</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="bottomnav-container"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <script>
+    /* ===========================
+       CORE NAVIGATION & SCREENS
+       =========================== */
+
+    let currentScreen = 'home';
+
+    function navigateTo(screen) {
+      window.location.hash = screen;
+    }
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById('screen-' + screenId);
+      if (target) {
+        target.classList.add('active');
+        currentScreen = screenId;
+        updateActiveNav(screenId);
+        loadScreenData(screenId);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function updateActiveNav(screenId) {
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.screen === screenId) item.classList.add('active');
+      });
+    }
+
+    function getGreeting() {
+      const hour = new Date().getHours();
+      if (hour < 12) return 'Good morning';
+      if (hour < 17) return 'Good afternoon';
+      return 'Good evening';
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast ' + type;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity .3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+    }
+
+    /* ===========================
+       SIDEBAR RENDERING
+       =========================== */
+
+    function renderSidebar() {
+      const container = document.getElementById('sidebar-container');
+      container.innerHTML = `
+        <div class="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-surface-container-lowest border-r border-outline-variant flex-col z-50">
+          <div class="p-6 border-b border-outline-variant">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
+                <svg class="w-5 h-5 text-on-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+              </div>
+              <div><h1 class="text-base font-bold text-on-background leading-tight">Juriscore</h1><p class="text-[10px] text-on-muted font-medium uppercase tracking-wider">Kenya Legal Research</p></div>
+            </div>
+          </div>
+          <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+            <a href="#home" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-on-surface-variant hover:bg-surface-container-high" data-screen="home">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+              Home
+            </a>
+            <a href="#search" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="search">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              Search
+            </a>
+            <a href="#constitution" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="constitution">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              Constitution
+            </a>
+            <a href="#notebook" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="notebook">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              Notebook
+            </a>
+            <a href="#flashcards" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="flashcards">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              Flashcards
+            </a>
+            <a href="#bookmarks" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="bookmarks">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              Bookmarks
+            </a>
+            <a href="#gazettes" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="gazettes">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+              Gazettes
+            </a>
+            <a href="#legislation" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="legislation">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              Legislation
+            </a>
+            <a href="#tribunals" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="tribunals">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+              Tribunals
+            </a>
+            <a href="#workspace" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="workspace">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
+              Workspace
+            </a>
+          </nav>
+          <div class="p-3 border-t border-border">
+            <a href="#profile" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="profile">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              Profile
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ===========================
+       BOTTOM NAV RENDERING
+       =========================== */
+
+    function renderBottomNav() {
+      const container = document.getElementById('bottomnav-container');
+      container.innerHTML = `
+        <div class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-lowest border-t border-outline-variant z-50 safe-area-bottom">
+          <nav class="flex items-center justify-around py-2 px-1">
+            <a href="#home" class="nav-item flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl min-w-[56px]" data-screen="home">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+              <span class="text-[10px] font-medium">Home</span>
+            </a>
+            <a href="#search" class="nav-item flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl min-w-[56px]" data-screen="search">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <span class="text-[10px] font-medium">Search</span>
+            </a>
+            <a href="#notebook" class="nav-item flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl min-w-[56px]" data-screen="notebook">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              <span class="text-[10px] font-medium">Notes</span>
+            </a>
+            <a href="#bookmarks" class="nav-item flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl min-w-[56px]" data-screen="bookmarks">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              <span class="text-[10px] font-medium">Saved</span>
+            </a>
+            <a href="#profile" class="nav-item flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl min-w-[56px]" data-screen="profile">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              <span class="text-[10px] font-medium">Profile</span>
+            </a>
+          </nav>
+        </div>
+      `;
+    }
+
+    /* ===========================
+       SCREEN INTERACTIONS
+       =========================== */
+
+    function toggleAccordion(trigger) {
+      const accordion = trigger.closest('.chapter-accordion');
+      accordion.classList.toggle('open');
+    }
+
+    function flipFlashcard() {
+      document.getElementById('flashcard-inner').classList.toggle('flipped');
+    }
+
+    function initScreenInteractions() {
+      /* Filter chips */
+      document.addEventListener('click', function(e) {
+        const chip = e.target.closest('.filter-chip');
+        if (!chip) return;
+        const group = chip.parentElement;
+        group.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+
+      /* Jurisdiction tabs */
+      document.addEventListener('click', function(e) {
+        const tab = e.target.closest('.jurisdiction-tab');
+        if (!tab) return;
+        tab.parentElement.querySelectorAll('.jurisdiction-tab').forEach(t => {
+          t.classList.remove('active', 'bg-surface', 'text-primary', 'shadow-sm');
+          t.classList.add('text-on-muted');
+        });
+        tab.classList.add('active', 'bg-surface', 'text-primary', 'shadow-sm');
+        tab.classList.remove('text-on-muted');
+      });
+
+      /* Notebook tabs */
+      document.addEventListener('click', function(e) {
+        const tab = e.target.closest('.notebook-tab');
+        if (!tab) return;
+        tab.parentElement.querySelectorAll('.notebook-tab').forEach(t => {
+          t.classList.remove('active', 'bg-surface', 'text-primary', 'shadow-sm');
+          t.classList.add('text-on-muted');
+        });
+        tab.classList.add('active', 'bg-surface', 'text-primary', 'shadow-sm');
+        tab.classList.remove('text-on-muted');
+      });
+
+      /* Bookmark tabs */
+      document.addEventListener('click', function(e) {
+        const tab = e.target.closest('.bookmark-tab');
+        if (!tab) return;
+        tab.parentElement.querySelectorAll('.bookmark-tab').forEach(t => {
+          t.classList.remove('active', 'bg-surface', 'text-primary', 'shadow-sm');
+          t.classList.add('text-on-muted');
+        });
+        tab.classList.add('active', 'bg-surface', 'text-primary', 'shadow-sm');
+        tab.classList.remove('text-on-muted');
+      });
+
+      /* Case detail tabs */
+      document.addEventListener('click', function(e) {
+        const tab = e.target.closest('.case-tab');
+        if (!tab) return;
+        tab.parentElement.querySelectorAll('.case-tab').forEach(t => {
+          t.classList.remove('active', 'bg-surface', 'text-primary', 'shadow-sm');
+          t.classList.add('text-on-muted');
+        });
+        tab.classList.add('active', 'bg-surface', 'text-primary', 'shadow-sm');
+        tab.classList.remove('text-on-muted');
+        const tabName = tab.dataset.tab;
+        document.querySelectorAll('.case-content').forEach(c => c.classList.add('hidden'));
+        const target = document.getElementById('case-' + tabName);
+        if (target) target.classList.remove('hidden');
+      });
+
+      /* Flashcard deck click */
+      document.querySelectorAll('.flashcard-deck').forEach(deck => {
+        deck.addEventListener('click', function() {
+          document.getElementById('flashcard-decks').classList.add('hidden');
+          document.getElementById('flashcard-study-mode').classList.remove('hidden');
+          document.getElementById('create-deck-btn').classList.add('hidden');
+        });
+      });
+
+      /* Exit study mode */
+      const exitBtn = document.getElementById('exit-study-btn');
+      if (exitBtn) {
+        exitBtn.addEventListener('click', function() {
+          document.getElementById('flashcard-study-mode').classList.add('hidden');
+          document.getElementById('flashcard-decks').classList.remove('hidden');
+          document.getElementById('create-deck-btn').classList.remove('hidden');
+        });
+      }
+
+      /* Logout */
+      const logoutBtn = document.getElementById('logout-btn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+          if (typeof window.Auth !== 'undefined' && window.Auth.logout) {
+            window.Auth.logout();
+          } else {
+            localStorage.removeItem('juriscore_user');
+            window.location.href = '/login.html';
+          }
+        });
+      }
+
+      /* Home search */
+      const homeSearchBtn = document.getElementById('home-search-btn');
+      const homeSearchInput = document.getElementById('home-search-input');
+      if (homeSearchBtn && homeSearchInput) {
+        homeSearchBtn.addEventListener('click', function() {
+          const q = homeSearchInput.value.trim();
+          if (q) navigateTo('search');
+        });
+        homeSearchInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            const q = homeSearchInput.value.trim();
+            if (q) navigateTo('search');
+          }
+        });
+      }
+
+      /* Sidebar overlay */
+      document.getElementById('sidebar-overlay').addEventListener('click', function() {
+        this.classList.remove('active');
+      });
+    }
+
+    /* ===========================
+       DATA LOADING
+       =========================== */
+
+    function loadScreenData(screenId) {
+      switch(screenId) {
+        case 'home':
+          loadHomeData();
+          break;
+        case 'search':
+          loadSearchData();
+          break;
+      }
+    }
+
+    function loadHomeData() {
+      const user = null;
+      try {
+        const stored = localStorage.getItem('juriscore_user');
+        if (stored) user = JSON.parse(stored);
+      } catch(e) {}
+      const greeting = getGreeting();
+      const name = user && user.name ? user.name : 'Researcher';
+      document.getElementById('home-greeting').textContent = greeting + ', ' + name;
+    }
+
+    function loadSearchData() {
+      const input = document.getElementById('search-main-input');
+      if (input && !input.value) {
+        input.focus();
+      }
+    }
+
+    /* ===========================
+       HASH ROUTING
+       =========================== */
+
+    function handleHashChange() {
+      const hash = window.location.hash.slice(1) || 'home';
+      showScreen(hash);
+    }
+
+    /* ===========================
+       INIT
+       =========================== */
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderSidebar();
+      renderBottomNav();
+      initScreenInteractions();
+      handleHashChange();
+    });
+
+    window.addEventListener('hashchange', handleHashChange);
+    window.navigateTo = navigateTo;
+    window.toggleAccordion = toggleAccordion;
+    window.flipFlashcard = flipFlashcard;
+    window.showToast = showToast;
+  </script>
+</body>
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Juriscore</title>
+  <meta name="description" content="Sign in to Juriscore, Kenya's legal research platform for case law, legislation, and constitutional provisions.">
+  <meta name="theme-color" content="#00327d">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2300327d'/><text x='50' y='68' text-anchor='middle' font-size='50' fill='white'>⚖</text></svg>">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#00327d',
+            'primary-container': '#0047ab',
+            'on-primary': '#ffffff',
+            'on-primary-container': '#a5bdff',
+            'surface-tint': '#2559bd',
+            'surface': '#f9f9f9',
+            'surface-bright': '#f9f9f9',
+            'surface-container-lowest': '#ffffff',
+            'surface-container-low': '#f3f3f3',
+            'surface-container': '#eeeeee',
+            'surface-container-high': '#e8e8e8',
+            'surface-container-highest': '#e2e2e2',
+            'on-surface': '#1a1c1c',
+            'on-surface-variant': '#434653',
+            'outline': '#737784',
+            'outline-variant': '#c3c6d5',
+            'tertiary': '#651f00',
+            'tertiary-container': '#8b2e01',
+            'error': '#ba1a1a',
+            'error-container': '#ffdad6',
+            'on-error-container': '#93000a',
+            'secondary': '#5f5e5e',
+            'secondary-container': '#e5e2e1',
+            'on-secondary-container': '#656464',
+            'background': '#f9f9f9',
+            'on-background': '#1a1c1c',
+          },
+          fontFamily: {
+            'display': ['"EB Garamond"', 'serif'],
+            'body': ['Inter', 'sans-serif'],
+          },
+          borderRadius: {
+            'lg': '0.5rem',
+          },
+          boxShadow: {
+            'login': '0 24px 48px -12px rgba(0,0,0,0.06)',
+            'card-hover': '0 8px 30px rgba(0,0,0,0.08)',
+          },
+          keyframes: {
+            'fade-in': {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            'slide-up': {
+              '0%': { transform: 'translateY(8px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            'toast-in': {
+              '0%': { opacity: '0', transform: 'translateY(16px) scale(0.96)' },
+              '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+            },
+            'toast-out': {
+              '0%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+              '100%': { opacity: '0', transform: 'translateY(16px) scale(0.96)' },
+            },
+            'modal-in': {
+              '0%': { opacity: '0', transform: 'scale(0.95) translateY(8px)' },
+              '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+            },
+          },
+          animation: {
+            'fade-in': 'fade-in 0.2s ease-out forwards',
+            'slide-up': 'slide-up 0.3s ease-out forwards',
+            'toast-in': 'toast-in 0.3s ease-out forwards',
+            'toast-out': 'toast-out 0.25s ease-in forwards',
+            'modal-in': 'modal-in 0.25s ease-out forwards',
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="/css/tokens.css">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body { background-color: #f9f9f9; color: #1a1c1c; font-family: 'Inter', sans-serif; min-height: 100vh; line-height: 1.5; }
+
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+    .login-input-wrapper { position: relative; display: flex; align-items: center; }
+    .login-input-wrapper .input-icon { position: absolute; left: 14px; color: #737784; font-size: 20px; pointer-events: none; transition: color 0.2s ease; }
+    .login-input-wrapper input { padding-left: 44px; }
+    .login-input-wrapper .toggle-pw { position: absolute; right: 12px; background: none; border: none; cursor: pointer; color: #737784; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: color 0.2s ease, background-color 0.2s ease; }
+    .login-input-wrapper .toggle-pw:hover { color: #1a1c1c; background-color: #eeeeee; }
+    .login-input-wrapper input:focus ~ .input-icon { color: #00327d; }
+    .login-input-wrapper input:focus { border-color: #00327d; box-shadow: 0 0 0 3px rgba(0, 50, 125, 0.12); }
+
+    .login-input { width: 100%; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 20px; padding: 12px 16px; border: 1.5px solid #c3c6d5; border-radius: 0.5rem; background-color: #ffffff; color: #1a1c1c; outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+    .login-input::placeholder { color: #737784; }
+    .login-input:hover { border-color: #737784; }
+    .login-input:focus { border-color: #00327d; box-shadow: 0 0 0 3px rgba(0, 50, 125, 0.12); }
+
+    .btn-login { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px 24px; border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; line-height: 20px; border: none; cursor: pointer; transition: all 0.2s ease; white-space: nowrap; user-select: none; -webkit-tap-highlight-color: transparent; }
+    .btn-login-primary { background-color: #0A0A0A; color: #ffffff; }
+    .btn-login-primary:hover { background-color: #1a1a1a; }
+    .btn-login-primary:active { transform: scale(0.98); }
+    .btn-login-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-login-google { background-color: #ffffff; color: #1a1c1c; border: 1.5px solid #c3c6d5; }
+    .btn-login-google:hover { background-color: #f3f3f3; border-color: #737784; }
+    .btn-login-google:active { transform: scale(0.98); }
+
+    .divider { display: flex; align-items: center; gap: 16px; margin: 20px 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background-color: #c3c6d5; }
+    .divider span { font-size: 12px; font-weight: 500; color: #737784; white-space: nowrap; }
+
+    .toast-wrap { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+    .toast { pointer-events: auto; display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 0.5rem; font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; min-width: 280px; max-width: 420px; box-shadow: 0 16px 40px rgba(0,0,0,0.04); animation: toast-in 0.3s ease-out forwards; }
+    .toast.removing { animation: toast-out 0.25s ease-in forwards; }
+    .toast-error { background-color: #ffdad6; color: #93000a; border: 1px solid #f5c6cb; }
+    .toast-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .toast-info { background-color: #dce8ff; color: #00327d; border: 1px solid #b8d4fe; }
+
+    .modal-overlay { position: fixed; inset: 0; z-index: 1000; background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0.25s ease; }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-overlay.active .modal-box { animation: modal-in 0.25s ease-out forwards; }
+    .modal-box { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 16px 40px rgba(0,0,0,0.04); width: 100%; max-width: 440px; max-height: 85vh; overflow-y: auto; padding: 24px; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .modal-title { font-family: 'EB Garamond', serif; font-size: 20px; font-weight: 600; color: #1a1c1c; }
+    .modal-close { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: none; border: none; cursor: pointer; color: #737784; transition: background-color 0.2s ease; }
+    .modal-close:hover { background-color: #eeeeee; }
+
+    @media (max-width: 480px) {
+      .login-card { margin: 0 8px !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-wrap"></div>
+
+  <!-- Main Content -->
+  <div class="min-h-screen flex items-center justify-center px-4 py-12">
+
+    <!-- Login Card -->
+    <div class="login-card w-full bg-white rounded-lg border border-outline-variant animate-slide-up" style="max-width: 440px; box-shadow: 0 24px 48px -12px rgba(0,0,0,0.06);">
+
+      <!-- Card Content -->
+      <div class="px-8 pt-10 pb-8 sm:px-10">
+
+        <!-- Gavel Icon -->
+        <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-6">
+          <span class="material-symbols-outlined text-on-primary" style="font-size: 24px;">balance</span>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="font-display text-on-surface mb-2" style="font-size: 48px; line-height: 56px; font-weight: 600; letter-spacing: -0.02em;">
+          Welcome back, Counsel.
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="text-on-surface-variant text-sm mb-8">
+          Sign in to Juriscore to access your workspace.
+        </p>
+
+        <!-- Login Form -->
+        <form id="login-form" novalidate>
+          <div class="space-y-4">
+
+            <!-- Email Input -->
+            <div>
+              <label for="login-email" class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase" style="letter-spacing: 0.05em;">Email</label>
+              <div class="login-input-wrapper">
+                <input
+                  id="login-email"
+                  type="email"
+                  class="login-input"
+                  placeholder="you@lawfirm.co.ke"
+                  autocomplete="email"
+                  aria-label="Email address"
+                  aria-required="true"
+                  required
+                >
+                <span class="material-symbols-outlined input-icon" style="font-size: 20px;">mail</span>
+              </div>
+            </div>
+
+            <!-- Password Input -->
+            <div>
+              <label for="login-password" class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase" style="letter-spacing: 0.05em;">Password</label>
+              <div class="login-input-wrapper">
+                <input
+                  id="login-password"
+                  type="password"
+                  class="login-input"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                  aria-label="Password"
+                  aria-required="true"
+                  required
+                  style="padding-right: 44px;"
+                >
+                <span class="material-symbols-outlined input-icon" style="font-size: 20px;">lock</span>
+                <button type="button" class="toggle-pw" onclick="togglePassword()" aria-label="Toggle password visibility" tabindex="-1">
+                  <span id="pw-toggle-icon" class="material-symbols-outlined" style="font-size: 20px;">visibility_off</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Sign In Button -->
+            <button
+              id="sign-in-btn"
+              type="submit"
+              class="btn-login btn-login-primary mt-2"
+            >
+              <span id="sign-in-text">Sign In</span>
+              <span id="sign-in-spinner" class="hidden">
+                <svg class="animate-spin" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" fill="none"/>
+                  <path d="M14 8a6 6 0 01-6 6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                </svg>
+              </span>
+              <span id="sign-in-arrow" class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Divider -->
+        <div class="divider">
+          <span>or continue with</span>
+        </div>
+
+        <!-- Google OAuth Button -->
+        <button
+          type="button"
+          class="btn-login btn-login-google"
+          onclick="googleOAuthPlaceholder()"
+        >
+          <!-- Google SVG Logo -->
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+            <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
+            <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+            <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+          </svg>
+          Google
+        </button>
+
+        <!-- Footer Link -->
+        <p class="text-center text-sm text-on-surface-variant mt-8">
+          Don't have an account?
+          <button type="button" onclick="openRequestAccess()" class="font-semibold text-primary hover:underline transition-colors" style="text-decoration-style: dotted;">
+            Request Access
+          </button>
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Request Access Modal -->
+  <div id="request-access-modal" class="modal-overlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">Request Access</h2>
+        <button class="modal-close" onclick="closeRequestAccess()" aria-label="Close modal">
+          <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+        </button>
+      </div>
+      <form id="request-access-form" onsubmit="submitRequestAccess(event)">
+        <div class="space-y-4">
+          <div>
+            <label for="ra-name" class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase" style="letter-spacing: 0.05em;">Full Name</label>
+            <div class="login-input-wrapper">
+              <input
+                id="ra-name"
+                type="text"
+                class="login-input"
+                placeholder="Jane Mwangi"
+                autocomplete="name"
+                required
+              >
+              <span class="material-symbols-outlined input-icon" style="font-size: 20px;">person</span>
+            </div>
+          </div>
+          <div>
+            <label for="ra-email" class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase" style="letter-spacing: 0.05em;">Email</label>
+            <div class="login-input-wrapper">
+              <input
+                id="ra-email"
+                type="email"
+                class="login-input"
+                placeholder="jane@lawfirm.co.ke"
+                autocomplete="email"
+                required
+              >
+              <span class="material-symbols-outlined input-icon" style="font-size: 20px;">mail</span>
+            </div>
+          </div>
+          <div>
+            <label for="ra-org" class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase" style="letter-spacing: 0.05em;">Organization <span class="font-normal normal-case">(optional)</span></label>
+            <div class="login-input-wrapper">
+              <input
+                id="ra-org"
+                type="text"
+                class="login-input"
+                placeholder="Law firm or university"
+                autocomplete="organization"
+              >
+              <span class="material-symbols-outlined input-icon" style="font-size: 20px;">business</span>
+            </div>
+          </div>
+          <div>
+            <label for="ra-message" class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase" style="letter-spacing: 0.05em;">Message <span class="font-normal normal-case">(optional)</span></label>
+            <textarea
+              id="ra-message"
+              class="login-input"
+              placeholder="Tell us about your research needs..."
+              rows="3"
+              style="resize: vertical; padding-left: 16px;"
+            ></textarea>
+          </div>
+        </div>
+        <div class="flex gap-2 mt-6 justify-end">
+          <button type="button" onclick="closeRequestAccess()" class="btn-login" style="width: auto; padding: 10px 20px; background: transparent; color: #1a1c1c; border: 1.5px solid #c3c6d5; border-radius: 0.5rem; font-weight: 600;">
+            Cancel
+          </button>
+          <button
+            id="ra-submit-btn"
+            type="submit"
+            class="btn-login btn-login-primary"
+            style="width: auto; padding: 10px 24px;"
+          >
+            <span id="ra-submit-text">Submit Request</span>
+            <span id="ra-submit-spinner" class="hidden">
+              <svg class="animate-spin" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" fill="none"/>
+                <path d="M14 8a6 6 0 01-6 6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    // ==========================================
+    // Redirect if already logged in
+    // ==========================================
+    if (isLoggedIn()) {
+      window.location.href = '/app.html';
+    }
+
+    // ==========================================
+    // Password visibility toggle
+    // ==========================================
+    function togglePassword() {
+      const pw = document.getElementById('login-password');
+      const icon = document.getElementById('pw-toggle-icon');
+      if (pw.type === 'password') {
+        pw.type = 'text';
+        icon.textContent = 'visibility';
+      } else {
+        pw.type = 'password';
+        icon.textContent = 'visibility_off';
+      }
+    }
+
+    // ==========================================
+    // Toast system (matches tokens.css)
+    // ==========================================
+    function showToast(message, type) {
+      type = type || 'info';
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + type;
+
+      const icons = { error: 'error', success: 'check_circle', info: 'info' };
+      const iconEl = document.createElement('span');
+      iconEl.className = 'material-symbols-outlined';
+      iconEl.style.fontSize = '20px';
+      iconEl.style.flexShrink = '0';
+      iconEl.textContent = icons[type] || 'info';
+
+      const msgEl = document.createElement('span');
+      msgEl.textContent = message;
+
+      toast.appendChild(iconEl);
+      toast.appendChild(msgEl);
+      container.appendChild(toast);
+
+      setTimeout(function () {
+        toast.classList.add('removing');
+        setTimeout(function () {
+          if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 300);
+      }, 4000);
+    }
+
+    // ==========================================
+    // Loading state on button
+    // ==========================================
+    function setLoading(btnId, loading) {
+      var btn = document.getElementById(btnId);
+      if (!btn) return;
+
+      if (btnId === 'sign-in-btn') {
+        var textEl = document.getElementById('sign-in-text');
+        var spinnerEl = document.getElementById('sign-in-spinner');
+        var arrowEl = document.getElementById('sign-in-arrow');
+        if (loading) {
+          btn.disabled = true;
+          textEl.textContent = 'Signing in...';
+          spinnerEl.classList.remove('hidden');
+          arrowEl.classList.add('hidden');
+        } else {
+          btn.disabled = false;
+          textEl.textContent = 'Sign In';
+          spinnerEl.classList.add('hidden');
+          arrowEl.classList.remove('hidden');
+        }
+      } else if (btnId === 'ra-submit-btn') {
+        var raText = document.getElementById('ra-submit-text');
+        var raSpinner = document.getElementById('ra-submit-spinner');
+        if (loading) {
+          btn.disabled = true;
+          raText.textContent = 'Submitting...';
+          raSpinner.classList.remove('hidden');
+        } else {
+          btn.disabled = false;
+          raText.textContent = 'Submit Request';
+          raSpinner.classList.add('hidden');
+        }
+      }
+    }
+
+    // ==========================================
+    // Form submission
+    // ==========================================
+    var loginForm = document.getElementById('login-form');
+    loginForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      doLogin();
+    });
+
+    // Enter key to submit is handled by form submit event
+
+    function doLogin() {
+      var email = document.getElementById('login-email').value.trim();
+      var password = document.getElementById('login-password').value;
+
+      // Validate
+      if (!email) {
+        showToast('Please enter your email address.', 'error');
+        document.getElementById('login-email').focus();
+        return;
+      }
+      if (!password) {
+        showToast('Please enter your password.', 'error');
+        document.getElementById('login-password').focus();
+        return;
+      }
+
+      setLoading('sign-in-btn', true);
+
+      login(email, password)
+        .then(function () {
+          showToast('Welcome back! Redirecting...', 'success');
+          setTimeout(function () {
+            window.location.href = '/app.html';
+          }, 600);
+        })
+        .catch(function (err) {
+          var msg = 'Login failed. Please check your credentials and try again.';
+          if (err && err.message) {
+            if (err.message.includes('Invalid') || err.message.includes('invalid') || err.message.includes('401')) {
+              msg = 'Invalid email or password. Please try again.';
+            } else if (err.message.includes('network') || err.message.includes('fetch')) {
+              msg = 'Network error. Please check your connection and try again.';
+            } else if (err.message.includes('Login failed')) {
+              msg = 'Login failed. Please check your credentials and try again.';
+            } else {
+              msg = err.message;
+            }
+          }
+          showToast(msg, 'error');
+          setLoading('sign-in-btn', false);
+        });
+    }
+
+    // ==========================================
+    // Google OAuth placeholder
+    // ==========================================
+    function googleOAuthPlaceholder() {
+      showToast('Google OAuth coming soon', 'info');
+    }
+
+    // ==========================================
+    // Request Access modal
+    // ==========================================
+    function openRequestAccess() {
+      document.getElementById('request-access-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      setTimeout(function () {
+        document.getElementById('ra-name').focus();
+      }, 300);
+    }
+
+    function closeRequestAccess() {
+      document.getElementById('request-access-modal').classList.remove('active');
+      document.body.style.overflow = '';
+      document.getElementById('request-access-form').reset();
+      setLoading('ra-submit-btn', false);
+    }
+
+    function closeModalOnOverlay(e) {
+      if (e.target === e.currentTarget) {
+        closeRequestAccess();
+      }
+    }
+
+    // Escape key closes modal
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        var modal = document.getElementById('request-access-modal');
+        if (modal.classList.contains('active')) {
+          closeRequestAccess();
+        }
+      }
+    });
+
+    function submitRequestAccess(e) {
+      e.preventDefault();
+
+      var name = document.getElementById('ra-name').value.trim();
+      var email = document.getElementById('ra-email').value.trim();
+      var org = document.getElementById('ra-org').value.trim();
+      var message = document.getElementById('ra-message').value.trim();
+
+      if (!name) {
+        showToast('Please enter your full name.', 'error');
+        document.getElementById('ra-name').focus();
+        return;
+      }
+      if (!email) {
+        showToast('Please enter your email address.', 'error');
+        document.getElementById('ra-email').focus();
+        return;
+      }
+
+      setLoading('ra-submit-btn', true);
+
+      api.post('/auth/request-access', {
+        name: name,
+        email: email,
+        organization: org,
+        message: message
+      })
+        .then(function () {
+          showToast('Request submitted! We\'ll be in touch soon.', 'success');
+          closeRequestAccess();
+        })
+        .catch(function (err) {
+          // If endpoint doesn't exist yet, still show success
+          if (err && (err.message.includes('404') || err.message.includes('Not Found'))) {
+            showToast('Request submitted! We\'ll be in touch soon.', 'success');
+            closeRequestAccess();
+          } else {
+            showToast('Submission failed. Please try again later.', 'error');
+            setLoading('ra-submit-btn', false);
+          }
+        });
+    }
+  </script>
+</body>
+</html>

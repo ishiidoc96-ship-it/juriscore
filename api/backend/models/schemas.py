@@ -170,3 +170,34 @@ class ExportComparisonRequest(BaseModel):
 
 class ExportStatuteRequest(BaseModel):
     statute_id: str
+
+
+class AuthLoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class AuthSignupRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+    university: Optional[str] = None
+
+
+class AuthUserResponse(BaseModel):
+    id: str
+    name: str
+    email: str
+    university: Optional[str] = None
+
+
+class AuthResponse(BaseModel):
+    token: str
+    user: AuthUserResponse
+
+
+class AccessRequest(BaseModel):
+    name: str
+    email: str
+    organization: str
+    message: Optional[str] = None

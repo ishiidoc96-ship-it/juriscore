@@ -116,3 +116,45 @@ try:
     logger.info("Search router loaded")
 except Exception as e:
     logger.error(f"Failed to load search router: {traceback.format_exc()}")
+
+try:
+    from routers import auth
+    app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+    logger.info("Auth router loaded")
+except Exception as e:
+    logger.error(f"Failed to load auth router: {traceback.format_exc()}")
+
+try:
+    from routers import bookmarks
+    app.include_router(bookmarks.router, prefix="/api/bookmarks", tags=["Bookmarks"])
+    logger.info("Bookmarks router loaded")
+except Exception as e:
+    logger.error(f"Failed to load bookmarks router: {traceback.format_exc()}")
+
+try:
+    from routers import gazettes
+    app.include_router(gazettes.router, prefix="/api/gazettes", tags=["Gazettes"])
+    logger.info("Gazettes router loaded")
+except Exception as e:
+    logger.error(f"Failed to load gazettes router: {traceback.format_exc()}")
+
+try:
+    from routers import tribunals
+    app.include_router(tribunals.router, prefix="/api/tribunals", tags=["Tribunals"])
+    logger.info("Tribunals router loaded")
+except Exception as e:
+    logger.error(f"Failed to load tribunals router: {traceback.format_exc()}")
+
+try:
+    from routers import workspaces
+    app.include_router(workspaces.router, prefix="/api/workspaces", tags=["Workspaces"])
+    logger.info("Workspaces router loaded")
+except Exception as e:
+    logger.error(f"Failed to load workspaces router: {traceback.format_exc()}")
+
+try:
+    from routers import history
+    app.include_router(history.router, prefix="/api/history", tags=["History"])
+    logger.info("History router loaded")
+except Exception as e:
+    logger.error(f"Failed to load history router: {traceback.format_exc()}")
