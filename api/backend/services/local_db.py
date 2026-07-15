@@ -1,52 +1,75 @@
 """
-Local SQLite + FTS5 search database for instant legal search.
-Loaded into memory at module import — searches in <10ms.
+In-memory FTS5-compatible search for 12,000+ Kenyan legal cases.
+Uses compressed base64 data file — no SQLite dependency on Vercel.
 """
-import os
-import sqlite3
-import logging
-import re
+import base64, gzip, json, os, re, logging
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger("juriscore")
 
-_db_candidates = [
-    os.path.join(os.path.dirname(__file__), "..", "..", "data", "legal_db.sqlite"),
-    os.path.join(os.path.dirname(__file__), "..", "data", "legal_db.sqlite"),
-    os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "legal_db.sqlite"),
-]
-_db_path = None
-for _candidate in _db_candidates:
-    if os.path.exists(_candidate):
-        _db_path = os.path.abspath(_candidate)
-        break
-if _db_path is None:
-    _db_path = os.path.abspath(_db_candidates[0])
-_conn: Optional[sqlite3.Connection] = None
+_data: List[Dict] = []
+_index: Dict[str, List[int]] = {}
 _ready = False
 
 
-def _get_conn() -> sqlite3.Connection:
-    global _conn, _ready
-    if _conn is not None:
-        return _conn
-    if not os.path.exists(_db_path):
-        logger.warning(f"Legal DB not found at {_db_path}")
-        return None
-    try:
-        _conn = sqlite3.connect(_db_path, check_same_thread=False)
-        _conn.row_factory = sqlite3.Row
-        _conn.execute("PRAGMA journal_mode=WAL")
+def _load_data():
+    global _data, _index, _ready
+    if _ready:
+        return
+
+    # Try base64 compressed file first (Vercel)
+    b64_path = os.path.join(os.path.dirname(__file__), "..", "..", "data", "cases.json.gz.b64")
+    # Try SQLite as fallback (local dev)
+    sqlite_path = os.path.join(os.path.dirname(__file__), "..", "data", "legal_db.sqlite")
+
+    if os.path.exists(b64_path):
+        try:
+            with open(b64_path, "r") as f:
+                b64 = f.read()
+            raw = gzip.decompress(base64.b64decode(b64))
+            _data = json.loads(raw)
+            logger.info(f"Loaded {len(_data)} cases from base64 file")
+        except Exception as e:
+            logger.error(f"Failed to load base64 data: {e}")
+    elif os.path.exists(sqlite_path):
+        try:
+            import sqlite3
+            conn = sqlite3.connect(sqlite_path, check_same_thread=False)
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute("SELECT * FROM documents").fetchall()
+            _data = [dict(r) for r in rows]
+            conn.close()
+            logger.info(f"Loaded {len(_data)} cases from SQLite")
+        except Exception as e:
+            logger.error(f"Failed to load SQLite: {e}")
+    else:
+        logger.warning("No case data found")
         _ready = True
-        count = _conn.execute("SELECT COUNT(*) FROM documents").fetchone()[0]
-        logger.info(f"Legal DB loaded: {count} documents")
-    except Exception as e:
-        logger.error(f"Failed to load legal DB: {e}")
-        _conn = None
-    return _conn
+        return
+
+    # Build inverted index for fast search
+    _index = {}
+    for i, case in enumerate(_data):
+        text = " ".join([
+            case.get("title", ""),
+            case.get("citation", ""),
+            case.get("court", ""),
+            case.get("topics", "") if isinstance(case.get("topics", ""), str) else " ".join(case.get("topics", [])),
+            case.get("excerpt", ""),
+        ]).lower()
+        words = set(re.findall(r'\w+', text))
+        for w in words:
+            if len(w) > 1:
+                if w not in _index:
+                    _index[w] = []
+                _index[w].append(i)
+
+    _ready = True
+    logger.info(f"Search index built: {len(_index)} terms, {len(_data)} documents")
 
 
 def is_ready() -> bool:
+    _load_data()
     return _ready
 
 
@@ -56,146 +79,85 @@ def search_local_db(
     court: Optional[str] = None,
     limit: int = 20,
 ) -> List[Dict[str, Any]]:
-    """
-    FTS5 full-text search on the local legal database.
-    Returns results ranked by relevance in <10ms.
-    """
-    conn = _get_conn()
-    if not conn:
+    _load_data()
+    if not _data:
         return []
 
-    # Build FTS5 query — handle multi-word queries
     query_clean = re.sub(r'[^\w\s]', '', query.lower().strip())
     words = query_clean.split()
     if not words:
         return []
 
-    # Use OR for broader matching, with phrase matching for exact matches
-    fts_query = " OR ".join(words)
+    # Score documents by matching query words
+    scores: Dict[int, float] = {}
+    for w in words:
+        if w in _index:
+            for idx in _index[w]:
+                scores[idx] = scores.get(idx, 0) + 1
 
-    try:
-        # FTS5 search with ranking
-        sql = """
-            SELECT d.id, d.doc_type, d.title, d.citation, d.court, d.year,
-                   d.topics, d.excerpt, d.url, d.date,
-                   rank
-            FROM documents d
-            JOIN documents_fts fts ON d.id = fts.rowid
-            WHERE documents_fts MATCH ?
-        """
-        params = [fts_query]
+    # Sort by score descending
+    scored = sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
+    results = []
+    for idx, score in scored:
+        if len(results) >= limit:
+            break
+
+        case = _data[idx]
+
+        # Apply filters
         if doc_type and doc_type != "all":
-            sql += " AND d.doc_type = ?"
-            params.append(doc_type)
+            case_type = case.get("doc_type", "")
+            if case_type != doc_type:
+                continue
 
         if court and court != "all":
-            sql += " AND d.court LIKE ?"
-            params.append(f"%{court}%")
+            case_court = case.get("court", "")
+            if court.lower() not in case_court.lower():
+                continue
 
-        sql += " ORDER BY rank LIMIT ?"
-        params.append(limit)
+        topics = case.get("topics", "")
+        if isinstance(topics, str):
+            topics = [t.strip() for t in topics.split(",") if t.strip()]
 
-        rows = conn.execute(sql, params).fetchall()
+        results.append({
+            "id": f"db_{idx}",
+            "doc_type": case.get("doc_type", "judgment"),
+            "title": case.get("title", ""),
+            "citation": case.get("citation", ""),
+            "court": case.get("court", ""),
+            "year": case.get("year", 0),
+            "date": case.get("date", ""),
+            "topics": topics,
+            "excerpt": case.get("excerpt", ""),
+            "url": case.get("url", ""),
+            "score": score,
+            "source": "local_db",
+        })
 
-        results = []
-        for row in rows:
-            topics = row["topics"].split(",") if row["topics"] else []
-            results.append({
-                "id": f"db_{row['id']}",
-                "doc_type": row["doc_type"],
-                "title": row["title"],
-                "citation": row["citation"],
-                "court": row["court"],
-                "year": row["year"],
-                "date": row["date"] or "",
-                "topics": topics,
-                "excerpt": row["excerpt"] or "",
-                "url": row["url"] or "",
-                "score": abs(row["rank"]),
-                "source": "local_db",
-            })
-
-        return results
-
-    except Exception as e:
-        logger.error(f"FTS5 search failed: {e}")
-        # Fallback: simple LIKE search
-        return _fallback_search(conn, query, doc_type, court, limit)
-
-
-def _fallback_search(
-    conn: sqlite3.Connection,
-    query: str,
-    doc_type: Optional[str] = None,
-    court: Optional[str] = None,
-    limit: int = 20,
-) -> List[Dict[str, Any]]:
-    """Simple LIKE search as fallback when FTS5 fails."""
-    try:
-        words = query.lower().split()
-        conditions = []
-        params = []
-        for w in words:
-            conditions.append("(LOWER(title) LIKE ? OR LOWER(excerpt) LIKE ? OR LOWER(topics) LIKE ?)")
-            params.extend([f"%{w}%", f"%{w}%", f"%{w}%"])
-
-        where = " AND ".join(conditions) if conditions else "1=1"
-        sql = f"SELECT * FROM documents WHERE {where}"
-
-        if doc_type and doc_type != "all":
-            sql += " AND doc_type = ?"
-            params.append(doc_type)
-        if court and court != "all":
-            sql += " AND court LIKE ?"
-            params.append(f"%{court}%")
-
-        sql += " LIMIT ?"
-        params.append(limit)
-
-        rows = conn.execute(sql, params).fetchall()
-        results = []
-        for row in rows:
-            topics = row["topics"].split(",") if row["topics"] else []
-            results.append({
-                "id": f"db_{row['id']}",
-                "doc_type": row["doc_type"],
-                "title": row["title"],
-                "citation": row["citation"],
-                "court": row["court"],
-                "year": row["year"],
-                "date": row["date"] or "",
-                "topics": topics,
-                "excerpt": row["excerpt"] or "",
-                "url": row["url"] or "",
-                "score": 0.5,
-                "source": "local_db",
-            })
-        return results
-    except Exception as e:
-        logger.error(f"Fallback search failed: {e}")
-        return []
+    return results
 
 
 def get_db_stats() -> Dict[str, Any]:
-    """Return database statistics."""
-    conn = _get_conn()
-    if not conn:
+    _load_data()
+    if not _data:
         return {"ready": False, "count": 0}
 
-    try:
-        total = conn.execute("SELECT COUNT(*) FROM documents").fetchone()[0]
-        by_type = conn.execute(
-            "SELECT doc_type, COUNT(*) as cnt FROM documents GROUP BY doc_type ORDER BY cnt DESC"
-        ).fetchall()
-        by_court = conn.execute(
-            "SELECT court, COUNT(*) as cnt FROM documents GROUP BY court ORDER BY cnt DESC LIMIT 10"
-        ).fetchall()
-        return {
-            "ready": True,
-            "count": total,
-            "by_type": {r["doc_type"]: r["cnt"] for r in by_type},
-            "by_court": {r["court"]: r["cnt"] for r in by_court},
-        }
-    except Exception as e:
-        return {"ready": False, "error": str(e)}
+    by_type: Dict[str, int] = {}
+    by_court: Dict[str, int] = {}
+    for case in _data:
+        dt = case.get("doc_type", "unknown")
+        by_type[dt] = by_type.get(dt, 0) + 1
+        c = case.get("court", "unknown")
+        by_court[c] = by_court.get(c, 0) + 1
+
+    years = [c.get("year", 0) for c in _data if c.get("year", 0) > 0]
+
+    return {
+        "ready": True,
+        "count": len(_data),
+        "index_terms": len(_index),
+        "by_type": dict(sorted(by_type.items(), key=lambda x: x[1], reverse=True)[:10]),
+        "by_court": dict(sorted(by_court.items(), key=lambda x: x[1], reverse=True)[:10]),
+        "year_range": f"{min(years)}-{max(years)}" if years else "N/A",
+    }
