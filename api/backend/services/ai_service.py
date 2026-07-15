@@ -34,7 +34,7 @@ def init_backend():
     if not _api_key:
         _api_key = os.getenv("OPENAI_API_KEY", "")
     if _api_key:
-        logger.info(f"NVIDIA AI service initialized (model: {_model}, key: {_api_key[:8]}...)")
+        logger.info(f"NVIDIA AI service initialized (model: {_model})")
     else:
         logger.warning("No NVIDIA_API_KEY set - AI features disabled")
 

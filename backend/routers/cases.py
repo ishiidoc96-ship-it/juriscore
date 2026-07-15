@@ -145,7 +145,18 @@ async def save_case(case_id: str, session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(Case).where(Case.id == case_id))
     case = result.scalar_one_or_none()
     if not case:
-        raise HTTPException(status_code=404, detail="Case not found")
+        # Case not in DB yet (from search results) - create it as a lightweight record
+        case = Case(
+            id=case_id,
+            title="Saved case",
+            citation="",
+            court="",
+            year=0,
+            full_text="",
+        )
+        session.add(case)
+        await session.flush()
+        await session.commit()
     return {"status": "saved", "case_id": case_id}
 
 

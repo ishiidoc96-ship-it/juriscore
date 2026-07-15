@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 
 from models.database import engine, Base
-from routers import cases, statutes, constitution, notebook, flashcards, study, export
+from routers import cases, statutes, constitution, notebook, flashcards, study, export, search
 from services import ai_service
 
 load_dotenv()
@@ -60,3 +60,4 @@ app.include_router(notebook.router, prefix="/notebook", tags=["Notebook"])
 app.include_router(flashcards.router, prefix="/flashcards", tags=["Flashcards"])
 app.include_router(study.router, prefix="/study", tags=["Study"])
 app.include_router(export.router, prefix="/export", tags=["Export"])
+app.include_router(search.router, prefix="/search", tags=["Search"])
