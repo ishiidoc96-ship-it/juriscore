@@ -97,15 +97,18 @@ def _parse_json(text: str, fallback: Any = None) -> Any:
 # ---------- Case Summary ----------
 
 async def generate_case_summary(full_text: str) -> Dict[str, Any]:
-    prompt = f"""Summarise this Kenyan legal case. Write it the way a sharp law student would explain it to a study group — direct, opinionated, specific.
+    prompt = f"""Analyse this Kenyan legal case using the IRAC method (Issue, Rule, Application, Conclusion). Write like a senior law tutor breaking down a case for a student preparing for exams — precise, authoritative, specific.
 
 Return ONLY valid JSON with these keys:
-- facts: string (2-3 paragraphs, specific facts, name the parties and what happened)
-- issues: list of strings (the legal issues, framed as questions)
-- holdings: list of strings (what the court decided, with article/section references)
-- ratio: string (the ratio decidendi — the binding principle, cite the case)
-- obiter: string (obiter dicta — anything non-binding but interesting)
-- cases_cited: list of strings (cite each case properly)
+- facts: string (2-3 paragraphs. Name the parties, the court, the date, the key facts. Be specific — dates, amounts, names, sections cited.)
+- issues: list of strings (the legal issues framed as questions the court had to answer)
+- rule: string (the applicable legal rules — constitutional provisions, statutory sections, precedent cases cited)
+- application: string (how the court applied the rules to the facts — the reasoning chain. This is the most important part.)
+- conclusion: string (the court's final decision and order)
+- ratio: string (the ratio decidendi — the binding legal principle from this case, cite it properly as: Case Name [Year] court citation)
+- obiter: string (obiter dicta — persuasive but non-binding observations)
+- cases_cited: list of strings (each case properly cited)
+- significance: string (why this case matters for Kenyan law — what principle did it establish or confirm?)
 
 Case text:
 {full_text[:6000]}
@@ -114,27 +117,29 @@ JSON:"""
     raw = await _call_model(prompt, temperature=0.5)
     parsed = _parse_json(raw, {})
     if isinstance(parsed, dict):
-        for key in ["facts", "issues", "holdings", "ratio", "obiter", "cases_cited"]:
-            parsed.setdefault(key, "" if key in ["facts", "ratio", "obiter"] else [])
+        for key in ["facts", "issues", "rule", "application", "conclusion", "ratio", "obiter", "cases_cited", "significance"]:
+            parsed.setdefault(key, "" if key in ["facts", "rule", "application", "conclusion", "ratio", "obiter", "significance"] else [])
         return parsed
     return {
         "facts": "Summary generation is temporarily unavailable. Please try again.",
-        "issues": [], "holdings": [], "ratio": "", "obiter": "", "cases_cited": []
+        "issues": [], "rule": "", "application": "", "conclusion": "", "ratio": "", "obiter": "", "cases_cited": [], "significance": ""
     }
 
 
 # ---------- Study Notes ----------
 
 async def generate_study_notes(full_text: str) -> Dict[str, Any]:
-    prompt = f"""Create study notes for this case — the kind a top student would make before an exam.
+    prompt = f"""Create exam-ready study notes for this case using the IRAC method. Write like a top student's personal case brief — the kind you'd share before an exam.
 
 Return ONLY valid JSON with:
-- facts: string (concise factual background)
+- facts: string (concise factual background — who, what, when, where)
 - issues: list (legal issues framed as exam questions)
-- holdings: list (court's answers, with authority)
-- ratio: string (the rule you'd write on an exam answer)
+- rule: string (the applicable legal rules — statutes, constitutional provisions, precedent)
+- application: string (how the court applied the rules to the facts)
+- conclusion: string (the court's final decision)
+- ratio: string (the ratio decidendi — the rule you'd write in an exam answer)
 - key_quotes: list of exact quotes from the judgment (max 5, max 40 words each)
-- annotations: list of short study annotations
+- significance: string (why this case matters for Kenyan law)
 
 Case text:
 {full_text[:6000]}
@@ -143,10 +148,10 @@ JSON:"""
     raw = await _call_model(prompt, temperature=0.5)
     parsed = _parse_json(raw, {})
     if isinstance(parsed, dict):
-        for key in ["facts", "issues", "holdings", "ratio", "key_quotes", "annotations"]:
-            parsed.setdefault(key, "" if key in ["facts", "ratio"] else [])
+        for key in ["facts", "issues", "rule", "application", "conclusion", "ratio", "key_quotes", "significance"]:
+            parsed.setdefault(key, "" if key in ["facts", "rule", "application", "conclusion", "ratio", "significance"] else [])
         return parsed
-    return {"facts": "", "issues": [], "holdings": [], "ratio": "", "key_quotes": [], "annotations": []}
+    return {"facts": "", "issues": [], "rule": "", "application": "", "conclusion": "", "ratio": "", "key_quotes": [], "significance": ""}
 
 
 # ---------- Citation ----------
@@ -217,9 +222,13 @@ JSON:"""
 
 async def generate_summary_from_metadata(title: str, citation: str, court: str, date: str, doc_type: str, excerpt: str = "") -> str:
     """Generate a natural-language summary from search result metadata."""
-    prompt = f"""Write a clear, useful summary of this Kenyan legal document for a law student.
+    prompt = f"""Analyse this Kenyan legal document using the IRAC method. Write like a law tutor who has read hundreds of these — authoritative, specific, no fluff.
 
-Write like a knowledgeable peer explaining this — not like a database entry. Be specific about what this document is, why it matters, and what a student should know about it.
+Structure your analysis as:
+1. ISSUE: What legal question does this document address?
+2. RULE: What are the applicable legal principles, constitutional provisions, or statutory provisions?
+3. APPLICATION: How does this document apply or relate to those principles?
+4. CONCLUSION: What is the significance? What should a law student remember about this?
 
 CRITICAL FORMATTING RULES:
 - Do NOT use markdown. No **bold**, no *italic*, no bullet points with dashes or asterisks.
@@ -234,7 +243,7 @@ Document details:
 - Type: {doc_type}
 - Excerpt: {excerpt}
 
-Write 2-3 paragraphs. Be direct. Name specific legal principles. If it's a case, state the ratio. If it's legislation, state what it regulates. Don't use AI words like "delve", "comprehensive", or "in conclusion"."""
+Write 3-4 paragraphs. Be specific — name cases, cite sections, reference articles. Don't use AI words like "delve", "comprehensive", or "in conclusion"."""""
 
     result = await _call_model(prompt, max_tokens=800, temperature=0.6)
     return result if result else f"Summary unavailable for: {title}"

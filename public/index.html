@@ -1220,12 +1220,15 @@
       (metaHtml ? '<div class="card-meta">' + metaHtml + '</div>' : '') +
       (excerpt ? '<div class="card-excerpt">' + esc(excerpt) + '</div>' : '') +
       '<div class="card-actions">' +
-        '<div class="flex gap-2">' +
+        '<div class="flex gap-2 flex-wrap">' +
           '<button onclick="event.stopPropagation();window.open(\'' + safeLinkUrl + '\',\'_blank\')" class="btn-primary-sm">' +
             '<span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> Visit' +
           '</button>' +
           '<button onclick="event.stopPropagation();summarizeCard(\'' + cardData + '\')" class="btn-outline-sm">' +
             '<span class="material-symbols-outlined" style="font-size:14px;">description</span> Summarize' +
+          '</button>' +
+          '<button onclick="event.stopPropagation();downloadResult(\'' + cardData + '\')" class="btn-outline-sm">' +
+            '<span class="material-symbols-outlined" style="font-size:14px;">download</span> Download' +
           '</button>' +
         '</div>' +
         '<span class="text-[11px] text-secondary">' + esc(c.registry || '') + '</span>' +
@@ -1353,6 +1356,50 @@
     }); // end guard
   };
 
+  // ---- Download result as text ----
+  window.downloadResult = function(encodedData) {
+    var data = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
+    var lines = [];
+    lines.push(data.title || 'Untitled');
+    lines.push('');
+    if (data.citation) lines.push('Citation: ' + data.citation);
+    if (data.court) lines.push('Court: ' + data.court);
+    if (data.date) lines.push('Date: ' + data.date);
+    if (data.doc_type) lines.push('Type: ' + data.doc_type);
+    if (data.excerpt) { lines.push(''); lines.push('Excerpt:'); lines.push(data.excerpt); }
+    if (data.url && data.url !== '#') { lines.push(''); lines.push('Source: ' + data.url); }
+    lines.push('');
+    lines.push('Downloaded from Juriscore');
+    var blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (data.title || 'result').replace(/[^a-zA-Z0-9]/g, '_').substring(0, 60) + '.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Downloaded');
+  };
+
+  // ---- Download summary as text ----
+  window.downloadSummary = function(title, summaryText) {
+    var lines = [];
+    lines.push('CASE SUMMARY');
+    lines.push('='.repeat(40));
+    lines.push('');
+    lines.push(title || '');
+    lines.push('');
+    lines.push(stripMd(summaryText));
+    lines.push('');
+    lines.push('-'.repeat(40));
+    lines.push('Prepared by Juriscore');
+    var blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (title || 'summary').replace(/[^a-zA-Z0-9]/g, '_').substring(0, 60) + '_summary.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Summary downloaded');
+  };
+
   // ---- Summarize ----
   window.summarizeCard = function(encodedData) {
     var data = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
@@ -1375,7 +1422,17 @@
       body: JSON.stringify({ title:data.title, citation:data.citation, court:data.court, date:data.date, doc_type:data.doc_type, excerpt:data.excerpt, url:data.url }),
     }).then(function(resp) {
       var body = document.querySelector('.modal-body');
-      if (body) body.innerHTML = stripMd(resp.summary).split('\n').filter(function(p) { return p.trim(); }).map(function(p) { return '<p>' + esc(p) + '</p>'; }).join('');
+      if (body) {
+        var summaryClean = stripMd(resp.summary);
+        var summaryHtml = summaryClean.split('\n').filter(function(p) { return p.trim(); }).map(function(p) { return '<p>' + esc(p) + '</p>'; }).join('');
+        summaryHtml += '<div class="flex gap-2 mt-5 pt-4 border-t border-outline-variant">' +
+          '<button onclick="downloadSummary(\'' + esc(data.title).replace(/'/g, "\\'") + '\',\'' + esc(resp.summary).replace(/'/g, "\\'").replace(/\n/g, '\\n') + '\')" class="btn-outline-sm">' +
+            '<span class="material-symbols-outlined" style="font-size:14px;">download</span> Download Summary' +
+          '</button>' +
+          (data.url && data.url !== '#' ? '<button onclick="window.open(\'' + esc(data.url).replace(/'/g, "&#39;") + '\',\'_blank\')" class="btn-outline-sm"><span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> Visit Source</button>' : '') +
+        '</div>';
+        body.innerHTML = summaryHtml;
+      }
     }).catch(function() {
       var body = document.querySelector('.modal-body');
       if (body) body.innerHTML = '<div class="text-center py-6"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Could not load summary</p><p class="text-secondary text-sm font-500 mb-3">Something went wrong. Please try again.</p><button onclick="summarizeCard(\'' + encodedData + '\')" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Retry</button></div>';
@@ -1445,10 +1502,14 @@
         var html = '';
         if (summary.facts) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Facts</h3><p class="text-sm text-on-surface-variant leading-relaxed">' + esc(summary.facts) + '</p></div>';
         if (summary.issues && summary.issues.length) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Issues</h3><ul class="list-disc pl-5 space-y-1.5 text-sm text-on-surface-variant leading-relaxed">' + summary.issues.map(function(i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul></div>';
+        if (summary.rule) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Rule</h3><p class="text-sm text-on-surface-variant leading-relaxed">' + esc(summary.rule) + '</p></div>';
+        if (summary.application) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Application</h3><p class="text-sm text-on-surface-variant leading-relaxed">' + esc(summary.application) + '</p></div>';
+        if (summary.conclusion) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Conclusion</h3><p class="text-sm text-on-surface-variant leading-relaxed">' + esc(summary.conclusion) + '</p></div>';
         if (summary.ratio) html += '<div class="mb-5 bg-primary/5 border border-primary/15 rounded-xl p-4 relative overflow-hidden"><div class="absolute top-0 left-0 w-1 h-full bg-primary rounded-r"></div><div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-primary" style="font-size:18px;">lightbulb</span><h3 class="text-sm font-700 text-primary">Ratio Decidendi</h3></div><p class="text-sm text-on-surface-variant leading-relaxed italic">' + esc(summary.ratio) + '</p></div>';
         if (summary.holdings && summary.holdings.length) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Holdings</h3><ul class="list-disc pl-5 space-y-1.5 text-sm text-on-surface-variant leading-relaxed">' + summary.holdings.map(function(h) { return '<li>' + esc(h) + '</li>'; }).join('') + '</ul></div>';
         if (summary.obiter) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Obiter Dicta</h3><p class="text-sm text-on-surface-variant leading-relaxed">' + esc(summary.obiter) + '</p></div>';
         if (summary.cases_cited && summary.cases_cited.length) html += '<div class="mb-5"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Cases Cited</h3><ul class="list-disc pl-5 space-y-1.5 text-sm text-on-surface-variant leading-relaxed">' + summary.cases_cited.map(function(c) { return '<li>' + esc(c) + '</li>'; }).join('') + '</ul></div>';
+        if (summary.significance) html += '<div class="mb-5 bg-surface-container-low rounded-xl p-4"><h3 class="text-sm font-700 text-on-surface mb-2 uppercase tracking-wider">Significance</h3><p class="text-sm text-on-surface-variant leading-relaxed">' + esc(summary.significance) + '</p></div>';
         summaryTab.innerHTML = html || '<p class="text-secondary text-sm">No summary available for this case.</p>';
       }).catch(function() {
         summaryTab.innerHTML = '<div class="text-center py-8"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Could not load summary</p><p class="text-secondary text-sm font-500 mb-3">Something went wrong.</p><button onclick="viewCase(\'' + caseId + '\')" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Retry</button></div>';
