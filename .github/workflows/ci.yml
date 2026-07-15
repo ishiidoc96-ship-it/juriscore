@@ -1,0 +1,168 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.11"
+  POETRY_VERSION: "1.8.3"
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      checks: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+          cache-dependency-path: |
+            **/requirements.txt
+            **/requirements-*.txt
+            **/pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt 2>/dev/null || true
+          pip install pytest pytest-asyncio pytest-cov httpx ruff mypy bandit safety
+
+      - name: Lint with Ruff
+        run: |
+          ruff check . --output-format=github
+          ruff format . --check --diff
+
+      - name: Type check with mypy
+        run: |
+          mypy --install-types --non-interactive --strict backend/ api/backend/ || true
+
+      - name: Security scan with Bandit
+        run: |
+          bandit -r backend/ api/backend/ -f json -o bandit-report.json || true
+          bandit -r backend/ api/backend/ -f txt
+
+      - name: Dependency vulnerability scan with Safety
+        run: |
+          safety check --json --output safety-report.json || true
+          safety check --output screen || true
+
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=backend --cov=api/backend --cov-report=xml --cov-report=term-missing -v
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
+
+      - name: Build Docker image (test build)
+        run: |
+          docker build -t juriscore-test -f Dockerfile .
+
+  deploy:
+    name: Deploy to Vercel
+    needs: ci
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: "--prod"
+          working-directory: ./
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  integration-tests:
+    name: Integration Tests (Docker Compose)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: juriscore
+          POSTGRES_PASSWORD: juriscore
+          POSTGRES_DB: juriscore
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U juriscore"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio httpx
+
+      - name: Set environment variables
+        run: |
+          echo "DATABASE_URL=postgresql+asyncpg://juriscore:juriscore@localhost:5432/juriscore" >> $GITHUB_ENV
+          echo "REDIS_URL=redis://localhost:6379" >> $GITHUB_ENV
+          echo "JWT_SECRET=test-secret-key-for-testing-only" >> $GITHUB_ENV
+          echo "NVIDIA_API_KEY=${{ secrets.NVIDIA_API_KEY }}" >> $GITHUB_ENV
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+
+      - name: Run database migrations
+        run: |
+          alembic upgrade head
+        env:
+          DATABASE_URL: postgresql+asyncpg://juriscore:juriscore@localhost:5432/juriscore
+
+      - name: Run integration tests
+        run: |
+          pytest tests/integration -v -k "not slow" --tb=short
