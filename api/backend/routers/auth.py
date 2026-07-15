@@ -26,7 +26,7 @@ from models.schemas import (
 logger = logging.getLogger("juriscore")
 router = APIRouter()
 
-SECRET_KEY = os.getenv("JWT_SECRET", secrets.token_hex(32))
+SECRET_KEY = os.getenv("JWT_SECRET", "juriscore-jwt-secret-key-2024-kenya-legal-research-platform")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS = 72
 

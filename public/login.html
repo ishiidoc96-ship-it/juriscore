@@ -170,12 +170,12 @@
         </div>
 
         <!-- Heading -->
-        <h1 class="font-display text-on-surface mb-2" style="font-size: 48px; line-height: 56px; font-weight: 600; letter-spacing: -0.02em;">
+        <h1 id="auth-heading" class="font-display text-on-surface mb-2" style="font-size: 48px; line-height: 56px; font-weight: 600; letter-spacing: -0.02em;">
           Welcome back, Counsel.
         </h1>
 
         <!-- Subtitle -->
-        <p class="text-on-surface-variant text-sm mb-8">
+        <p id="auth-subtitle" class="text-on-surface-variant text-sm mb-8">
           Sign in to Juriscore to access your workspace.
         </p>
 
@@ -241,6 +241,47 @@
           </div>
         </form>
 
+        <!-- Signup Form (hidden by default) -->
+        <form id="signup-form" class="hidden" novalidate>
+          <div class="space-y-4">
+            <div>
+              <label for="signup-name" class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase" style="letter-spacing: 0.05em;">Full Name</label>
+              <div class="login-input-wrapper">
+                <input id="signup-name" type="text" class="login-input" placeholder="Jane Mwangi" autocomplete="name" required>
+                <span class="material-symbols-outlined input-icon" style="font-size: 20px;">person</span>
+              </div>
+            </div>
+            <div>
+              <label for="signup-email" class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase" style="letter-spacing: 0.05em;">Email</label>
+              <div class="login-input-wrapper">
+                <input id="signup-email" type="email" class="login-input" placeholder="you@lawfirm.co.ke" autocomplete="email" required>
+                <span class="material-symbols-outlined input-icon" style="font-size: 20px;">mail</span>
+              </div>
+            </div>
+            <div>
+              <label for="signup-password" class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase" style="letter-spacing: 0.05em;">Password</label>
+              <div class="login-input-wrapper">
+                <input id="signup-password" type="password" class="login-input" placeholder="Min 6 characters" autocomplete="new-password" required style="padding-right: 44px;">
+                <span class="material-symbols-outlined input-icon" style="font-size: 20px;">lock</span>
+                <button type="button" class="toggle-pw" onclick="toggleSignupPassword()" aria-label="Toggle password visibility" tabindex="-1">
+                  <span id="pw-toggle-icon-2" class="material-symbols-outlined" style="font-size: 20px;">visibility_off</span>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label for="signup-university" class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase" style="letter-spacing: 0.05em;">University <span class="text-outline">(optional)</span></label>
+              <div class="login-input-wrapper">
+                <input id="signup-university" type="text" class="login-input" placeholder="e.g. University of Nairobi" autocomplete="organization">
+                <span class="material-symbols-outlined input-icon" style="font-size: 20px;">school</span>
+              </div>
+            </div>
+            <button id="signup-btn" type="submit" class="btn-login btn-login-primary mt-2">
+              Create Account
+              <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+            </button>
+          </div>
+        </form>
+
         <!-- Divider -->
         <div class="divider">
           <span>or continue with</span>
@@ -263,10 +304,16 @@
         </button>
 
         <!-- Footer Link -->
-        <p class="text-center text-sm text-on-surface-variant mt-8">
+        <p id="auth-toggle-text" class="text-center text-sm text-on-surface-variant mt-8">
           Don't have an account?
-          <button type="button" onclick="openRequestAccess()" class="font-semibold text-primary hover:underline transition-colors" style="text-decoration-style: dotted;">
-            Request Access
+          <button type="button" onclick="showSignupForm()" class="font-semibold text-primary hover:underline transition-colors" style="text-decoration-style: dotted;">
+            Create Account
+          </button>
+        </p>
+        <p id="auth-toggle-text-signup" class="text-center text-sm text-on-surface-variant mt-8 hidden">
+          Already have an account?
+          <button type="button" onclick="showLoginForm()" class="font-semibold text-primary hover:underline transition-colors" style="text-decoration-style: dotted;">
+            Sign In
           </button>
         </p>
 
@@ -513,6 +560,84 @@
     // ==========================================
     function googleOAuthPlaceholder() {
       showToast('Google OAuth coming soon', 'info');
+    }
+
+    // ==========================================
+    // Toggle between Login and Signup forms
+    // ==========================================
+    function showSignupForm() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('signup-form').classList.remove('hidden');
+      document.getElementById('auth-heading').textContent = 'Create your account.';
+      document.getElementById('auth-subtitle').textContent = 'Join Juriscore to start your legal research.';
+      document.getElementById('auth-toggle-text').classList.add('hidden');
+      document.getElementById('auth-toggle-text-signup').classList.remove('hidden');
+      document.querySelector('.divider').classList.add('hidden');
+      document.querySelector('.btn-login-google').classList.add('hidden');
+    }
+
+    function showLoginForm() {
+      document.getElementById('signup-form').classList.add('hidden');
+      document.getElementById('login-form').classList.remove('hidden');
+      document.getElementById('auth-heading').textContent = 'Welcome back, Counsel.';
+      document.getElementById('auth-subtitle').textContent = 'Sign in to Juriscore to access your workspace.';
+      document.getElementById('auth-toggle-text').classList.remove('hidden');
+      document.getElementById('auth-toggle-text-signup').classList.add('hidden');
+      document.querySelector('.divider').classList.remove('hidden');
+      document.querySelector('.btn-login-google').classList.remove('hidden');
+    }
+
+    function toggleSignupPassword() {
+      var pw = document.getElementById('signup-password');
+      var icon = document.getElementById('pw-toggle-icon-2');
+      if (pw.type === 'password') {
+        pw.type = 'text';
+        icon.textContent = 'visibility';
+      } else {
+        pw.type = 'password';
+        icon.textContent = 'visibility_off';
+      }
+    }
+
+    // Signup form submission
+    var signupForm = document.getElementById('signup-form');
+    signupForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      doSignup();
+    });
+
+    function doSignup() {
+      var name = document.getElementById('signup-name').value.trim();
+      var email = document.getElementById('signup-email').value.trim();
+      var password = document.getElementById('signup-password').value;
+      var university = document.getElementById('signup-university').value.trim();
+
+      if (!name) { showToast('Please enter your full name.', 'error'); document.getElementById('signup-name').focus(); return; }
+      if (!email) { showToast('Please enter your email address.', 'error'); document.getElementById('signup-email').focus(); return; }
+      if (!password || password.length < 6) { showToast('Password must be at least 6 characters.', 'error'); document.getElementById('signup-password').focus(); return; }
+
+      var btn = document.getElementById('signup-btn');
+      btn.disabled = true;
+      btn.innerHTML = 'Creating account...<span class="material-symbols-outlined" style="font-size:18px;">hourglass_empty</span>';
+
+      signup(name, email, password, university || undefined)
+        .then(function () {
+          showToast('Account created! Welcome to Juriscore.', 'success');
+          setTimeout(function () { window.location.href = '/app.html'; }, 600);
+        })
+        .catch(function (err) {
+          var msg = 'Signup failed. Please try again.';
+          if (err && err.message) {
+            if (err.message.includes('already exists') || err.message.includes('409')) {
+              msg = 'An account with this email already exists. Try signing in instead.';
+            } else {
+              msg = err.message;
+            }
+          }
+          showToast(msg, 'error');
+          btn.disabled = false;
+          btn.innerHTML = 'Create Account<span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>';
+        });
     }
 
     // ==========================================
