@@ -5,6 +5,7 @@ from services.scraper import search_all, search_kenyalaw
 from services.brain import brain_search, brain_get_case, brain_get_related_cases, brain_get_statutes, brain_stats, load_brain
 from services.africa_law_scraper import search_africanlii, search_african_court, get_african_jurisdictions, get_african_courts
 from services.world_law_scraper import search_worldlii, search_global_case_law, get_world_jurisdictions, get_world_sources, get_legal_systems
+from services.local_db import search_local_db, get_db_stats
 from services.ai_service import (
     generate_summary_from_metadata, legal_research_assistant,
     format_citation, explain_legal_concept, compare_jurisdictions,
@@ -53,16 +54,27 @@ async def universal_search(
 
     jurisdiction = jurisdiction.lower().strip()
 
-    # Kenya Law search — brain first, then KB fallback (skip slow live scraper)
+    # Kenya Law search — FTS5 instant search, then brain fallback
     if jurisdiction == "kenya" or jurisdiction == "ke":
-        # Try brain (instant local search)
+        # Try FTS5 local database (instant, 12,000+ real cases)
+        local_results = search_local_db(q, doc_type=doc_type, court=court, limit=limit)
+        if local_results:
+            logger.info(f"Local DB returned {len(local_results)} results for '{q}'")
+            return {
+                "count": len(local_results),
+                "results": local_results,
+                "jurisdiction": "kenya",
+                "source": "local_db",
+            }
+
+        # Fall back to brain search
         brain_result = brain_search(q, doc_type=doc_type, court=court, limit=limit)
         if brain_result.get("count", 0) > 0 and brain_result.get("source") == "brain":
             brain_result["jurisdiction"] = "kenya"
             logger.info(f"Brain returned {brain_result['count']} results for '{q}'")
             return brain_result
 
-        # Fall back to KB directly (skip slow live scraper on Vercel)
+        # Final fallback to KB
         from services.scraper import _search_kenyan_kb
         kb_results = _search_kenyan_kb(q, limit=limit)
         logger.info(f"KB returned {len(kb_results)} results for '{q}'")
@@ -514,4 +526,15 @@ async def get_daily_updates(
 @router.get("/brain/stats")
 async def get_brain_stats():
     """Get brain data statistics."""
-    return brain_stats()
+    brain = brain_stats()
+    local_db = get_db_stats()
+    return {
+        "brain": brain,
+        "local_db": local_db,
+    }
+
+
+@router.get("/local-db/stats")
+async def get_local_db_stats_endpoint():
+    """Get local database statistics."""
+    return get_db_stats()
