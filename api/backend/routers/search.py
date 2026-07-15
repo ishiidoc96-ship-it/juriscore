@@ -53,7 +53,7 @@ async def universal_search(
 
     jurisdiction = jurisdiction.lower().strip()
 
-    # Kenya Law search — brain first, then live fallback, then demo
+    # Kenya Law search — brain first, then KB fallback (skip slow live scraper)
     if jurisdiction == "kenya" or jurisdiction == "ke":
         # Try brain (instant local search)
         brain_result = brain_search(q, doc_type=doc_type, court=court, limit=limit)
@@ -62,26 +62,10 @@ async def universal_search(
             logger.info(f"Brain returned {brain_result['count']} results for '{q}'")
             return brain_result
 
-        # Fall back to live search if brain has no results
-        logger.info(f"Brain empty for '{q}', falling back to live search")
-        filters = {
-            "doc_type": doc_type,
-            "court": court,
-            "page": page,
-            "ordering": ordering,
-            "limit": limit,
-        }
-        try:
-            result = await search_all(q, filters)
-            result["jurisdiction"] = "kenya"
-            if result.get("count", 0) > 0:
-                return result
-        except Exception as e:
-            logger.warning(f"Live search failed: {e}")
-
-        # Final fallback: return KB results from scraper directly
+        # Fall back to KB directly (skip slow live scraper on Vercel)
         from services.scraper import _search_kenyan_kb
         kb_results = _search_kenyan_kb(q, limit=limit)
+        logger.info(f"KB returned {len(kb_results)} results for '{q}'")
         return {
             "count": len(kb_results),
             "results": kb_results,
