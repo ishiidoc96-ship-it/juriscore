@@ -10,6 +10,7 @@ logger = logging.getLogger("juriscore")
 _api_key = ""
 _base_url = "https://integrate.api.nvidia.com/v1"
 _model = "stepfun-ai/step-3.7-flash"
+_fallback_model = "nvidia/llama-3.3-nemotron-super-49b-v1"  # Reliable text fallback
 
 HUMANIZE_SYSTEM = """You are a senior Kenyan legal scholar who writes with genuine authority and a distinct voice. You write like a real person who has spent years in courtrooms and libraries — not like a language model.
 
@@ -43,43 +44,46 @@ async def _call_model(prompt: str, max_tokens: int = 1024, system: str = None, t
     if not _api_key:
         logger.warning("_call_model called but no API key set")
         return ""
-    try:
-        messages = [
-            {"role": "system", "content": system or HUMANIZE_SYSTEM},
-            {"role": "user", "content": prompt}
-        ]
-        payload = {
-            "model": _model,
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-            "top_p": 0.9,
-        }
-        headers = {
-            "Authorization": f"Bearer {_api_key}",
-            "Content-Type": "application/json",
-        }
-        async with httpx.AsyncClient(timeout=90) as client:
-            resp = await client.post(
-                f"{_base_url}/chat/completions",
-                json=payload,
-                headers=headers,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            content = data["choices"][0]["message"]["content"].strip()
-            # Strip thinking tags if present (step-3.7-flash may include reasoning)
-            content = re.sub(r"<thinking>.*?</thinking>", "", content, flags=re.DOTALL).strip()
-            if content.startswith("```"):
-                content = re.sub(r"^```(?:json)?\s*", "", content)
-                content = re.sub(r"\s*```$", "", content)
-            return content
-    except httpx.HTTPStatusError as e:
-        logger.error(f"NVIDIA API HTTP error {e.response.status_code}: {e.response.text[:500]}")
-        return ""
-    except Exception as e:
-        logger.error(f"_call_model failed: {type(e).__name__}: {e}")
-        return ""
+    models_to_try = [_model, _fallback_model]
+    for model in models_to_try:
+        try:
+            messages = [
+                {"role": "system", "content": system or HUMANIZE_SYSTEM},
+                {"role": "user", "content": prompt}
+            ]
+            payload = {
+                "model": model,
+                "messages": messages,
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "top_p": 0.9,
+            }
+            headers = {
+                "Authorization": f"Bearer {_api_key}",
+                "Content-Type": "application/json",
+            }
+            async with httpx.AsyncClient(timeout=90) as client:
+                resp = await client.post(
+                    f"{_base_url}/chat/completions",
+                    json=payload,
+                    headers=headers,
+                )
+                resp.raise_for_status()
+                data = resp.json()
+                content = data["choices"][0]["message"]["content"].strip()
+                # Strip thinking tags if present (step-3.7-flash may include reasoning)
+                content = re.sub(r"<thinking>.*?</thinking>", "", content, flags=re.DOTALL).strip()
+                if content.startswith("```"):
+                    content = re.sub(r"^```(?:json)?\s*", "", content)
+                    content = re.sub(r"\s*```$", "", content)
+                if content and len(content) > 5:
+                    return content
+                logger.warning(f"Model {model} returned empty/short response, trying next")
+        except httpx.HTTPStatusError as e:
+            logger.error(f"Model {model} HTTP error {e.response.status_code}: {e.response.text[:500]}")
+        except Exception as e:
+            logger.error(f"Model {model} failed: {type(e).__name__}: {e}")
+    return ""
 
 
 def _parse_json(text: str, fallback: Any = None) -> Any:

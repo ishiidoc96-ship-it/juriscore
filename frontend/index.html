@@ -235,6 +235,45 @@
       .toast-wrap { bottom:24px; }
     }
 
+    /* ---- Mobile-first responsive ---- */
+    @media (max-width:639px) {
+      .search-hero input { padding:14px 16px 14px 44px; font-size:15px; border-radius:14px; }
+      .search-hero .search-icon { left:14px; }
+      .jurisdiction-tab { padding:8px 14px; font-size:12px; }
+      .filter-chip { padding:6px 12px; font-size:11px; }
+      .result-card { padding:16px; }
+      .card-title { font-size:14px; }
+      .modal-box { max-width:100%; border-radius:16px; margin:8px; max-height:90vh; }
+      .modal-body { padding:14px 18px 20px; }
+      .toast { font-size:12px; padding:10px 16px; }
+      .stat-val { font-size:18px; }
+      .qa-card { padding:12px 6px; }
+      .qa-icon { width:38px; height:38px; }
+      .study-card-inner { min-height:200px; padding:24px 18px; }
+      .study-card-front { font-size:16px; }
+      .study-card-back { font-size:14px; }
+      .nb-drawer-panel { width:85vw; max-width:300px; }
+      .ch-header { padding:12px; }
+      .ch-body { font-size:13px; }
+      .case-hero { padding:16px !important; }
+      #case-detail-title { font-size:18px !important; }
+      .settings-row { padding:12px 14px; }
+    }
+
+    @media (min-width:640px) and (max-width:767px) {
+      .search-hero input { padding:14px 18px 14px 48px; font-size:15px; }
+      .result-card { padding:18px; }
+      .modal-box { max-width:480px; }
+    }
+
+    @media (min-width:768px) {
+      .grid-2col { grid-template-columns:repeat(2,1fr); }
+    }
+
+    @media (min-width:1024px) {
+      .grid-3col { grid-template-columns:repeat(3,1fr); }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
     }
@@ -1026,6 +1065,9 @@
     if (jur === 'kenya') input.placeholder = 'Search KenyaLaw.org cases, legislation...';
     else if (jur === 'africa') input.placeholder = 'Search African legal databases...';
     else input.placeholder = 'Search global legal sources...';
+    // Auto-refresh if there's a search query
+    var q = input.value.trim();
+    if (q) doSearch();
   };
 
   window.setFilter = function(type, value) {
@@ -1035,6 +1077,9 @@
     container.querySelectorAll('.filter-chip').forEach(function(btn) {
       btn.classList.toggle('active', btn.dataset.value === value);
     });
+    // Auto-refresh if there's a search query
+    var q = document.getElementById('search-input').value.trim();
+    if (q) doSearch();
   };
 
   function renderCard(c) {
@@ -1153,7 +1198,8 @@
       var summaryHtml = '';
       var displayQuery = data.query_corrected ? data.corrected_query : q;
       if (displayQuery) summaryHtml += '<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-primary/8 text-primary text-xs font-700">"' + displayQuery + '"</span>';
-      summaryHtml += '<span class="text-secondary">' + total.toLocaleString() + ' result' + (total !== 1 ? 's' : '') + '</span>';
+      summaryHtml += '<span class="text-secondary">' + results.length + ' result' + (results.length !== 1 ? 's' : '') + ' shown</span>';
+      if (total > results.length) summaryHtml += '<span class="text-secondary text-xs">(of ' + total.toLocaleString() + ' total)</span>';
       if (searchFilters.doc_type) {
         var m = DOC_TYPE_META[searchFilters.doc_type];
         if (m) summaryHtml += '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-700" style="background:' + m.bg + ';color:' + m.color + ';">' + m.label + '</span>';

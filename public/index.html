@@ -130,6 +130,13 @@
     .filter-chip:active { transform:scale(0.96); }
     .filter-chip.active { border-color:#003ec7; background:#dde1ff; color:#003ec7; }
 
+    /* Jurisdiction tabs */
+    .jurisdiction-tab { display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border-radius:12px; font-size:13px; font-weight:700; white-space:nowrap; border:2px solid #ebedf5; background:#fff; color:#737688; cursor:pointer; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); flex-shrink:0; }
+    .jurisdiction-tab:hover { border-color:#c4c5cf; color:#1a1b20; background:#f9f9ff; }
+    .jurisdiction-tab:active { transform:scale(0.96); }
+    .jurisdiction-tab.active { border-color:#003ec7; background:#003ec7; color:#fff; box-shadow:0 2px 8px rgba(0,62,199,0.2); }
+    .jurisdiction-tab.active:hover { background:#001b91; }
+
     .tab-bar { display:flex; gap:0; border-bottom:2px solid #ebedf5; }
     .tab-item { padding:12px 20px; font-size:13px; font-weight:600; color:#737688; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.15s; white-space:nowrap; }
     .tab-item:hover { color:#1a1b20; }
@@ -226,6 +233,45 @@
 
     @media (min-width:768px) {
       .toast-wrap { bottom:24px; }
+    }
+
+    /* ---- Mobile-first responsive ---- */
+    @media (max-width:639px) {
+      .search-hero input { padding:14px 16px 14px 44px; font-size:15px; border-radius:14px; }
+      .search-hero .search-icon { left:14px; }
+      .jurisdiction-tab { padding:8px 14px; font-size:12px; }
+      .filter-chip { padding:6px 12px; font-size:11px; }
+      .result-card { padding:16px; }
+      .card-title { font-size:14px; }
+      .modal-box { max-width:100%; border-radius:16px; margin:8px; max-height:90vh; }
+      .modal-body { padding:14px 18px 20px; }
+      .toast { font-size:12px; padding:10px 16px; }
+      .stat-val { font-size:18px; }
+      .qa-card { padding:12px 6px; }
+      .qa-icon { width:38px; height:38px; }
+      .study-card-inner { min-height:200px; padding:24px 18px; }
+      .study-card-front { font-size:16px; }
+      .study-card-back { font-size:14px; }
+      .nb-drawer-panel { width:85vw; max-width:300px; }
+      .ch-header { padding:12px; }
+      .ch-body { font-size:13px; }
+      .case-hero { padding:16px !important; }
+      #case-detail-title { font-size:18px !important; }
+      .settings-row { padding:12px 14px; }
+    }
+
+    @media (min-width:640px) and (max-width:767px) {
+      .search-hero input { padding:14px 18px 14px 48px; font-size:15px; }
+      .result-card { padding:18px; }
+      .modal-box { max-width:480px; }
+    }
+
+    @media (min-width:768px) {
+      .grid-2col { grid-template-columns:repeat(2,1fr); }
+    }
+
+    @media (min-width:1024px) {
+      .grid-3col { grid-template-columns:repeat(3,1fr); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -364,6 +410,19 @@
       </div>
     </div>
 
+    <!-- Jurisdiction Tabs -->
+    <div id="jurisdiction-tabs" class="flex gap-2 mb-5 overflow-x-auto pb-2">
+      <button class="jurisdiction-tab active" data-jurisdiction="kenya" onclick="setJurisdiction('kenya')">
+        <span class="material-symbols-outlined" style="font-size:18px;">flag</span> Kenya Law
+      </button>
+      <button class="jurisdiction-tab" data-jurisdiction="africa" onclick="setJurisdiction('africa')">
+        <span class="material-symbols-outlined" style="font-size:18px;">public</span> Africa Law
+      </button>
+      <button class="jurisdiction-tab" data-jurisdiction="world" onclick="setJurisdiction('world')">
+        <span class="material-symbols-outlined" style="font-size:18px;">language</span> World Law
+      </button>
+    </div>
+
     <div id="filter-doc-types" class="filter-row mb-4">
       <button class="filter-chip active" data-value="" onclick="setFilter('doc_type','')"><span class="material-symbols-outlined" style="font-size:16px;">apps</span> All</button>
       <button class="filter-chip" data-value="judgment" onclick="setFilter('doc_type','judgment')"><span class="material-symbols-outlined" style="font-size:16px;">gavel</span> Cases</button>
@@ -408,7 +467,7 @@
             <div class="w-1/2 h-4 rounded-full skeleton" style="opacity:0.6"></div>
           </div>
         </div>
-        <p class="text-secondary text-xs font-500 text-center mt-2">Searching KenyaLaw.org...</p>
+        <p id="search-loading-text" class="text-secondary text-xs font-500 text-center mt-2">Searching KenyaLaw.org...</p>
       </div>
     </div>
 
@@ -993,7 +1052,23 @@
   };
 
   var searchFilters = { court:'', subject:'', doc_type:'' };
+  var currentJurisdiction = 'kenya';
   var lastSearchQuery = '';
+
+  window.setJurisdiction = function(jur) {
+    currentJurisdiction = jur;
+    document.querySelectorAll('.jurisdiction-tab').forEach(function(tab) {
+      tab.classList.toggle('active', tab.dataset.jurisdiction === jur);
+    });
+    // Update placeholder based on jurisdiction
+    var input = document.getElementById('search-input');
+    if (jur === 'kenya') input.placeholder = 'Search KenyaLaw.org cases, legislation...';
+    else if (jur === 'africa') input.placeholder = 'Search African legal databases...';
+    else input.placeholder = 'Search global legal sources...';
+    // Auto-refresh if there's a search query
+    var q = input.value.trim();
+    if (q) doSearch();
+  };
 
   window.setFilter = function(type, value) {
     searchFilters[type] = value;
@@ -1002,6 +1077,9 @@
     container.querySelectorAll('.filter-chip').forEach(function(btn) {
       btn.classList.toggle('active', btn.dataset.value === value);
     });
+    // Auto-refresh if there's a search query
+    var q = document.getElementById('search-input').value.trim();
+    if (q) doSearch();
   };
 
   function renderCard(c) {
@@ -1012,6 +1090,8 @@
     if (c.court) metaHtml += '<span class="meta-chip">' + c.court + '</span>';
     if (c.date) metaHtml += '<span class="meta-chip">' + c.date + '</span>';
     if (c.nature && c.nature !== c.doc_type_label) metaHtml += '<span class="meta-chip">' + c.nature + '</span>';
+    if (c.source && c.source !== 'KenyaLaw.org') metaHtml += '<span class="meta-chip" style="background:#f3e8ff;color:#6b21a8;">' + c.source + '</span>';
+    if (c.jurisdiction && c.jurisdiction !== 'kenya') metaHtml += '<span class="meta-chip" style="background:#ecfeff;color:#0e7490;">' + c.jurisdiction.toUpperCase() + '</span>';
 
     var cardData = btoa(unescape(encodeURIComponent(JSON.stringify({
       title:c.title, citation:c.citation, court:c.court, date:c.date, doc_type:c.doc_type_label || c.doc_type, excerpt:excerpt, url:linkUrl
@@ -1080,7 +1160,15 @@
     summaryEl.style.display = 'none';
     if (correctionEl) correctionEl.innerHTML = '';
 
-    var url = '/search?q=' + encodeURIComponent(q || '');
+    // Update loading text based on jurisdiction
+    var loadingText = document.getElementById('search-loading-text');
+    if (loadingText) {
+      if (currentJurisdiction === 'kenya') loadingText.textContent = 'Searching KenyaLaw.org...';
+      else if (currentJurisdiction === 'africa') loadingText.textContent = 'Searching African legal databases...';
+      else loadingText.textContent = 'Searching global legal sources...';
+    }
+
+    var url = '/search?q=' + encodeURIComponent(q || '') + '&jurisdiction=' + currentJurisdiction;
     if (searchFilters.doc_type) url += '&doc_type=' + encodeURIComponent(searchFilters.doc_type);
     if (searchFilters.court) url += '&court=' + encodeURIComponent(searchFilters.court);
 
@@ -1110,7 +1198,8 @@
       var summaryHtml = '';
       var displayQuery = data.query_corrected ? data.corrected_query : q;
       if (displayQuery) summaryHtml += '<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-primary/8 text-primary text-xs font-700">"' + displayQuery + '"</span>';
-      summaryHtml += '<span class="text-secondary">' + total.toLocaleString() + ' result' + (total !== 1 ? 's' : '') + '</span>';
+      summaryHtml += '<span class="text-secondary">' + results.length + ' result' + (results.length !== 1 ? 's' : '') + ' shown</span>';
+      if (total > results.length) summaryHtml += '<span class="text-secondary text-xs">(of ' + total.toLocaleString() + ' total)</span>';
       if (searchFilters.doc_type) {
         var m = DOC_TYPE_META[searchFilters.doc_type];
         if (m) summaryHtml += '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-700" style="background:' + m.bg + ';color:' + m.color + ';">' + m.label + '</span>';
