@@ -470,4 +470,29 @@ async def clear_search_history(user_id: str = Query(...)):
             return {"status": "cleared"}
     except Exception as e:
         logger.error(f"Failed to clear search history: {e}")
+
+
+@router.get("/daily-updates")
+async def get_daily_updates(
+    court: Optional[str] = Query(None),
+    limit: int = Query(30, le=50),
+):
+    """Get recently added/updated cases from KenyaLaw.org, organized by court."""
+    from services.scraper import scrape_daily_updates
+    results = await scrape_daily_updates(court=court, limit=limit)
+
+    # Group by court
+    by_court = {}
+    for r in results:
+        c = r.get("court") or "Other"
+        if c not in by_court:
+            by_court[c] = []
+        by_court[c].append(r)
+
+    return {
+        "count": len(results),
+        "results": results,
+        "courts": list(by_court.keys()),
+        "by_court": by_court,
+    }
         return {"status": "error"}

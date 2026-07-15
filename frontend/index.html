@@ -168,6 +168,15 @@
 
     #app-header { background:rgba(255,255,255,0.88); backdrop-filter:blur(24px) saturate(1.8); -webkit-backdrop-filter:blur(24px) saturate(1.8); border-bottom:1px solid rgba(228,229,235,0.6); }
 
+    #breadcrumb-bar { background:rgba(249,249,255,0.95); border-bottom:1px solid rgba(228,229,235,0.4); }
+    .breadcrumb-item { font-size:12px; font-weight:500; color:#737688; transition:color 0.15s; cursor:pointer; }
+    .breadcrumb-item:hover { color:#003ec7; }
+    .breadcrumb-item.current { color:#1a1b20; font-weight:600; cursor:default; }
+    .breadcrumb-sep { font-size:10px; color:#c4c5cf; margin:0 4px; }
+
+    .ripple { position:absolute; border-radius:50%; background:rgba(0,62,199,0.12); transform:scale(0); animation:ripple-effect 0.5s ease-out; pointer-events:none; }
+    @keyframes ripple-effect { to { transform:scale(3); opacity:0; } }
+
     .qa-card { display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px 8px; border-radius:14px; background:#fff; border:1px solid #ebedf5; cursor:pointer; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); text-align:center; }
     .qa-card:hover { border-color:#dde1ff; box-shadow:0 2px 12px rgba(0,62,199,0.06); transform:translateY(-1px); }
     .qa-card:active { transform:scale(0.96) translateY(0); }
@@ -307,6 +316,11 @@
   </div>
 </header>
 
+<!-- ======================== BREADCRUMBS ======================== -->
+<div id="breadcrumb-bar" class="hidden sticky top-14 z-30">
+  <div class="max-w-5xl mx-auto px-4 md:px-6 h-8 flex items-center gap-0 overflow-x-auto" id="breadcrumbs"></div>
+</div>
+
 <!-- ======================== HOME ======================== -->
 <section id="screen-home" class="screen active">
   <!-- Auth forms (shown when not logged in) -->
@@ -392,9 +406,15 @@
 
     <div class="animate-fade-in-up" style="animation-delay:0.15s">
       <div class="section-hdr">
-        <h2><span class="material-symbols-outlined text-primary" style="font-size:20px;">history</span> Recent Cases</h2>
+        <h2><span class="material-symbols-outlined text-primary" style="font-size:20px;">today</span> Daily Updates</h2>
+        <button onclick="loadDailyUpdates()" class="text-xs font-600 text-primary hover:text-primary-dark transition-colors flex items-center gap-1" aria-label="Refresh daily updates">
+          <span class="material-symbols-outlined" style="font-size:14px;">refresh</span> Refresh
+        </button>
       </div>
-      <div id="home-recent-cases" class="space-y-2.5">
+      <div id="daily-updates-courts" class="flex gap-2 mb-3 overflow-x-auto pb-1">
+        <button class="filter-chip active" data-court="all" onclick="filterDailyUpdates('all')">All</button>
+      </div>
+      <div id="home-daily-updates" class="space-y-2.5">
         <div class="skel-card skeleton"></div>
         <div class="skel-card skeleton" style="height:80px"></div>
         <div class="skel-card skeleton" style="height:80px"></div>
@@ -418,9 +438,15 @@
 <section id="screen-search" class="screen">
   <main class="flex-1 max-w-5xl mx-auto w-full px-4 md:px-6 py-6 pb-24 md:pb-10">
     <div class="mb-6">
-      <div class="search-hero">
-        <input id="search-input" type="text" placeholder="Search cases, legislation, gazettes..." onkeydown="if(event.key==='Enter')doSearch()" class="!text-base" aria-label="Search legal documents">
-        <span class="material-symbols-outlined search-icon" style="font-size:22px;">search</span>
+      <div class="search-hero" style="display:flex;gap:8px;align-items:center;">
+        <div style="flex:1;position:relative;">
+          <input id="search-input" type="text" placeholder="Search cases, legislation, gazettes..." onkeydown="if(event.key==='Enter')doSearch()" class="!text-base" style="width:100%;" aria-label="Search legal documents">
+          <span class="material-symbols-outlined search-icon" style="font-size:22px;">search</span>
+        </div>
+        <button onclick="doSearch()" class="btn-primary !px-5 !py-3 flex items-center gap-2 shrink-0" style="border-radius:var(--radius-btn);min-height:48px;" aria-label="Search">
+          <span class="material-symbols-outlined" style="font-size:20px;">search</span>
+          <span class="hidden sm:inline text-sm font-semibold">Search</span>
+        </button>
       </div>
     </div>
 
@@ -854,6 +880,7 @@
 
   // Delegated event listeners (XSS-safe)
   document.addEventListener('click', function(e) {
+    haptic('tap');
     var btn = e.target.closest('.suggestion-btn');
     if (btn) {
       var val = btn.dataset.suggestion || '';
@@ -871,12 +898,76 @@
       document.getElementById('search-input').value = q;
       doSearch();
     }
+    // Ripple on cards
+    var card = e.target.closest('.result-card, .qa-card, .nav-btn');
+    if (card) addRipple(e, card);
   });
 
   // ---- Auth ----
   function getUser() { try { return JSON.parse(localStorage.getItem('juriscore_user')); } catch(e) { return null; } }
   function setUser(u) { localStorage.setItem('juriscore_user', JSON.stringify(u)); }
   function clearUser() { localStorage.removeItem('juriscore_user'); }
+
+  // ---- Haptic feedback ----
+  function haptic(type) {
+    if (!navigator.vibrate) return;
+    switch(type) {
+      case 'tap': navigator.vibrate(10); break;
+      case 'tab': navigator.vibrate(5); break;
+      case 'card': navigator.vibrate(15); break;
+      case 'save': navigator.vibrate([10, 50, 10]); break;
+      case 'success': navigator.vibrate([10, 30, 10]); break;
+      case 'error': navigator.vibrate([50, 100, 50, 100, 50]); break;
+      default: navigator.vibrate(10);
+    }
+  }
+
+  // ---- Breadcrumb system ----
+  var routeLabels = {
+    'home': 'Home',
+    'search': 'Search',
+    'constitution': 'Constitution',
+    'flashcards': 'Flashcards',
+    'notebook': 'Notebook',
+    'case-detail': 'Case',
+    'profile': 'Profile'
+  };
+
+  function updateBreadcrumbs(route, extra) {
+    var bc = document.getElementById('breadcrumbs');
+    var bar = document.getElementById('breadcrumb-bar');
+    if (!bc || !bar) return;
+    if (route === 'home' || route === 'profile') { bar.classList.add('hidden'); return; }
+    bar.classList.remove('hidden');
+    var items = [{ label: 'Home', route: 'home' }];
+    if (route === 'case-detail') {
+      items.push({ label: 'Search', route: 'search' });
+      items.push({ label: extra || 'Case', route: null });
+    } else {
+      items.push({ label: routeLabels[route] || route, route: null });
+    }
+    bc.innerHTML = items.map(function(item, i) {
+      var isLast = i === items.length - 1;
+      var sep = i < items.length - 1 ? '<span class="material-symbols-outlined breadcrumb-sep" style="font-size:14px;">chevron_right</span>' : '';
+      if (isLast) return '<span class="breadcrumb-item current truncate max-w-[200px]">' + esc(item.label) + '</span>';
+      return '<span class="breadcrumb-item" onclick="navigate(\'' + item.route + '\')">' + esc(item.label) + '</span>' + sep;
+    }).join('');
+  }
+
+  // ---- Ripple effect ----
+  function addRipple(e, el) {
+    var rect = el.getBoundingClientRect();
+    var ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    var size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+    el.style.position = 'relative';
+    el.style.overflow = 'hidden';
+    el.appendChild(ripple);
+    setTimeout(function() { ripple.remove(); }, 500);
+  }
 
   // ---- Toast with icon ----
   window.toast = function(msg, type) {
@@ -946,6 +1037,8 @@
 
     window.location.hash = route;
     window.scrollTo(0, 0);
+    haptic('tab');
+    updateBreadcrumbs(route);
 
     if (route === 'home') loadHome();
     if (route === 'notebook') loadNotebook();
@@ -1048,29 +1141,80 @@
     var greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
     document.getElementById('home-greeting').textContent = greeting + ', ' + user.name.split(' ')[0];
 
-    var container = document.getElementById('home-recent-cases');
+    var container = document.getElementById('home-daily-updates');
     container.innerHTML = '<div class="skel-card skeleton"></div><div class="skel-card skeleton" style="height:80px"></div><div class="skel-card skeleton" style="height:80px"></div>';
 
-    api('/cases/recent?limit=5').then(function(cases) {
-      if (!cases.length) {
-        container.innerHTML = '<div class="text-center py-8 bg-white border border-outline-variant rounded-xl"><span class="material-symbols-outlined text-4xl text-outline-variant mb-2 block">gavel</span><p class="text-on-surface font-600 text-sm mb-1">No recent cases yet</p><p class="text-secondary text-sm font-500">Try searching for cases, legislation, or regulations.</p></div>';
-        return;
-      }
-      container.innerHTML = cases.map(function(c) {
-        return '<div onclick="viewCase(\'' + esc(c.id) + '\')" class="bg-white border border-outline-variant rounded-xl p-4 hover:border-outline hover:shadow-card-hover transition-all cursor-pointer flex items-center gap-4 group active:scale-[0.99]">' +
-          '<div class="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-primary" style="font-size:20px;">gavel</span></div>' +
-          '<div class="flex-1 min-w-0">' +
-            '<h3 class="text-sm font-600 text-on-surface truncate">' + esc(c.title) + '</h3>' +
-            '<p class="text-xs text-secondary font-500 font-display mt-0.5">' + esc(c.citation) + '</p>' +
-          '</div>' +
-          '<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" style="font-size:18px;">chevron_right</span>' +
-        '</div>';
-      }).join('');
-    }).catch(function() {
-      container.innerHTML = '<div class="text-center py-8 bg-white border border-outline-variant rounded-xl"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Could not load recent cases</p><button onclick="loadHome()" class="text-sm font-700 text-primary mt-2 hover:underline">Try again</button></div>';
-    });
+    loadDailyUpdates();
 
     loadRecentSearches();
+  }
+
+  // ---- Daily Updates ----
+  var _dailyUpdatesData = [];
+  var _dailyUpdatesCourt = 'all';
+
+  window.loadDailyUpdates = function(court) {
+    court = court || _dailyUpdatesCourt;
+    _dailyUpdatesCourt = court;
+    var container = document.getElementById('home-daily-updates');
+    if (!container) return;
+    container.innerHTML = '<div class="skel-card skeleton"></div><div class="skel-card skeleton" style="height:80px"></div>';
+
+    // Update court filter chips
+    document.querySelectorAll('#daily-updates-courts .filter-chip').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.court === court);
+    });
+
+    var url = '/search/daily-updates?limit=30';
+    if (court && court !== 'all') url += '&court=' + encodeURIComponent(court);
+
+    api(url).then(function(data) {
+      _dailyUpdatesData = data.results || [];
+      var courts = data.courts || [];
+      renderDailyUpdates(_dailyUpdatesData);
+      renderCourtTabs(courts);
+    }).catch(function() {
+      container.innerHTML = '<div class="text-center py-8 bg-white border border-outline-variant rounded-xl"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Could not load daily updates</p><button onclick="loadDailyUpdates()" class="text-sm font-700 text-primary mt-2 hover:underline">Try again</button></div>';
+    });
+  };
+
+  function renderCourtTabs(courts) {
+    var tabsContainer = document.getElementById('daily-updates-courts');
+    if (!tabsContainer || !courts.length) return;
+    var html = '<button class="filter-chip ' + (_dailyUpdatesCourt === 'all' ? 'active' : '') + '" data-court="all" onclick="filterDailyUpdates(\'all\')">All</button>';
+    courts.forEach(function(c) {
+      html += '<button class="filter-chip ' + (_dailyUpdatesCourt === c ? 'active' : '') + '" data-court="' + esc(c) + '" onclick="filterDailyUpdates(\'' + esc(c) + '\')">' + esc(c) + '</button>';
+    });
+    tabsContainer.innerHTML = html;
+  }
+
+  window.filterDailyUpdates = function(court) {
+    _dailyUpdatesCourt = court;
+    loadDailyUpdates(court);
+  };
+
+  function renderDailyUpdates(results) {
+    var container = document.getElementById('home-daily-updates');
+    if (!results.length) {
+      container.innerHTML = '<div class="text-center py-8 bg-white border border-outline-variant rounded-xl"><span class="material-symbols-outlined text-4xl text-outline-variant mb-2 block">today</span><p class="text-on-surface font-600 text-sm mb-1">No updates today</p><p class="text-secondary text-sm font-500">Check back later for new cases and legislation.</p></div>';
+      return;
+    }
+    container.innerHTML = results.slice(0, 15).map(function(r) {
+      var courtBadge = r.court ? '<span class="inline-block px-2 py-0.5 bg-primary/8 text-primary text-[10px] font-700 rounded-full">' + esc(r.court) + '</span>' : '';
+      var dateStr = r.date || (r.year ? String(r.year) : '');
+      return '<div onclick="viewCase(\'' + esc(r.id) + '\')" class="bg-white border border-outline-variant rounded-xl p-4 hover:border-outline hover:shadow-card-hover transition-all cursor-pointer flex items-center gap-4 group active:scale-[0.99]">' +
+        '<div class="w-10 h-10 rounded-xl bg-tertiary/8 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-tertiary" style="font-size:20px;">gavel</span></div>' +
+        '<div class="flex-1 min-w-0">' +
+          '<h3 class="text-sm font-600 text-on-surface truncate">' + esc(r.title) + '</h3>' +
+          '<div class="flex items-center gap-2 mt-1">' + courtBadge +
+            (dateStr ? '<span class="text-[10px] text-secondary font-500">' + esc(dateStr) + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="flex flex-col items-end gap-1">' +
+          '<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" style="font-size:18px;">chevron_right</span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
   }
 
   function loadRecentSearches() {
@@ -1123,7 +1267,7 @@
     var input = document.getElementById('search-input');
     input.value = '';
     input.focus();
-    // Show recent cases by loading from the API
+    // Show daily updates
     var resultsEl = document.getElementById('search-results');
     var loadingEl = document.getElementById('search-loading');
     var emptyEl = document.getElementById('search-empty');
@@ -1134,10 +1278,19 @@
     emptyEl.classList.add('hidden');
     summaryEl.style.display = 'none';
     if (correctionEl) correctionEl.innerHTML = '';
-    api('/cases/recent?limit=20').then(function(cases) {
+    summaryEl.innerHTML = '<div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary" style="font-size:18px;">today</span> <span class="font-700">Daily Updates — Latest from KenyaLaw.org</span></div>';
+    summaryEl.style.display = 'flex';
+    api('/search/daily-updates?limit=30').then(function(data) {
       loadingEl.classList.add('hidden');
+      var cases = data.results || [];
       if (!cases.length) { emptyEl.classList.remove('hidden'); return; }
       resultsEl.innerHTML = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">' + cases.map(function(c) {
+        return renderCard(c);
+      }).join('') + '</div>';
+    }).catch(function() {
+      loadingEl.classList.add('hidden');
+      emptyEl.classList.remove('hidden');
+    });
         var meta = DOC_TYPE_META['judgment'];
         var metaHtml = '<span class="meta-chip">' + esc(c.court) + '</span>';
         if (c.year) metaHtml += '<span class="meta-chip">' + esc(String(c.year)) + '</span>';
@@ -1472,6 +1625,7 @@
   // ---- Case Detail ----
   window.viewCase = function(caseId) {
     currentCaseId = caseId;
+    haptic('card');
     navigate('case-detail');
     document.getElementById('case-detail-loading').classList.remove('hidden');
     document.getElementById('case-detail-content').classList.add('hidden');
@@ -1480,6 +1634,7 @@
       document.getElementById('case-detail-loading').classList.add('hidden');
       document.getElementById('case-detail-content').classList.remove('hidden');
       document.getElementById('case-detail-title').textContent = c.title;
+      updateBreadcrumbs('case-detail', c.title);
       document.getElementById('case-detail-citation').textContent = c.citation;
       document.getElementById('case-detail-tags').innerHTML =
         (c.subject_tags || []).map(function(t) { return '<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-surface-container text-on-surface-variant text-xs font-600">' + esc(t) + '</span>'; }).join('') +
@@ -1567,6 +1722,7 @@
   };
 
   window.saveCase = function(caseId) {
+    haptic('save');
     var btn = document.getElementById('case-save-btn');
     btn.disabled = true;
     btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px;border-top-color:#fff;"></div>';
@@ -1736,6 +1892,7 @@
 
   window.flipCard = function() {
     if (studyState.flipped) return;
+    haptic('card');
     studyState.flipped = true;
     document.getElementById('study-card-back').classList.remove('hidden');
     document.getElementById('study-tap-hint').classList.add('hidden');
@@ -1743,6 +1900,7 @@
   };
 
   window.rateCard = function(rating) {
+    haptic(rating === 'easy' ? 'success' : 'tap');
     var card = studyState.cards[studyState.currentIndex];
     var intervals = { again:1, good:3, easy:7 };
     var easeFactors = { again:2.0, good:2.5, easy:3.0 };
