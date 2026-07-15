@@ -373,3 +373,101 @@ async def ai_translate_term(req: TranslationRequest):
     except Exception as e:
         logger.error(f"Translation failed: {e}")
         raise HTTPException(status_code=500, detail="Translation unavailable")
+
+
+# ---------- Search History ----------
+
+class SearchHistoryRequest(BaseModel):
+    user_id: str
+    query: str
+    jurisdiction: str = "kenya"
+    doc_type: str = ""
+    results_count: int = 0
+
+
+@router.post("/history")
+async def save_search_history(req: SearchHistoryRequest):
+    """Save a search query to the user's history."""
+    from models.database import async_session, SearchHistory
+    from sqlalchemy import select
+    try:
+        async with async_session() as session:
+            entry = SearchHistory(
+                user_id=req.user_id,
+                query=req.query,
+                jurisdiction=req.jurisdiction,
+                doc_type=req.doc_type or None,
+                results_count=req.results_count,
+            )
+            session.add(entry)
+            await session.commit()
+            return {"status": "saved"}
+    except Exception as e:
+        logger.error(f"Failed to save search history: {e}")
+        return {"status": "error"}
+
+
+@router.get("/history")
+async def get_search_history(user_id: str = Query(...), limit: int = Query(10)):
+    """Get the user's recent search history, deduplicated by query."""
+    from models.database import async_session, SearchHistory
+    from sqlalchemy import select, desc
+    try:
+        async with async_session() as session:
+            result = await session.execute(
+                select(SearchHistory)
+                .where(SearchHistory.user_id == user_id)
+                .order_by(desc(SearchHistory.created_at))
+                .limit(limit * 3)
+            )
+            rows = result.scalars().all()
+            seen = set()
+            history = []
+            for r in rows:
+                key = r.query.strip().lower()
+                if key not in seen:
+                    seen.add(key)
+                    history.append({
+                        "id": r.id,
+                        "query": r.query,
+                        "jurisdiction": r.jurisdiction,
+                        "doc_type": r.doc_type,
+                        "results_count": r.results_count,
+                        "created_at": r.created_at.isoformat() if r.created_at else None,
+                    })
+                if len(history) >= limit:
+                    break
+            return history
+    except Exception as e:
+        logger.error(f"Failed to get search history: {e}")
+        return []
+
+
+@router.delete("/history/{entry_id}")
+async def delete_search_history(entry_id: str):
+    """Delete a single search history entry."""
+    from models.database import async_session, SearchHistory
+    from sqlalchemy import delete
+    try:
+        async with async_session() as session:
+            await session.execute(delete(SearchHistory).where(SearchHistory.id == entry_id))
+            await session.commit()
+            return {"status": "deleted"}
+    except Exception as e:
+        logger.error(f"Failed to delete search history: {e}")
+        return {"status": "error"}
+
+
+@router.delete("/history")
+async def clear_search_history(user_id: str = Query(...)):
+    """Clear all search history for a user."""
+    from models.database import async_session, SearchHistory
+    from sqlalchemy import delete
+    try:
+        async with async_session() as session:
+            await session.execute(delete(SearchHistory).where(SearchHistory.user_id == user_id))
+            await session.commit()
+            return {"status": "cleared"}
+    except Exception as e:
+        logger.error(f"Failed to clear search history: {e}")
+        return {"status": "error"}

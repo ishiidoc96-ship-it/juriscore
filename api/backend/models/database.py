@@ -114,6 +114,17 @@ class StudyNote(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
+class SearchHistory(Base):
+    __tablename__ = "search_history"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
+    user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
+    query: Mapped[str]
+    jurisdiction: Mapped[str] = mapped_column(String, default="kenya")
+    doc_type: Mapped[str | None]
+    results_count: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
 from sqlalchemy import Index
 
 Index("ix_cases_title", Case.title)
@@ -126,3 +137,5 @@ Index("ix_flashcard_decks_user", FlashcardDeck.user_id)
 Index("ix_flashcards_deck", Flashcard.deck_id)
 Index("ix_study_notes_user", StudyNote.user_id)
 Index("ix_study_notes_case", StudyNote.case_id)
+Index("ix_search_history_user", SearchHistory.user_id)
+Index("ix_search_history_created", SearchHistory.created_at)

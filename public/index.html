@@ -400,6 +400,17 @@
         <div class="skel-card skeleton" style="height:80px"></div>
       </div>
     </div>
+
+    <div class="mt-8 animate-fade-in-up" style="animation-delay:0.2s">
+      <div class="section-hdr">
+        <h2><span class="material-symbols-outlined text-primary" style="font-size:20px;">manage_search</span> Recent Searches</h2>
+        <button id="clear-history-btn" onclick="clearSearchHistory()" class="text-xs font-600 text-secondary hover:text-error transition-colors hidden">Clear all</button>
+      </div>
+      <div id="home-recent-searches" class="space-y-2.5">
+        <div class="skel-card skeleton" style="height:48px"></div>
+        <div class="skel-card skeleton" style="height:48px"></div>
+      </div>
+    </div>
   </main>
 </section>
 
@@ -835,6 +846,12 @@
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
 
+  // ---- Strip markdown from AI output ----
+  function stripMd(s) {
+    if (!s) return '';
+    return s.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1').replace(/^[-*]\s+/gm, '').replace(/^#+\s+/gm, '').replace(/`(.+?)`/g, '$1').trim();
+  }
+
   // Delegated event listeners (XSS-safe)
   document.addEventListener('click', function(e) {
     var btn = e.target.closest('.suggestion-btn');
@@ -846,6 +863,13 @@
     var moreBtn = e.target.closest('.section-more-btn');
     if (moreBtn) {
       setFilterAndSearch(moreBtn.dataset.type || '');
+    }
+    var histItem = e.target.closest('.search-history-item');
+    if (histItem) {
+      var q = histItem.dataset.query || '';
+      navigate('search');
+      document.getElementById('search-input').value = q;
+      doSearch();
     }
   });
 
@@ -1045,7 +1069,46 @@
     }).catch(function() {
       container.innerHTML = '<div class="text-center py-8 bg-white border border-outline-variant rounded-xl"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Could not load recent cases</p><button onclick="loadHome()" class="text-sm font-700 text-primary mt-2 hover:underline">Try again</button></div>';
     });
+
+    loadRecentSearches();
   }
+
+  function loadRecentSearches() {
+    var user = getUser();
+    if (!user) return;
+    var container = document.getElementById('home-recent-searches');
+    var clearBtn = document.getElementById('clear-history-btn');
+    api('/search/history?user_id=' + user.id + '&limit=8').then(function(items) {
+      if (!items.length) {
+        container.innerHTML = '<div class="text-center py-6 bg-white border border-outline-variant rounded-xl"><span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">manage_search</span><p class="text-secondary text-sm font-500">Your search history will appear here.</p></div>';
+        if (clearBtn) clearBtn.classList.add('hidden');
+        return;
+      }
+      if (clearBtn) clearBtn.classList.remove('hidden');
+      container.innerHTML = items.map(function(s) {
+        var jurisdictionLabel = s.jurisdiction === 'africa' ? 'Africa' : s.jurisdiction === 'world' ? 'World' : 'Kenya';
+        return '<div class="bg-white border border-outline-variant rounded-xl px-4 py-3 flex items-center gap-3 hover:border-outline hover:shadow-card-hover transition-all cursor-pointer group active:scale-[0.99] search-history-item" data-query="' + esc(s.query) + '">' +
+          '<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-secondary" style="font-size:18px;">history</span></div>' +
+          '<div class="flex-1 min-w-0">' +
+            '<p class="text-sm font-600 text-on-surface truncate">' + esc(s.query) + '</p>' +
+            '<p class="text-xs text-secondary font-500">' + jurisdictionLabel + (s.doc_type ? ' · ' + s.doc_type : '') + ' · ' + (s.results_count || 0) + ' results</p>' +
+          '</div>' +
+          '<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" style="font-size:18px;">north_east</span>' +
+        '</div>';
+      }).join('');
+    }).catch(function() {
+      container.innerHTML = '';
+    });
+  }
+
+  window.clearSearchHistory = function() {
+    var user = getUser();
+    if (!user) return;
+    api('/search/history?user_id=' + user.id, { method: 'DELETE' }).then(function() {
+      toast('Search history cleared');
+      loadRecentSearches();
+    });
+  };
 
   window.homeSearch = function() {
     var q = document.getElementById('home-search-input').value.trim();
@@ -1275,6 +1338,13 @@
         }
       });
       resultsEl.innerHTML = html || results.map(renderCard).join('');
+
+      if (q && getUser()) {
+        api('/search/history', {
+          method: 'POST',
+          body: JSON.stringify({ user_id: getUser().id, query: q, jurisdiction: currentJurisdiction, doc_type: searchFilters.doc_type || '', results_count: results.length }),
+        }).catch(function() {});
+      }
     }).catch(function() {
       loadingEl.classList.add('hidden');
       emptyEl.classList.remove('hidden');
@@ -1286,17 +1356,29 @@
   // ---- Summarize ----
   window.summarizeCard = function(encodedData) {
     var data = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
-    showModal(data.title, data.court + (data.date ? ' | ' + data.date : ''), '<div class="text-center py-8"><div class="spinner mx-auto mb-3"></div><p class="text-secondary text-sm font-500">Generating summary...</p></div>');
+    var progressHtml = '<div class="py-8 px-4">' +
+      '<div class="text-center mb-5"><div class="spinner mx-auto mb-3"></div><p class="text-on-surface font-600 text-sm mb-1">Preparing your summary</p><p class="text-secondary text-xs font-500">This usually takes 10-20 seconds</p></div>' +
+      '<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden"><div class="summary-progress-bar h-full rounded-full" style="width:0%;background:var(--color-primary);transition:width 0.8s ease;"></div></div>' +
+      '</div>';
+    showModal(data.title, data.court + (data.date ? ' | ' + data.date : ''), progressHtml);
+
+    var progressBar = document.querySelector('.summary-progress-bar');
+    if (progressBar) {
+      setTimeout(function() { progressBar.style.width = '30%'; }, 200);
+      setTimeout(function() { progressBar.style.width = '55%'; }, 3000);
+      setTimeout(function() { progressBar.style.width = '75%'; }, 6000);
+      setTimeout(function() { progressBar.style.width = '90%'; }, 10000);
+    }
 
     api('/search/summarize', {
       method: 'POST',
       body: JSON.stringify({ title:data.title, citation:data.citation, court:data.court, date:data.date, doc_type:data.doc_type, excerpt:data.excerpt, url:data.url }),
     }).then(function(resp) {
       var body = document.querySelector('.modal-body');
-      if (body) body.innerHTML = resp.summary.split('\n').filter(function(p) { return p.trim(); }).map(function(p) { return '<p>' + esc(p) + '</p>'; }).join('');
+      if (body) body.innerHTML = stripMd(resp.summary).split('\n').filter(function(p) { return p.trim(); }).map(function(p) { return '<p>' + esc(p) + '</p>'; }).join('');
     }).catch(function() {
       var body = document.querySelector('.modal-body');
-      if (body) body.innerHTML = '<div class="text-center py-6"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Failed to generate summary</p><p class="text-secondary text-sm font-500 mb-3">Something went wrong. Please try again.</p><button onclick="summarizeCard(\'' + encodedData + '\')" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Retry</button></div>';
+      if (body) body.innerHTML = '<div class="text-center py-6"><span class="material-symbols-outlined text-4xl text-error mb-2 block">error</span><p class="text-on-surface font-600 text-sm mb-1">Could not load summary</p><p class="text-secondary text-sm font-500 mb-3">Something went wrong. Please try again.</p><button onclick="summarizeCard(\'' + encodedData + '\')" class="btn-primary-sm"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span> Retry</button></div>';
     });
   };
 
@@ -1348,8 +1430,16 @@
         (c.year ? '<span class="text-xs font-500 text-secondary">' + esc(String(c.year)) + '</span>' : '');
 
       var summaryTab = document.getElementById('case-tab-summary');
-      summaryTab.innerHTML = '<div class="py-8 text-center"><div class="spinner mx-auto mb-2"></div><p class="text-secondary text-sm">Loading summary...</p></div>';
+      summaryTab.innerHTML = '<div class="py-8 px-4"><div class="text-center mb-4"><div class="spinner mx-auto mb-3"></div><p class="text-on-surface font-600 text-sm mb-1">Preparing your summary</p><p class="text-secondary text-xs font-500">This usually takes 10-20 seconds</p></div><div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden"><div class="case-summary-progress h-full rounded-full" style="width:0%;background:var(--color-primary);transition:width 0.8s ease;"></div></div></div>';
       showCaseTab('summary', document.querySelector('.tab-item'));
+
+      var caseProgressBar = document.querySelector('.case-summary-progress');
+      if (caseProgressBar) {
+        setTimeout(function() { caseProgressBar.style.width = '30%'; }, 200);
+        setTimeout(function() { caseProgressBar.style.width = '55%'; }, 3000);
+        setTimeout(function() { caseProgressBar.style.width = '75%'; }, 6000);
+        setTimeout(function() { caseProgressBar.style.width = '90%'; }, 10000);
+      }
 
       api('/cases/' + caseId + '/summary').then(function(summary) {
         var html = '';

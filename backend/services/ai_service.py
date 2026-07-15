@@ -221,6 +221,11 @@ async def generate_summary_from_metadata(title: str, citation: str, court: str, 
 
 Write like a knowledgeable peer explaining this — not like a database entry. Be specific about what this document is, why it matters, and what a student should know about it.
 
+CRITICAL FORMATTING RULES:
+- Do NOT use markdown. No **bold**, no *italic*, no bullet points with dashes or asterisks.
+- Write in plain text only. Use short paragraphs separated by blank lines.
+- If you need emphasis, just state it directly. No special characters.
+
 Document details:
 - Title: {title}
 - Citation: {citation}
