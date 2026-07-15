@@ -53,7 +53,7 @@ async def universal_search(
 
     jurisdiction = jurisdiction.lower().strip()
 
-    # Kenya Law search — brain first, then live fallback
+    # Kenya Law search — brain first, then live fallback, then demo
     if jurisdiction == "kenya" or jurisdiction == "ke":
         # Try brain (instant local search)
         brain_result = brain_search(q, doc_type=doc_type, court=court, limit=limit)
@@ -71,9 +71,23 @@ async def universal_search(
             "ordering": ordering,
             "limit": limit,
         }
-        result = await search_all(q, filters)
-        result["jurisdiction"] = "kenya"
-        return result
+        try:
+            result = await search_all(q, filters)
+            result["jurisdiction"] = "kenya"
+            if result.get("count", 0) > 0:
+                return result
+        except Exception as e:
+            logger.warning(f"Live search failed: {e}")
+
+        # Final fallback: return KB results from scraper directly
+        from services.scraper import _search_kenyan_kb
+        kb_results = _search_kenyan_kb(q, limit=limit)
+        return {
+            "count": len(kb_results),
+            "results": kb_results,
+            "jurisdiction": "kenya",
+            "source": "kenyan_kb",
+        }
 
     # Africa Law search
     elif jurisdiction == "africa" or jurisdiction == "af":
