@@ -10,7 +10,18 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger("juriscore")
 
-_db_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "legal_db.sqlite")
+_db_candidates = [
+    os.path.join(os.path.dirname(__file__), "..", "..", "data", "legal_db.sqlite"),
+    os.path.join(os.path.dirname(__file__), "..", "data", "legal_db.sqlite"),
+    os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "legal_db.sqlite"),
+]
+_db_path = None
+for _candidate in _db_candidates:
+    if os.path.exists(_candidate):
+        _db_path = os.path.abspath(_candidate)
+        break
+if _db_path is None:
+    _db_path = os.path.abspath(_db_candidates[0])
 _conn: Optional[sqlite3.Connection] = None
 _ready = False
 
