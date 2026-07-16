@@ -888,7 +888,7 @@ async def translate_legal_term(
     """Translate legal terms with jurisdiction-specific context."""
     prompt = f"""Translate "{term}" from {source_lang} to {target_lang} for {jurisdiction} legal context.
 
-Provide: direct translation, legal translation (if different), concept explanation in both languages, usage in legal documents."""
+Provide: direct translation, legal translation (if different), concept explanation in both languages, usage in legal documents.
 
 Format as JSON:
 {{
