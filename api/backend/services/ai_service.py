@@ -211,7 +211,7 @@ def _parse_json(text: str, fallback: Any = None) -> Any:
         if match:
             try:
                 return json.loads(match.group(1))
-            except:
+            except Exception:
                 pass
         
         # Try finding JSON object in text
@@ -219,7 +219,7 @@ def _parse_json(text: str, fallback: Any = None) -> Any:
         if match:
             try:
                 return json.loads(match.group(0))
-            except:
+            except Exception:
                 pass
         
         logger.warning(f"Failed to parse JSON, using fallback. Text: {text[:100]}")
