@@ -1,17 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from models.database import async_session, Case, Statute
-from models.schemas import ExportCaseRequest, ExportComparisonRequest, ExportStatuteRequest
+from api.backend.models.database import Case, Statute
+from api.backend.models.schemas import ExportCaseRequest, ExportComparisonRequest, ExportStatuteRequest
+from api.backend.core import get_session
 import logging
 import io
 
 router = APIRouter()
-
-
-async def get_session() -> AsyncSession:
-    async with async_session() as session:
-        yield session
 
 
 def build_pdf_bytes(title: str, content: str) -> bytes:
@@ -56,7 +52,7 @@ async def export_comparison(
     case_b = result_b.scalar_one_or_none()
     if not case_a or not case_b:
         raise HTTPException(status_code=404, detail="Case not found")
-    from services.ai_service import compare_cases as ai_compare
+    from api.backend.services.ai_service import compare_cases as ai_compare
     comparison = await ai_compare(case_a.full_text, case_b.full_text)
     content = "\n".join([f"{k}: {v}" for k, v in comparison.items()])
     pdf_bytes = build_pdf_bytes(f"{case_a.title} vs {case_b.title}", content)

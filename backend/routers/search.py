@@ -495,4 +495,3 @@ async def get_daily_updates(
         "courts": list(by_court.keys()),
         "by_court": by_court,
     }
-        return {"status": "error"}

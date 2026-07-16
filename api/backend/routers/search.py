@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Query, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
-from services.scraper import search_all, search_kenyalaw
-from services.brain import brain_search, brain_get_case, brain_get_related_cases, brain_get_statutes, brain_stats, load_brain
-from services.africa_law_scraper import search_africanlii, search_african_court, get_african_jurisdictions, get_african_courts
-from services.world_law_scraper import search_worldlii, search_global_case_law, get_world_jurisdictions, get_world_sources, get_legal_systems
-from services.local_db import search_local_db, get_db_stats
-from services.ai_service import (
+from api.backend.services.scraper import search_all, search_kenyalaw
+from api.backend.services.brain import brain_search, brain_get_case, brain_get_related_cases, brain_get_statutes, brain_stats, load_brain
+from api.backend.services.africa_law_scraper import search_africanlii, search_african_court, get_african_jurisdictions, get_african_courts
+from api.backend.services.world_law_scraper import search_worldlii, search_global_case_law, get_world_jurisdictions, get_world_sources, get_legal_systems
+from api.backend.services.local_db import search_local_db, get_db_stats
+from api.backend.services.ai_service import (
     generate_summary_from_metadata, legal_research_assistant,
     format_citation, explain_legal_concept, compare_jurisdictions,
     generate_legal_memo, analyze_case_law, interpret_statute,
@@ -75,7 +75,7 @@ async def universal_search(
             return brain_result
 
         # Final fallback to KB
-        from services.scraper import _search_kenyan_kb
+        from api.backend.services.scraper import _search_kenyan_kb
         kb_results = _search_kenyan_kb(q, limit=limit)
         logger.info(f"KB returned {len(kb_results)} results for '{q}'")
         return {
@@ -250,7 +250,7 @@ async def list_doc_types(q: Optional[str] = Query(None), jurisdiction: Optional[
 @router.get("/rewrite")
 async def rewrite_query(q: str = Query(...)):
     """AI-powered query rewriting: fix misspellings, expand terms."""
-    from services.ai_service import rewrite_search_query
+    from api.backend.services.ai_service import rewrite_search_query
     result = await rewrite_search_query(q)
     return result
 
@@ -414,7 +414,7 @@ class SearchHistoryRequest(BaseModel):
 @router.post("/history")
 async def save_search_history(req: SearchHistoryRequest):
     """Save a search query to the user's history."""
-    from models.database import async_session, SearchHistory
+    from api.backend.models.database import async_session, SearchHistory
     from sqlalchemy import select
     try:
         async with async_session() as session:
@@ -436,7 +436,7 @@ async def save_search_history(req: SearchHistoryRequest):
 @router.get("/history")
 async def get_search_history(user_id: str = Query(...), limit: int = Query(10)):
     """Get the user's recent search history, deduplicated by query."""
-    from models.database import async_session, SearchHistory
+    from api.backend.models.database import async_session, SearchHistory
     from sqlalchemy import select, desc
     try:
         async with async_session() as session:
@@ -472,7 +472,7 @@ async def get_search_history(user_id: str = Query(...), limit: int = Query(10)):
 @router.delete("/history/{entry_id}")
 async def delete_search_history(entry_id: str):
     """Delete a single search history entry."""
-    from models.database import async_session, SearchHistory
+    from api.backend.models.database import async_session, SearchHistory
     from sqlalchemy import delete
     try:
         async with async_session() as session:
@@ -487,7 +487,7 @@ async def delete_search_history(entry_id: str):
 @router.delete("/history")
 async def clear_search_history(user_id: str = Query(...)):
     """Clear all search history for a user."""
-    from models.database import async_session, SearchHistory
+    from api.backend.models.database import async_session, SearchHistory
     from sqlalchemy import delete
     try:
         async with async_session() as session:
@@ -504,7 +504,7 @@ async def get_daily_updates(
     limit: int = Query(30, le=50),
 ):
     """Get recently added/updated cases from KenyaLaw.org, organized by court."""
-    from services.scraper import scrape_daily_updates
+    from api.backend.services.scraper import scrape_daily_updates
     results = await scrape_daily_updates(court=court, limit=limit)
 
     # Group by court

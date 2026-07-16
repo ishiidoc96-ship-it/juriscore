@@ -2,23 +2,22 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import List
-from models.database import async_session, FlashcardDeck, Flashcard
-from models.schemas import FlashcardDeckCreate, FlashcardDeckResponse, FlashcardCreate, FlashcardResponse, FlashcardUpdate
+from api.backend.models.database import FlashcardDeck, Flashcard
+from api.backend.models.schemas import FlashcardDeckCreate, FlashcardDeckResponse, FlashcardCreate, FlashcardResponse, FlashcardUpdate
+from api.backend.core import get_session
 from datetime import datetime
 import logging
+
+from api.backend.routers.auth import get_current_user
+from api.backend.models.database import User
 
 logger = logging.getLogger("juriscore")
 router = APIRouter()
 
 
-async def get_session() -> AsyncSession:
-    async with async_session() as session:
-        yield session
-
-
 @router.get("/decks", response_model=List[FlashcardDeckResponse])
-async def list_decks(user_id: str, session: AsyncSession = Depends(get_session)):
-    result = await session.execute(select(FlashcardDeck).where(FlashcardDeck.user_id == user_id))
+async def list_decks(current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(FlashcardDeck).where(FlashcardDeck.user_id == current_user.id))
     decks = result.scalars().all()
     return [
         FlashcardDeckResponse(id=d.id, user_id=d.user_id, title=d.title, subject=d.subject, created_at=d.created_at)
@@ -27,8 +26,8 @@ async def list_decks(user_id: str, session: AsyncSession = Depends(get_session))
 
 
 @router.post("/decks", response_model=FlashcardDeckResponse)
-async def create_deck(payload: FlashcardDeckCreate, user_id: str, session: AsyncSession = Depends(get_session)):
-    deck = FlashcardDeck(user_id=user_id, title=payload.title, subject=payload.subject)
+async def create_deck(payload: FlashcardDeckCreate, current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
+    deck = FlashcardDeck(user_id=current_user.id, title=payload.title, subject=payload.subject)
     session.add(deck)
     await session.flush()
     await session.commit()
@@ -36,8 +35,8 @@ async def create_deck(payload: FlashcardDeckCreate, user_id: str, session: Async
 
 
 @router.get("/decks/{deck_id}", response_model=FlashcardDeckResponse)
-async def get_deck(deck_id: str, session: AsyncSession = Depends(get_session)):
-    result = await session.execute(select(FlashcardDeck).where(FlashcardDeck.id == deck_id))
+async def get_deck(deck_id: str, current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(FlashcardDeck).where(FlashcardDeck.id == deck_id, FlashcardDeck.user_id == current_user.id))
     deck = result.scalar_one_or_none()
     if not deck:
         raise HTTPException(status_code=404, detail="Deck not found")
@@ -45,8 +44,8 @@ async def get_deck(deck_id: str, session: AsyncSession = Depends(get_session)):
 
 
 @router.post("/decks/{deck_id}/cards", response_model=FlashcardResponse)
-async def add_card(deck_id: str, payload: FlashcardCreate, session: AsyncSession = Depends(get_session)):
-    result = await session.execute(select(FlashcardDeck).where(FlashcardDeck.id == deck_id))
+async def add_card(deck_id: str, payload: FlashcardCreate, current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(FlashcardDeck).where(FlashcardDeck.id == deck_id, FlashcardDeck.user_id == current_user.id))
     deck = result.scalar_one_or_none()
     if not deck:
         raise HTTPException(status_code=404, detail="Deck not found")
@@ -67,8 +66,8 @@ async def add_card(deck_id: str, payload: FlashcardCreate, session: AsyncSession
 
 
 @router.put("/cards/{card_id}", response_model=FlashcardResponse)
-async def update_card(card_id: str, payload: FlashcardUpdate, session: AsyncSession = Depends(get_session)):
-    result = await session.execute(select(Flashcard).where(Flashcard.id == card_id))
+async def update_card(card_id: str, payload: FlashcardUpdate, current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(Flashcard).join(FlashcardDeck).where(Flashcard.id == card_id, FlashcardDeck.user_id == current_user.id))
     card = result.scalar_one_or_none()
     if not card:
         raise HTTPException(status_code=404, detail="Card not found")
@@ -89,7 +88,11 @@ async def update_card(card_id: str, payload: FlashcardUpdate, session: AsyncSess
 
 
 @router.get("/decks/{deck_id}/due", response_model=List[FlashcardResponse])
-async def due_cards(deck_id: str, session: AsyncSession = Depends(get_session)):
+async def due_cards(deck_id: str, current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(FlashcardDeck).where(FlashcardDeck.id == deck_id, FlashcardDeck.user_id == current_user.id))
+    deck = result.scalar_one_or_none()
+    if not deck:
+        raise HTTPException(status_code=404, detail="Deck not found")
     now = datetime.utcnow()
     result = await session.execute(
         select(Flashcard).where(Flashcard.deck_id == deck_id, Flashcard.next_review <= now)
@@ -111,8 +114,8 @@ async def due_cards(deck_id: str, session: AsyncSession = Depends(get_session)):
 
 
 @router.delete("/decks/{deck_id}")
-async def delete_deck(deck_id: str, session: AsyncSession = Depends(get_session)):
-    result = await session.execute(select(FlashcardDeck).where(FlashcardDeck.id == deck_id))
+async def delete_deck(deck_id: str, current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(FlashcardDeck).where(FlashcardDeck.id == deck_id, FlashcardDeck.user_id == current_user.id))
     deck = result.scalar_one_or_none()
     if not deck:
         raise HTTPException(status_code=404, detail="Deck not found")

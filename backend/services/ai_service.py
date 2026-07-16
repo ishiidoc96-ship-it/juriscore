@@ -121,11 +121,14 @@ Always cite specific cases, statutes, or articles.""".strip()
 
 def init_ai() -> None:
     """Call once at application startup after core.settings is ready."""
-    global _API_KEY
+    global _API_KEY, _REASONING_API_KEY, _REASONING_BASE_URL, _REASONING_MODEL
     _API_KEY = _core_settings.NVIDIA_API_KEY or _core_settings.OPENAI_API_KEY
+    _REASONING_API_KEY = _core_settings.MISTRAL_API_KEY
+    if _REASONING_API_KEY:
+        _REASONING_BASE_URL = "https://api.mistral.ai/v1"
+        _REASONING_MODEL = "mistral-large-latest"
     if _API_KEY:
-        model_tag = _MODEL
-        logger.info("AI service ready (model=%s)", model_tag)
+        logger.info("AI service ready (fast=%s, reasoning=%s)", _MODEL, _REASONING_MODEL or "none")
     else:
         logger.warning("AI service disabled — no API key configured")
 
@@ -149,46 +152,55 @@ def _prompt_fingerprint(prompt: str, max_tokens: int, system: Optional[str], tem
     return hashlib.sha256(blob.encode()).hexdigest()
 
 
-async def _call_model(
+_REASONING_API_KEY: str = ""
+_REASONING_BASE_URL: str = ""
+_REASONING_MODEL: str = ""
+
+
+async def _call_provider(
     prompt: str,
     max_tokens: int = 1024,
     system: Optional[str] = None,
     temperature: float = 0.7,
     cache: bool = True,
+    key: str = "",
+    base_url: str = "",
+    model: str = "",
+    fallback: str = "",
 ) -> str:
-    """Call the configured model (or fallback). Returns plain text content."""
-    if not _API_KEY:
-        logger.warning("_call_model invoked with no API key — returning empty string")
+    """Low-level provider call with retry logic."""
+    if not key:
         return ""
 
     fp = _prompt_fingerprint(prompt, max_tokens, system, temperature)
     if cache:
         cached_text = ai_cache.get(fp)
         if cached_text is not None:
-            logger.debug("AI cache hit (fp=%s)", fp[:12])
             return cached_text
 
     client = _get_client()
 
-    for model in (_MODEL, _FALLBACK):
+    for m in (model, fallback):
+        if not m:
+            continue
         try:
             messages = [
                 {"role": "system", "content": system or HUMANIZE_SYSTEM},
                 {"role": "user",   "content": prompt},
             ]
             payload = {
-                "model": model,
+                "model": m,
                 "messages": messages,
                 "temperature": temperature,
                 "max_tokens": max_tokens,
                 "top_p": 0.9,
             }
             headers = {
-                "Authorization": f"Bearer {_API_KEY}",
+                "Authorization": f"Bearer {key}",
                 "Content-Type": "application/json",
             }
             resp = await client.post(
-                f"{_BASE_URL}/chat/completions",
+                f"{base_url}/chat/completions",
                 json=payload,
                 headers=headers,
             )
@@ -202,17 +214,42 @@ async def _call_model(
             if content and len(content) > 5:
                 if cache:
                     ai_cache.set(fp, content, ttl_seconds=_AI_CACHE_TTL)
-                logger.debug("AI call OK via %s (fp=%s)", model, fp[:12])
                 return content
-            logger.warning("Model %s returned empty response, trying next", model)
         except httpx.HTTPStatusError as exc:
-            logger.error(
-                "Model %s HTTP %s: %.200s", model, exc.response.status_code, exc.response.text
-            )
-        except Exception as exc:  # noqa: BLE001
-            logger.error("Model %s failed: %s: %s", model, type(exc).__name__, exc)
+            logger.error("Model %s HTTP %s: %.200s", m, exc.response.status_code, exc.response.text)
+        except Exception as exc:
+            logger.error("Model %s failed: %s: %s", m, type(exc).__name__, exc)
 
     return ""
+
+
+async def _call_model(
+    prompt: str,
+    max_tokens: int = 1024,
+    system: Optional[str] = None,
+    temperature: float = 0.7,
+    cache: bool = True,
+) -> str:
+    """Call the FAST model (NVIDIA) with retry logic."""
+    return await _call_provider(
+        prompt, max_tokens=max_tokens, system=system, temperature=temperature,
+        cache=cache, key=_API_KEY, base_url=_BASE_URL, model=_MODEL, fallback=_FALLBACK,
+    )
+
+
+async def _call_reasoning_model(
+    prompt: str,
+    max_tokens: int = 2048,
+    system: Optional[str] = None,
+    temperature: float = 0.5,
+) -> str:
+    """Call the REASONING model (Mistral) for complex tasks."""
+    if _REASONING_API_KEY and _REASONING_MODEL:
+        return await _call_provider(
+            prompt, max_tokens=max_tokens, system=system, temperature=temperature,
+            key=_REASONING_API_KEY, base_url=_REASONING_BASE_URL, model=_REASONING_MODEL,
+        )
+    return await _call_model(prompt, max_tokens=max_tokens, system=system, temperature=temperature)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -239,7 +276,7 @@ Return ONLY valid JSON with:
 Case text: {full_text[:6000]}
 
 JSON:"""
-    raw = await _call_model(prompt, temperature=0.5)
+    raw = await _call_reasoning_model(prompt, temperature=0.5)
     parsed = _json(raw, {})
     if isinstance(parsed, dict):
         for k, default in [
@@ -264,7 +301,7 @@ Return ONLY valid JSON with:
 Case text: {full_text[:6000]}
 
 JSON:"""
-    raw = await _call_model(prompt, temperature=0.5)
+    raw = await _call_reasoning_model(prompt, temperature=0.5)
     parsed = _json(raw, {})
     if isinstance(parsed, dict):
         for k, default in [
@@ -309,7 +346,7 @@ async def compare_cases(case_a_text: str, case_b_text: str) -> Dict[str, Any]:
         "Return ONLY valid JSON with: similarities, differences, "
         "legal_proposition_a, legal_proposition_b, recommendation."
     )
-    raw = await _call_model(prompt, temperature=0.5)
+    raw = await _call_reasoning_model(prompt, temperature=0.5)
     parsed = _json(raw, {})
     if isinstance(parsed, dict):
         for k in ("similarities", "differences", "legal_proposition_a",
@@ -538,7 +575,7 @@ Format as JSON: {{
   "practical_implications": str,
   "related_topics": [str]
 }}"""
-    raw = await _call_model(prompt, max_tokens=1500, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
+    raw = await _call_reasoning_model(prompt, max_tokens=1500, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
     parsed = _json(raw, {})
     if isinstance(parsed, dict):
         for k, default in [
@@ -597,7 +634,7 @@ async def compare_jurisdictions(
         ' "key_cases": [str], "unique_aspect": str}},'
         ' "key_differences": [str], "trend": str}'
     )
-    raw = await _call_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
+    raw = await _call_reasoning_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
     parsed = _json(raw, {})
     if isinstance(parsed, dict):
         parsed.setdefault("issue", legal_issue)
@@ -628,7 +665,7 @@ Return ONLY valid JSON:
 {{"facts": str, "issues": [str], "holdings": [str], "ratio": str,
  "obiter": str, "significance": str, "critique": str,
  "application": str, "related_cases": [str], "exam_relevance": [str]}}"""
-    raw = await _call_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
+    raw = await _call_reasoning_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
     parsed = _json(raw, {})
     if isinstance(parsed, dict):
         for k in ("facts", "issues", "holdings", "ratio", "obiter", "significance",
@@ -649,7 +686,7 @@ Return ONLY valid JSON:
 {{"plain_meaning": str, "legal_meaning": str,
   "case_law": [{{"case": str, "citation": str, "interpretation": str}}],
   "practical_application": str, "exceptions": [str], "recent_developments": str}}"""
-    raw = await _call_model(prompt, max_tokens=1500, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
+    raw = await _call_reasoning_model(prompt, max_tokens=1500, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
     parsed = _json(raw, {})
     if isinstance(parsed, dict):
         for k, default in [
@@ -673,7 +710,7 @@ async def generate_study_plan(
         + ". Include: week-by-week breakdown, must-know cases with summaries, "
           "key statutes with sections, 5 likely exam questions, study tips, resources."
     )
-    raw = await _call_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
+    raw = await _call_reasoning_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
     parsed = _json(raw, {})
     if isinstance(parsed, dict):
         for k in ("weekly_plan", "key_cases", "key_statutes", "practice_questions", "resources"):
@@ -696,7 +733,7 @@ async def translate_legal_term(
         '{"original": str, "translation": str, "legal_translation": str,'
         ' "explanation_en": str, "explanation_local": str, "usage": str}'
     )
-    raw = await _call_model(prompt, max_tokens=400, temperature=0.3)
+    raw = await _call_reasoning_model(prompt, max_tokens=400, temperature=0.3)
     parsed = _json(raw, {})
     if isinstance(parsed, dict):
         for k in ("original", "translation", "legal_translation",

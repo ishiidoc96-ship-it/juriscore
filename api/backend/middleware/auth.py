@@ -1,36 +1,63 @@
-from fastapi import Request, HTTPException
+from fastapi import Request, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.base import BaseHTTPMiddleware
-import httpx
-import os
+from typing import Optional
 import logging
+
+from api.backend.routers.auth import get_current_user
+from api.backend.models.database import User
 
 logger = logging.getLogger("juriscore")
 
-SUPABASE_URL = os.getenv("SUPABASE_URL", "")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
-
-security = HTTPBearer(auto_error=False)
-
 
 class SupabaseAuthMiddleware(BaseHTTPMiddleware):
+    """Middleware that adds user to request.state if valid auth header present."""
+
     async def dispatch(self, request: Request, call_next):
-        if request.url.path in ("/health", "/", "/docs", "/openapi.json"):
+        # Skip auth for public paths
+        public_paths = ("/health", "/ready", "/", "/docs", "/openapi.json", "/api/v1/docs", "/api/v1/redoc", "/api/v1/openapi.json", "/metrics")
+        if request.url.path in public_paths or request.url.path.startswith("/metrics"):
             return await call_next(request)
 
         auth_header = request.headers.get("Authorization")
         request.state.user = None
+
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header.split(" ")[1]
             try:
-                async with httpx.AsyncClient() as client:
-                    resp = await client.get(
-                        f"{SUPABASE_URL}/auth/v1/user",
-                        headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {token}"},
-                    )
-                    if resp.status_code == 200:
-                        request.state.user = resp.json()
+                # Use the existing get_current_user logic from auth router
+                # We need to create a session and decode the token
+                from api.backend.models.database import async_session
+                from api.backend.routers.auth import decode_token
+                from sqlalchemy import select
+
+                payload = decode_token(token)
+                user_id = payload.get("sub")
+
+                if user_id:
+                    async with async_session() as session:
+                        result = await session.execute(select(User).where(User.id == user_id))
+                        user = result.scalar_one_or_none()
+                        if user and user.is_active:
+                            request.state.user = user
             except Exception as e:
                 logger.warning(f"Auth middleware error: {e}")
+
         response = await call_next(request)
         return response
+
+
+# Dependency for protecting routes - returns current user or raises 401
+async def require_auth(request: Request) -> User:
+    """Dependency that requires authentication. Use with Depends(require_auth)."""
+    if not hasattr(request.state, 'user') or request.state.user is None:
+        raise HTTPException(status_code=401, detail="Authentication required")
+    return request.state.user
+
+
+# Optional auth - returns user if authenticated, None otherwise
+async def optional_auth(request: Request) -> Optional[User]:
+    """Dependency that returns user if authenticated, None otherwise."""
+    if hasattr(request.state, 'user') and request.state.user is not None:
+        return request.state.user
+    return None

@@ -1,17 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from models.database import async_session, Case, Statute
+from models.database import Case, Statute
 from models.schemas import ExportCaseRequest, ExportComparisonRequest, ExportStatuteRequest
+from core import get_session
 import logging
 import io
 
 router = APIRouter()
-
-
-async def get_session() -> AsyncSession:
-    async with async_session() as session:
-        yield session
 
 
 def build_pdf_bytes(title: str, content: str) -> bytes:

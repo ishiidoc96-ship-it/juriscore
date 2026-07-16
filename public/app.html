@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Juriscore - Kenya Legal Research</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Juriscore — Kenyan Legal Research</title>
+  <meta name="description" content="Research Kenyan case law, statutes, and constitutional provisions. Built for law students and early-career practitioners.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
@@ -184,13 +185,13 @@
       <!-- HOME SCREEN -->
       <div id="screen-home" class="screen active">
         <div class="mb-8 fade-up">
-          <h1 id="home-greeting" class="text-2xl md:text-3xl font-bold text-on-background">Good morning, Researcher</h1>
-          <p class="text-on-muted mt-1 text-sm md:text-base">What would you like to research today?</p>
+          <h1 id="home-greeting" class="text-2xl md:text-3xl font-bold text-on-background">Good morning</h1>
+          <p class="text-on-muted mt-1 text-sm md:text-base">Search cases, statutes, and constitutional provisions across Kenya.</p>
         </div>
         <div class="fade-up fade-up-delay-1 mb-8">
           <div class="relative">
             <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input id="home-search-input" type="text" placeholder="Search cases, legislation, gazettes..." class="w-full pl-12 pr-24 py-4 rounded-2xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm text-sm">
+            <input id="home-search-input" type="text" placeholder="Search cases, legislation, gazettes..." class="w-full pl-12 pr-24 py-4 rounded-2xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm text-sm" autocomplete="off">
             <button id="home-search-btn" class="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2.5 bg-primary text-on-primary rounded-xl font-semibold text-sm hover:bg-primary-dark transition-colors">Search</button>
           </div>
         </div>
@@ -222,7 +223,7 @@
         </div>
         <div class="mb-10 fade-up fade-up-delay-3">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-bold text-on-background">Daily Updates</h2>
+            <h2 class="text-lg font-bold text-on-background">Recent Decisions</h2>
             <button class="text-xs font-semibold text-primary hover:underline">View all</button>
           </div>
           <div id="home-court-filters" class="flex gap-2 mb-4 overflow-x-auto pb-2">
@@ -234,15 +235,15 @@
             <button class="filter-chip" data-court="employment">Employment &amp; Labour</button>
           </div>
           <div id="home-daily-updates" class="space-y-3">
-            <div class="skeleton h-24 w-full rounded-xl"></div>
-            <div class="skeleton h-24 w-full rounded-xl"></div>
-            <div class="skeleton h-24 w-full rounded-xl"></div>
+            <div class="skeleton h-20 w-full rounded-xl"></div>
+            <div class="skeleton h-20 w-full rounded-xl"></div>
+            <div class="skeleton h-20 w-full rounded-xl"></div>
           </div>
         </div>
         <div class="fade-up fade-up-delay-4">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-bold text-on-background">Recent Searches</h2>
-            <button class="text-xs font-semibold text-primary hover:underline">Clear all</button>
+            <button onclick="clearRecentSearches()" class="text-xs font-semibold text-primary hover:underline">Clear all</button>
           </div>
           <div id="home-recent-searches" class="space-y-2">
             <div class="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
@@ -269,7 +270,7 @@
         <div class="mb-6">
           <div class="relative">
             <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input id="search-main-input" type="text" placeholder="Search cases, legislation, gazettes..." class="w-full pl-12 pr-24 py-4 rounded-2xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm text-sm">
+            <input id="search-main-input" type="text" placeholder="Search cases, legislation, gazettes..." class="w-full pl-12 pr-24 py-4 rounded-2xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm text-sm" autocomplete="off">
             <button id="search-main-btn" class="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2.5 bg-primary text-on-primary rounded-xl font-semibold text-sm hover:bg-primary-dark transition-colors">Search</button>
           </div>
         </div>
@@ -458,7 +459,10 @@
       <!-- NOTEBOOK SCREEN -->
       <div id="screen-notebook" class="screen">
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl md:text-3xl font-bold text-on-background">Notebook</h1>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-on-background">Notebook</h1>
+            <p class="text-sm text-on-muted mt-1">Your research notes and case summaries</p>
+          </div>
         </div>
         <div class="flex gap-1 p-1 bg-surface-alt rounded-xl mb-4">
           <button class="notebook-tab active flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all bg-surface text-primary shadow-sm" data-tab="all">All Notes</button>
@@ -503,7 +507,10 @@
       <!-- FLASHCARDS SCREEN -->
       <div id="screen-flashcards" class="screen">
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl md:text-3xl font-bold text-on-background">Flashcards</h1>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-on-background">Flashcards</h1>
+            <p class="text-sm text-on-muted mt-1">Study key legal concepts with spaced repetition</p>
+          </div>
           <button id="create-deck-btn" class="px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-semibold hover:bg-primary-dark transition-colors">Create Deck</button>
         </div>
         <div id="flashcard-decks" class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -574,7 +581,10 @@
       <!-- BOOKMARKS SCREEN -->
       <div id="screen-bookmarks" class="screen">
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl md:text-3xl font-bold text-on-background">Bookmarks</h1>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-on-background">Bookmarks</h1>
+            <p class="text-sm text-on-muted mt-1">Saved cases, statutes, and references</p>
+          </div>
         </div>
         <div class="flex gap-8">
           <div class="hidden md:block w-48 flex-shrink-0">
@@ -625,7 +635,10 @@
       <!-- HISTORY SCREEN -->
       <div id="screen-history" class="screen">
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl md:text-3xl font-bold text-on-background">Research History</h1>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-on-background">Research History</h1>
+            <p class="text-sm text-on-muted mt-1">Your recent searches and activity</p>
+          </div>
           <div class="flex gap-2">
             <button class="px-3 py-2 rounded-xl border border-border text-sm font-semibold text-on-muted hover:bg-surface-alt transition-colors">Filter</button>
             <button class="px-3 py-2 rounded-xl border border-error/20 text-sm font-semibold text-error hover:bg-red-50 transition-colors">Clear</button>
@@ -673,7 +686,10 @@
       <!-- GAZETTES SCREEN -->
       <div id="screen-gazettes" class="screen">
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl md:text-3xl font-bold text-on-background">Gazette Notices</h1>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-on-background">Gazette Notices</h1>
+            <p class="text-sm text-on-muted mt-1">Official government publications and legal notices</p>
+          </div>
         </div>
         <div class="relative mb-4">
           <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -777,7 +793,12 @@
 
       <!-- TRIBUNALS SCREEN -->
       <div id="screen-tribunals" class="screen">
-        <div class="flex items-center justify-between mb-6"><h1 class="text-2xl md:text-3xl font-bold text-on-background">Kenya Tribunal Decisions</h1></div>
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-on-background">Tribunal Decisions</h1>
+            <p class="text-sm text-on-muted mt-1">Employment, Land, and Tax tribunal rulings</p>
+          </div>
+        </div>
         <div class="flex gap-6">
           <div class="hidden md:block w-56 flex-shrink-0">
             <div class="sticky top-6 space-y-6">
@@ -864,8 +885,8 @@
         <div class="max-w-lg mx-auto">
           <div class="text-center mb-8">
             <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3"><svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div>
-            <h1 class="text-xl font-bold text-on-background" id="profile-name">Researcher</h1>
-            <p class="text-sm text-on-muted" id="profile-email">researcher@juriscore.co.ke</p>
+            <h1 class="text-xl font-bold text-on-background" id="profile-name">Guest</h1>
+            <p class="text-sm text-on-muted" id="profile-email">Sign in to sync your data</p>
           </div>
           <div class="space-y-2">
             <button class="w-full flex items-center gap-4 p-4 rounded-xl bg-surface border border-border hover:border-primary/20 transition-all text-left"><div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center"><svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div><div class="flex-1"><p class="text-sm font-semibold text-on-surface">Account</p><p class="text-xs text-on-muted">Personal details, email, password</p></div><svg class="w-5 h-5 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
@@ -879,7 +900,68 @@
         </div>
       </div>
 
-      <!-- CASE DETAIL SCREEN -->
+      <!-- STUDENT WORKSPACE SCREEN -->
+<div id="screen-student-workspace" class="screen">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-on-background">Student Workspace</h1>
+      <p class="text-sm text-on-muted mt-1">Organised reference materials for your studies</p>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="filterWorkspace('all')" class="workspace-filter active px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary/10 text-primary" data-filter="all">All</button>
+      <button onclick="filterWorkspace('constitution')" class="workspace-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface-alt text-on-muted" data-filter="constitution">Constitution</button>
+      <button onclick="filterWorkspace('statute')" class="workspace-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface-alt text-on-muted" data-filter="statute">Statutes</button>
+      <button onclick="filterWorkspace('case')" class="workspace-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface-alt text-on-muted" data-filter="case">Cases</button>
+      <button onclick="filterWorkspace('note')" class="workspace-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface-alt text-on-muted" data-filter="note">Notes</button>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="mb-6">
+    <input type="text" id="workspace-search" placeholder="Search your documents..." class="w-full px-4 py-3 rounded-xl bg-surface border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-sm" oninput="searchWorkspace(this.value)">
+  </div>
+
+  <!-- Stats -->
+  <div id="workspace-stats" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+    <div class="p-3 rounded-xl bg-surface border border-border text-center">
+      <p class="text-2xl font-bold text-primary" id="stat-total">0</p>
+      <p class="text-xs text-on-muted">Total Documents</p>
+    </div>
+    <div class="p-3 rounded-xl bg-surface border border-border text-center">
+      <p class="text-2xl font-bold text-secondary" id="stat-const">0</p>
+      <p class="text-xs text-on-muted">Constitution</p>
+    </div>
+    <div class="p-3 rounded-xl bg-surface border border-border text-center">
+      <p class="text-2xl font-bold text-accent" id="stat-statutes">0</p>
+      <p class="text-xs text-on-muted">Statutes</p>
+    </div>
+    <div class="p-3 rounded-xl bg-surface border border-border text-center">
+      <p class="text-2xl font-bold text-purple-600" id="stat-cases">0</p>
+      <p class="text-xs text-on-muted">Cases</p>
+    </div>
+  </div>
+
+  <!-- Document Grid -->
+  <div id="workspace-documents" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="text-center py-12 col-span-full">
+      <div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+      <p class="text-sm text-on-muted">Loading workspace...</p>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT WORKSPACE DETAIL SCREEN -->
+<div id="screen-workspace-detail" class="screen">
+  <button onclick="showScreen('student-workspace')" class="flex items-center gap-2 text-sm font-semibold text-on-muted hover:text-on-surface mb-4 transition-colors">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    Back to Workspace
+  </button>
+  <div id="workspace-detail-content">
+    <!-- Populated dynamically -->
+  </div>
+</div>
+
+<!-- CASE DETAIL SCREEN -->
       <div id="screen-case-detail" class="screen">
         <button onclick="history.back()" class="flex items-center gap-2 text-sm font-semibold text-on-muted hover:text-on-surface mb-4 transition-colors">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
@@ -999,6 +1081,49 @@
     }
 
     /* ===========================
+       SHARED UTILITIES
+       =========================== */
+
+    function getCurrentUser() {
+      try {
+        var stored = localStorage.getItem('juriscore_user');
+        if (stored) return JSON.parse(stored);
+      } catch(e) {}
+      return null;
+    }
+
+    function getAuthToken() {
+      return localStorage.getItem('juriscore_token') || '';
+    }
+
+    function formatTimeAgo(dateStr) {
+      if (!dateStr) return '';
+      var diff = Date.now() - new Date(dateStr).getTime();
+      var mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + 'm ago';
+      if (mins < 1440) return Math.floor(mins / 60) + 'h ago';
+      return Math.floor(mins / 1440) + 'd ago';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      var div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    async function apiFetch(url, options = {}) {
+      var token = getAuthToken();
+      if (token) {
+        options.headers = Object.assign({ 'Authorization': 'Bearer ' + token }, options.headers || {});
+      }
+      var res = await fetch(url, options);
+      if (!res.ok) throw new Error('API error: ' + res.status);
+      return res.json();
+    }
+
+    /* ===========================
        SIDEBAR RENDERING
        =========================== */
 
@@ -1011,7 +1136,7 @@
               <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
                 <svg class="w-5 h-5 text-on-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
               </div>
-              <div><h1 class="text-base font-bold text-on-background leading-tight">Juriscore</h1><p class="text-[10px] text-on-muted font-medium uppercase tracking-wider">Kenya Legal Research</p></div>
+              <div><h1 class="text-base font-bold text-on-background leading-tight">Juriscore</h1><p class="text-[10px] text-on-muted font-medium uppercase tracking-wider">Kenyan Law Research</p></div>
             </div>
           </div>
           <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
@@ -1051,9 +1176,9 @@
               <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
               Tribunals
             </a>
-            <a href="#workspace" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="workspace">
-              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
-              Workspace
+            <a href="#student-workspace" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="student-workspace">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              Student Workspace
             </a>
           </nav>
           <div class="p-3 border-t border-border">
@@ -1087,9 +1212,9 @@
               <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
               <span class="text-[10px] font-medium">Notes</span>
             </a>
-            <a href="#bookmarks" class="nav-item flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl min-w-[56px]" data-screen="bookmarks">
-              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
-              <span class="text-[10px] font-medium">Saved</span>
+            <a href="#student-workspace" class="nav-item flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl min-w-[56px]" data-screen="student-workspace">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              <span class="text-[10px] font-medium">Workspace</span>
             </a>
             <a href="#profile" class="nav-item flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl min-w-[56px]" data-screen="profile">
               <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -1098,6 +1223,128 @@
           </nav>
         </div>
       `;
+    }
+
+    /* ===========================
+       STUDENT WORKSPACE
+       =========================== */
+
+    let workspaceData = null;
+    let currentWorkspaceFilter = 'all';
+
+    async function loadStudentWorkspace(filter = 'all', search = '') {
+      var container = document.getElementById('workspace-documents');
+      if (!container) return;
+
+      try {
+        var url = '/api/v1/student/workspace?';
+        if (filter !== 'all') url += 'category=' + filter + '&';
+        if (search) url += 'search=' + encodeURIComponent(search);
+
+        var res = await fetch(url);
+        if (!res.ok) throw new Error('Failed to load workspace');
+        workspaceData = await res.json();
+
+        // Update stats
+        document.getElementById('stat-total').textContent = workspaceData.categories.all || 0;
+        document.getElementById('stat-const').textContent = workspaceData.categories.constitution || 0;
+        document.getElementById('stat-statutes').textContent = workspaceData.categories.statute || 0;
+        document.getElementById('stat-cases').textContent = workspaceData.categories.case || 0;
+
+        // Render documents
+        if (!workspaceData.documents.length) {
+          container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">No documents found</p></div>';
+          return;
+        }
+
+        container.innerHTML = workspaceData.documents.map(function(doc) {
+          var catColors = {
+            'constitution': 'bg-blue-50 text-blue-700',
+            'statute': 'bg-green-50 text-green-700',
+            'case': 'bg-purple-50 text-purple-700',
+            'note': 'bg-amber-50 text-amber-700'
+          };
+          var catIcons = {
+            'constitution': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
+            'statute': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+            'case': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>',
+            'note': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>'
+          };
+
+          return '<div onclick="showWorkspaceDetail(\'' + doc.id + '\')" class="bg-surface border border-border rounded-2xl p-5 hover:shadow-md cursor-pointer transition-all">' +
+            '<div class="flex items-start justify-between mb-3">' +
+              '<div class="w-10 h-10 rounded-xl ' + (catColors[doc.category] || 'bg-gray-50 text-gray-700') + ' flex items-center justify-center">' +
+                '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">' + (catIcons[doc.category] || '') + '</svg>' +
+              '</div>' +
+              '<span class="px-2 py-1 rounded-full text-[10px] font-semibold ' + (catColors[doc.category] || 'bg-gray-50 text-gray-700') + '">' + doc.category + '</span>' +
+            '</div>' +
+            '<h3 class="text-sm font-bold text-on-surface mb-1 line-clamp-2">' + doc.title + '</h3>' +
+            '<p class="text-xs text-on-muted mb-3 line-clamp-2">' + doc.description + '</p>' +
+            '<div class="flex items-center justify-between">' +
+              '<span class="text-[10px] text-on-muted font-medium">' + doc.subcategory + '</span>' +
+              (doc.year ? '<span class="text-[10px] text-on-muted">' + doc.year + '</span>' : '') +
+            '</div>' +
+            (doc.tags.length ? '<div class="flex flex-wrap gap-1 mt-3">' +
+              doc.tags.slice(0, 3).map(function(t) {
+                return '<span class="px-2 py-0.5 rounded-full bg-surface-alt text-on-muted text-[10px]">' + t + '</span>';
+              }).join('') +
+            '</div>' : '') +
+          '</div>';
+        }).join('');
+      } catch(e) {
+        container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">Failed to load workspace</p></div>';
+      }
+    }
+
+    function filterWorkspace(filter) {
+      currentWorkspaceFilter = filter;
+      document.querySelectorAll('.workspace-filter').forEach(function(btn) {
+        btn.classList.remove('active', 'bg-primary/10', 'text-primary');
+        btn.classList.add('bg-surface-alt', 'text-on-muted');
+      });
+      document.querySelector('.workspace-filter[data-filter="' + filter + '"]').classList.add('active', 'bg-primary/10', 'text-primary');
+      document.querySelector('.workspace-filter[data-filter="' + filter + '"]').classList.remove('bg-surface-alt', 'text-on-muted');
+      loadStudentWorkspace(filter, document.getElementById('workspace-search').value);
+    }
+
+    function searchWorkspace(query) {
+      loadStudentWorkspace(currentWorkspaceFilter, query);
+    }
+
+    async function showWorkspaceDetail(docId) {
+      try {
+        var res = await fetch('/api/v1/student/workspace/' + docId);
+        if (!res.ok) throw new Error('Not found');
+        var doc = await res.json();
+
+        var catColors = {
+          'constitution': 'bg-blue-50 text-blue-700 border-blue-200',
+          'statute': 'bg-green-50 text-green-700 border-green-200',
+          'case': 'bg-purple-50 text-purple-700 border-purple-200',
+          'note': 'bg-amber-50 text-amber-700 border-amber-200'
+        };
+
+        document.getElementById('workspace-detail-content').innerHTML =
+          '<div class="bg-surface border border-border rounded-2xl p-6 mb-6">' +
+            '<div class="flex items-center gap-3 mb-4">' +
+              '<span class="px-3 py-1.5 rounded-lg text-xs font-bold ' + (catColors[doc.category] || '') + '">' + doc.category.toUpperCase() + '</span>' +
+              '<span class="text-sm text-on-muted">' + doc.subcategory + '</span>' +
+              (doc.year ? '<span class="text-sm text-on-muted">' + doc.year + '</span>' : '') +
+            '</div>' +
+            '<h1 class="text-2xl font-bold text-on-background mb-4">' + doc.title + '</h1>' +
+            (doc.citation ? '<p class="text-sm text-on-muted mb-4 font-mono">' + doc.citation + '</p>' : '') +
+            '<p class="text-on-surface leading-relaxed mb-6">' + doc.description + '</p>' +
+            (doc.tags.length ? '<div class="flex flex-wrap gap-2">' +
+              doc.tags.map(function(t) {
+                return '<span class="px-3 py-1 rounded-full bg-surface-alt text-on-muted text-xs">' + t + '</span>';
+              }).join('') +
+            '</div>' : '') +
+          '</div>';
+
+        showScreen('workspace-detail');
+      } catch(e) {
+        showToast('Failed to load document details', 'error');
+      }
     }
 
     /* ===========================
@@ -1237,32 +1484,414 @@
        DATA LOADING
        =========================== */
 
-    function loadScreenData(screenId) {
+    async function loadScreenData(screenId) {
       switch(screenId) {
         case 'home':
           loadHomeData();
+          loadDailyUpdates();
+          loadRecentSearches();
           break;
         case 'search':
           loadSearchData();
+          break;
+        case 'constitution':
+          loadConstitution();
+          break;
+        case 'notebook':
+          loadNotebook();
+          break;
+        case 'flashcards':
+          loadFlashcards();
+          break;
+        case 'bookmarks':
+          loadBookmarks();
+          break;
+        case 'gazettes':
+          loadGazettes();
+          break;
+        case 'tribunals':
+          loadTribunals();
+          break;
+        case 'history':
+          loadHistory();
+          break;
+        case 'student-workspace':
+          loadStudentWorkspace();
+          break;
+        case 'profile':
+          loadProfile();
           break;
       }
     }
 
     function loadHomeData() {
-      const user = null;
-      try {
-        const stored = localStorage.getItem('juriscore_user');
-        if (stored) user = JSON.parse(stored);
-      } catch(e) {}
-      const greeting = getGreeting();
-      const name = user && user.name ? user.name : 'Researcher';
-      document.getElementById('home-greeting').textContent = greeting + ', ' + name;
+      var user = getCurrentUser();
+      var greeting = getGreeting();
+      var name = user && user.name ? user.name : '';
+      document.getElementById('home-greeting').textContent = name ? (greeting + ', ' + name) : greeting;
     }
 
     function loadSearchData() {
-      const input = document.getElementById('search-main-input');
+      var input = document.getElementById('search-main-input');
       if (input && !input.value) {
         input.focus();
+      }
+    }
+
+    /* ===========================
+       HOME — DAILY UPDATES
+       =========================== */
+
+    async function loadDailyUpdates() {
+      var container = document.getElementById('home-daily-updates');
+      if (!container) return;
+      try {
+        var res = await fetch('/api/v1/search/daily-updates?limit=10');
+        if (!res.ok) throw new Error('Failed');
+        var data = await res.json();
+        var results = data.results || [];
+        if (!results.length) {
+          container.innerHTML = '<p class="text-sm text-on-muted py-4">No daily updates available</p>';
+          return;
+        }
+        container.innerHTML = results.slice(0, 8).map(function(r) {
+          var title = r.title || 'Untitled';
+          var court = r.court || '';
+          var date = r.date || '';
+          var excerpt = (r.excerpt || '').substring(0, 150);
+          var docType = r.doc_type || 'case';
+          var badgeColor = 'bg-primary/10 text-primary';
+          if (docType === 'legislation') badgeColor = 'bg-green-50 text-green-700';
+          else if (docType === 'gazette') badgeColor = 'bg-amber-50 text-amber-700';
+          return '<div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">' +
+            '<div class="flex items-center gap-2 mb-2">' +
+              '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ' + badgeColor + '">' + docType + '</span>' +
+              (court ? '<span class="text-xs text-on-muted">' + court + '</span>' : '') +
+              (date ? '<span class="text-xs text-on-muted ml-auto">' + date + '</span>' : '') +
+            '</div>' +
+            '<h3 class="text-sm font-bold text-on-surface mb-1">' + title + '</h3>' +
+            (excerpt ? '<p class="text-xs text-on-muted line-clamp-2">' + excerpt + '</p>' : '') +
+          '</div>';
+        }).join('');
+      } catch(e) {
+        container.innerHTML = '<p class="text-sm text-on-muted py-4">Unable to load updates</p>';
+      }
+    }
+
+    /* ===========================
+       HOME — RECENT SEARCHES
+       =========================== */
+
+    async function loadRecentSearches() {
+      var container = document.getElementById('home-recent-searches');
+      if (!container) return;
+      var user = getCurrentUser();
+      var userId = user && user.id ? user.id : 'demo-user';
+      try {
+        var res = await apiFetch('/api/v1/search/history?user_id=' + encodeURIComponent(userId) + '&limit=5');
+        if (!res.ok) throw new Error('Failed');
+        var data = await res.json();
+        if (!data.length) {
+          container.innerHTML = '<p class="text-sm text-on-muted py-3">No recent searches</p>';
+          return;
+        }
+        container.innerHTML = data.map(function(item) {
+          var timeAgo = '';
+          if (item.created_at) {
+            var diff = Date.now() - new Date(item.created_at).getTime();
+            var mins = Math.floor(diff / 60000);
+            if (mins < 60) timeAgo = mins + 'm ago';
+            else if (mins < 1440) timeAgo = Math.floor(mins/60) + 'h ago';
+            else timeAgo = Math.floor(mins/1440) + 'd ago';
+          }
+          return '<div class="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all" onclick="document.getElementById(\'search-main-input\').value=\'' + (item.query || '').replace(/'/g, "\\'") + '\';navigateTo(\'search\');doSearch()">' +
+            '<svg class="w-4 h-4 text-on-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+            '<span class="text-sm text-on-surface truncate">' + (item.query || '') + '</span>' +
+            '<span class="text-xs text-on-muted ml-auto flex-shrink-0">' + timeAgo + '</span>' +
+          '</div>';
+        }).join('');
+      } catch(e) {
+        container.innerHTML = '<p class="text-sm text-on-muted py-3">No recent searches</p>';
+      }
+    }
+
+    function clearRecentSearches() {
+      localStorage.removeItem('juriscore_recent_searches');
+      loadRecentSearches();
+      showToast('Recent searches cleared', 'success');
+    }
+
+    /* ===========================
+       CONSTITUTION
+       =========================== */
+
+    async function loadConstitution() {
+      var container = document.getElementById('constitution-chapters');
+      if (!container) return;
+      try {
+        var res = await fetch('/api/v1/constitution/chapters');
+        if (!res.ok) throw new Error('Failed');
+        var chapters = await res.json();
+        if (!chapters.length) return;
+        container.innerHTML = chapters.map(function(ch) {
+          var articles = ch.articles || [];
+          var articleCount = articles.length;
+          var articlesHtml = articles.slice(0, 10).map(function(a) {
+            var text = typeof a === 'string' ? a : '';
+            return '<div class="p-3 rounded-xl bg-surface-alt/50"><p class="text-sm text-on-muted font-serif leading-relaxed">' + text + '</p></div>';
+          }).join('');
+          return '<div class="chapter-accordion bg-surface border border-border rounded-xl overflow-hidden">' +
+            '<button class="accordion-trigger w-full flex items-center justify-between p-4 text-left hover:bg-surface-alt transition-colors" onclick="toggleAccordion(this)">' +
+              '<div class="flex items-center gap-3">' +
+                '<span class="text-xs font-bold text-primary uppercase tracking-wider">' + (ch.chapter || '') + '</span>' +
+                '<span class="text-sm font-semibold text-on-surface">' + (ch.title || '') + '</span>' +
+              '</div>' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="text-xs text-on-muted bg-surface-alt px-2 py-1 rounded-full">' + articleCount + ' articles</span>' +
+                '<svg class="accordion-icon w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>' +
+              '</div>' +
+            '</button>' +
+            '<div class="chapter-content px-4"><div class="py-4 space-y-3 border-t border-border-light">' + articlesHtml + '</div></div>' +
+          '</div>';
+        }).join('');
+      } catch(e) {
+        /* Keep the hardcoded content if API fails */
+      }
+    }
+
+    /* ===========================
+       NOTEBOOK
+       =========================== */
+
+    async function loadNotebook() {
+      var container = document.getElementById('notebook-notes-grid');
+      if (!container) return;
+      var user = getCurrentUser();
+      if (!user || !user.id) {
+        container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">Sign in to view your notes</p></div>';
+        return;
+      }
+      try {
+        var res = await apiFetch('/api/v1/study/notes');
+        if (!res.ok) throw new Error('Failed');
+        var notes = await res.json();
+        if (!notes.length) {
+          container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">No notes yet. Start researching to create notes.</p></div>';
+          return;
+        }
+        container.innerHTML = notes.map(function(n) {
+          var text = n.note_text || '';
+          try { var parsed = JSON.parse(text); text = parsed.facts || parsed.summary || text; } catch(e) {}
+          var date = n.updated_at || n.created_at || '';
+          var timeAgo = formatTimeAgo(date);
+          return '<div class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer">' +
+            '<h3 class="text-sm font-bold text-on-surface mb-2">Study Note</h3>' +
+            '<p class="text-xs text-on-muted line-clamp-3 mb-3">' + text.substring(0, 200) + '</p>' +
+            '<p class="text-xs text-on-muted">' + timeAgo + '</p>' +
+          '</div>';
+        }).join('');
+      } catch(e) {
+        /* Keep static content */
+      }
+    }
+
+    /* ===========================
+       FLASHCARDS
+       =========================== */
+
+    async function loadFlashcards() {
+      var container = document.getElementById('flashcard-decks');
+      if (!container) return;
+      var user = getCurrentUser();
+      if (!user || !user.id) {
+        container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">Sign in to view your flashcard decks</p></div>';
+        return;
+      }
+      try {
+        var res = await apiFetch('/api/v1/flashcards/decks');
+        if (!res.ok) throw new Error('Failed');
+        var decks = await res.json();
+        if (!decks.length) {
+          container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">No decks yet. Create your first flashcard deck.</p></div>';
+          return;
+        }
+        var colors = ['bg-blue-50 text-primary', 'bg-green-50 text-secondary', 'bg-amber-50 text-accent', 'bg-purple-50 text-purple-600'];
+        container.innerHTML = decks.map(function(d, i) {
+          var colorClass = colors[i % colors.length];
+          return '<div class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-primary/30 hover:shadow-md transition-all" data-deck="' + d.id + '">' +
+            '<div class="flex items-center justify-between mb-3">' +
+              '<span class="px-2 py-1 rounded-lg ' + colorClass + ' text-xs font-bold">' + (d.subject || 'General') + '</span>' +
+            '</div>' +
+            '<h3 class="text-sm font-bold text-on-surface mb-1">' + (d.title || 'Untitled Deck') + '</h3>' +
+          '</div>';
+        }).join('');
+      } catch(e) {
+        /* Keep static content */
+      }
+    }
+
+    /* ===========================
+       BOOKMARKS
+       =========================== */
+
+    async function loadBookmarks() {
+      var container = document.querySelector('#screen-bookmarks .space-y-3');
+      if (!container) return;
+      var user = getCurrentUser();
+      if (!user || !user.id) {
+        container.innerHTML = '<div class="text-center py-12"><p class="text-sm text-on-muted">Sign in to view your bookmarks</p></div>';
+        return;
+      }
+      try {
+        var res = await apiFetch('/api/v1/bookmarks/');
+        if (!res.ok) throw new Error('Failed');
+        var bookmarks = await res.json();
+        if (!bookmarks.length) {
+          container.innerHTML = '<div class="text-center py-12"><p class="text-sm text-on-muted">No bookmarks yet. Save cases and statutes as you research.</p></div>';
+          return;
+        }
+        container.innerHTML = bookmarks.map(function(b) {
+          var typeBadge = 'good-law';
+          var typeLabel = 'Case';
+          if (b.resource_type === 'statute') { typeBadge = 'current'; typeLabel = 'Statute'; }
+          else if (b.resource_type === 'gazette') { typeBadge = 'caution'; typeLabel = 'Gazette'; }
+          return '<div class="bookmark-card bg-surface border border-border rounded-xl p-4">' +
+            '<div class="flex items-start justify-between gap-3">' +
+              '<div class="flex-1 min-w-0">' +
+                '<div class="flex items-center gap-2 mb-1"><span class="status-badge ' + typeBadge + '">' + typeLabel + '</span></div>' +
+                '<h3 class="text-sm font-bold text-on-surface mb-1">' + (b.title || 'Untitled') + '</h3>' +
+              '</div>' +
+              '<button class="p-2 rounded-lg hover:bg-surface-alt transition-colors" onclick="deleteBookmark(\'' + b.id + '\')"><svg class="w-4 h-4 text-on-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      } catch(e) {
+        /* Keep static content */
+      }
+    }
+
+    async function deleteBookmark(id) {
+      try {
+        await apiFetch('/api/v1/bookmarks/' + id, { method: 'DELETE' });
+        showToast('Bookmark removed', 'success');
+        loadBookmarks();
+      } catch(e) {
+        showToast('Failed to remove bookmark', 'error');
+      }
+    }
+
+    /* ===========================
+       GAZETTES
+       =========================== */
+
+    async function loadGazettes() {
+      var container = document.querySelector('#screen-gazettes .space-y-3');
+      if (!container) return;
+      try {
+        var res = await fetch('/api/v1/gazettes/?limit=10');
+        if (!res.ok) throw new Error('Failed');
+        var data = await res.json();
+        var items = data.items || [];
+        if (!items.length) return;
+        container.innerHTML = items.map(function(g) {
+          var catColor = 'bg-blue-50 text-primary';
+          if (g.category === 'Environmental') catColor = 'bg-green-50 text-secondary';
+          else if (g.category === 'Land') catColor = 'bg-amber-50 text-accent';
+          else if (g.category === 'Government') catColor = 'bg-purple-50 text-purple-600';
+          return '<div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">' +
+            '<div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg ' + catColor + ' text-xs font-bold">' + g.category + '</span><span class="text-xs text-on-muted">' + g.date + '</span></div>' +
+            '<h3 class="text-sm font-bold text-on-surface mb-1">' + g.title + '</h3>' +
+            '<p class="text-xs text-on-muted line-clamp-2">' + g.gazette_number + ' &mdash; ' + (g.summary || '').substring(0, 120) + '</p>' +
+          '</div>';
+        }).join('');
+      } catch(e) {
+        /* Keep static content */
+      }
+    }
+
+    /* ===========================
+       TRIBUNALS
+       =========================== */
+
+    async function loadTribunals() {
+      var container = document.querySelector('#screen-tribunals .space-y-3');
+      if (!container) return;
+      try {
+        var res = await fetch('/api/v1/tribunals/?limit=10');
+        if (!res.ok) throw new Error('Failed');
+        var data = await res.json();
+        var items = data.items || [];
+        if (!items.length) return;
+        container.innerHTML = items.map(function(t) {
+          var tColor = 'bg-green-50 text-secondary';
+          if (t.tribunal_type === 'TAT') tColor = 'bg-blue-50 text-primary';
+          else if (t.tribunal_type === 'BPRT') tColor = 'bg-amber-50 text-accent';
+          else if (t.tribunal_type === 'PPRA') tColor = 'bg-purple-50 text-purple-600';
+          return '<div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">' +
+            '<div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg ' + tColor + ' text-xs font-bold">' + t.tribunal_name + '</span><span class="text-xs text-on-muted">' + t.citation + '</span></div>' +
+            '<h3 class="text-sm font-bold text-on-surface mb-1">' + t.title + '</h3>' +
+            '<p class="text-xs text-on-muted line-clamp-2 mb-2">' + (t.summary || '').substring(0, 150) + '</p>' +
+            '<div class="flex gap-2"><span class="px-2 py-0.5 rounded-full bg-surface-alt text-on-muted text-xs">' + t.subject + '</span></div>' +
+          '</div>';
+        }).join('');
+      } catch(e) {
+        /* Keep static content */
+      }
+    }
+
+    /* ===========================
+       HISTORY
+       =========================== */
+
+    async function loadHistory() {
+      var container = document.querySelector('#screen-history .space-y-8');
+      if (!container) return;
+      var user = getCurrentUser();
+      var userId = user && user.id ? user.id : 'demo-user';
+      try {
+        var res = await apiFetch('/api/v1/history?user_id=' + encodeURIComponent(userId));
+        if (!res.ok) throw new Error('Failed');
+        var data = await res.json();
+        var groups = data.groups || [];
+        if (!groups.length) return;
+        container.innerHTML = groups.map(function(g) {
+          var itemsHtml = g.items.map(function(item) {
+            var icon = '<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>';
+            var typeLabel = 'Search';
+            var typeColor = 'text-primary';
+            if (item.type === 'view') { icon = '<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>'; typeLabel = 'Viewed'; typeColor = 'text-green-600'; }
+            else if (item.type === 'download') { icon = '<svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>'; typeLabel = 'Download'; typeColor = 'text-purple-600'; }
+            var time = '';
+            if (item.timestamp) {
+              var d = new Date(item.timestamp);
+              time = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            }
+            return '<div class="timeline-item flex gap-4">' +
+              '<div class="timeline-dot mt-1.5"></div>' +
+              '<div class="flex-1 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">' +
+                '<div class="flex items-center gap-2 mb-1">' + icon + '<span class="text-xs font-semibold ' + typeColor + '">' + typeLabel + '</span><span class="text-xs text-on-muted ml-auto">' + time + '</span></div>' +
+                '<p class="text-sm text-on-surface">' + (item.title || '') + '</p>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+          return '<div><h3 class="text-sm font-bold text-on-surface mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary"></span>' + (g.label || g.date) + '</h3><div class="space-y-4 ml-1">' + itemsHtml + '</div></div>';
+        }).join('');
+      } catch(e) {
+        /* Keep static content */
+      }
+    }
+
+    /* ===========================
+       PROFILE
+       =========================== */
+
+    function loadProfile() {
+      var user = getCurrentUser();
+      if (user) {
+        var nameEl = document.getElementById('profile-name');
+        var emailEl = document.getElementById('profile-email');
+        if (nameEl && user.name) nameEl.textContent = user.name;
+        if (emailEl && user.email) emailEl.textContent = user.email;
       }
     }
 
@@ -1290,7 +1919,7 @@
       if (summaryEl) summaryEl.classList.remove('hidden');
 
       try {
-        let url = '/api/search?q=' + encodeURIComponent(query) + '&jurisdiction=' + currentJurisdiction;
+        let url = '/api/v1/search?q=' + encodeURIComponent(query) + '&jurisdiction=' + currentJurisdiction;
         if (currentDocType && currentDocType !== 'all') url += '&doc_type=' + encodeURIComponent(currentDocType);
         if (currentCourt && currentCourt !== 'all') url += '&court=' + encodeURIComponent(currentCourt);
 
@@ -1349,11 +1978,17 @@
     }
 
     /* Search event listeners */
+    let searchDebounce = null;
     document.addEventListener('DOMContentLoaded', function() {
       var searchBtn = document.getElementById('search-main-btn');
       var searchInput = document.getElementById('search-main-input');
       if (searchBtn) searchBtn.addEventListener('click', doSearch);
-      if (searchInput) searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(); });
+      if (searchInput) searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          clearTimeout(searchDebounce);
+          doSearch();
+        }
+      });
 
       /* Jurisdiction tabs */
       document.querySelectorAll('.jurisdiction-tab').forEach(function(tab) {

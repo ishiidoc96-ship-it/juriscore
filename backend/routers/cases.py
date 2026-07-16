@@ -21,14 +21,15 @@ import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field
 from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.database import Case, get_session
+from models.database import Case
 from models.schemas import (
     CaseComparisonRequest,
+    CaseComparisonResponse,
     CaseResponse,
     CaseSaveRequest,
 )
@@ -41,6 +42,7 @@ from services.ai_service import (
 from core import (
     RATE_LIMIT_AI_PER_MIN,
     RATE_LIMIT_SEARCH_PER_MIN,
+    get_session,
     rate_limit_dep,
     settings,
 )

@@ -46,7 +46,14 @@ try:
             await conn.run_sync(Base.metadata.create_all)
         logger.info("Database tables created")
 
-    asyncio.get_event_loop().run_until_complete(_init_db())
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            asyncio.ensure_future(_init_db())
+        else:
+            loop.run_until_complete(_init_db())
+    except RuntimeError:
+        asyncio.run(_init_db())
 except Exception as e:
     logger.error(f"Database init failed at module level: {traceback.format_exc()}")
 

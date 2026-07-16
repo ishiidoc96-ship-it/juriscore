@@ -14,8 +14,8 @@ try:
 except ImportError:
     import jwt
 
-from models.database import async_session, User
-from models.schemas import (
+from api.backend.models.database import async_session, User
+from api.backend.models.schemas import (
     AuthLoginRequest,
     AuthSignupRequest,
     AuthResponse,
@@ -26,7 +26,15 @@ from models.schemas import (
 logger = logging.getLogger("juriscore")
 router = APIRouter()
 
-SECRET_KEY = os.getenv("JWT_SECRET", "juriscore-jwt-secret-key-2024-kenya-legal-research-platform")
+# Get JWT secret from environment, with a default only for development
+SECRET_KEY = os.getenv("JWT_SECRET")
+if not SECRET_KEY:
+    # Only allow missing secret in development
+    if os.getenv("ENVIRONMENT") == "production":
+        raise ValueError("JWT_SECRET environment variable is required in production")
+    logger.warning("JWT_SECRET not set, using development default")
+    SECRET_KEY = "juriscore-dev-secret-change-in-production"
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS = 72
 

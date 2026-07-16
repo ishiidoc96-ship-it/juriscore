@@ -1,32 +1,70 @@
-version: '3.8'
+version: '3.9'
 
 services:
-  db:
-    image: supabase/postgres:15.1.0.89
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: juriscore
-    volumes:
-      - db-data:/var/lib/postgresql/data
-
-  backend:
-    build: ./backend
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: juriscore-api
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/juriscore
-      - SUPABASE_URL=${SUPABASE_URL:-https://your-project.supabase.co}
-      - SUPABASE_KEY=${SUPABASE_KEY:-your-anon-key}
-      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
-      - KENYALAW_BASE=https://www.kenyalaw.org
-      - CORS_ORIGINS=*
+      DATABASE_URL: postgresql+asyncpg://juriscore:juriscore@db:5432/juriscore_db
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: ${JWT_SECRET:-juriscore-dev-secret-change-in-production}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:5173}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
-      - ./backend:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      - .:/app
+    networks:
+      - juriscore-network
+    command: uvicorn api.backend.main:app --reload --host 0.0.0.0 --port 8000
+
+  db:
+    image: postgres:16-alpine
+    container_name: juriscore-db
+    environment:
+      POSTGRES_USER: juriscore
+      POSTGRES_PASSWORD: juriscore
+      POSTGRES_DB: juriscore_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U juriscore"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - juriscore-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: juriscore-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redisdata:/data
+    networks:
+      - juriscore-network
 
 volumes:
-  db-data:
+  pgdata:
+  redisdata:
+
+networks:
+  juriscore-network:
+    driver: bridge

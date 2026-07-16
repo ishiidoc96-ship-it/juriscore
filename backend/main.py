@@ -1,4 +1,4 @@
-﻿import os
+import os
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -6,9 +6,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 
-from models.database import engine, Base
-from routers import cases, statutes, constitution, notebook, flashcards, study, export, search
-from services import ai_service
+from .models.database import engine, Base
+from .routers import (
+    cases,
+    statutes,
+    constitution,
+    notebook,
+    flashcards,
+    study,
+    export,
+    search,
+)
+from .services import ai_service
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)

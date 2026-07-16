@@ -20,7 +20,7 @@ def _load_data():
     # Try base64 compressed file first (Vercel)
     b64_path = os.path.join(os.path.dirname(__file__), "..", "..", "data", "cases.json.gz.b64")
     # Try SQLite as fallback (local dev)
-    sqlite_path = os.path.join(os.path.dirname(__file__), "..", "data", "legal_db.sqlite")
+    sqlite_path = os.path.join(os.path.dirname(__file__), "..", "..", "data", "legal_db.sqlite")
 
     if os.path.exists(b64_path):
         try:

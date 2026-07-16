@@ -4,17 +4,13 @@ from sqlalchemy import select, desc, and_
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta, date
 from pydantic import BaseModel
-from models.database import async_session, SearchHistory
+from api.backend.models.database import SearchHistory
+from api.backend.core import get_session
 import logging
 import uuid
 
 logger = logging.getLogger("juriscore")
 router = APIRouter()
-
-
-async def get_session():
-    async with async_session() as session:
-        yield session
 
 
 # ── Pydantic models ──────────────────────────────────────────────────────────

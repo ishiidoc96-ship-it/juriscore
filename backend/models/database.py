@@ -61,7 +61,14 @@ class User(Base):
     name: Mapped[str]
     email: Mapped[str]
     university: Mapped[str | None]
+    password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    salt: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    role: Mapped[str] = mapped_column(String(50), default="user")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    is_active: Mapped[bool] = mapped_column(default=True)
+    last_login: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    avatar_url: Mapped[str | None] = mapped_column(String, nullable=True)
 
 
 class Notebook(Base):

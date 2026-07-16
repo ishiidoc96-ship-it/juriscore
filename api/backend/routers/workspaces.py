@@ -4,9 +4,12 @@ from sqlalchemy import select
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta
 from pydantic import BaseModel
-from models.database import async_session, Case, Statute
+from api.backend.models.database import async_session, Case, Statute
 import logging
 import uuid
+
+from api.backend.routers.auth import get_current_user
+from api.backend.models.database import User
 
 logger = logging.getLogger("juriscore")
 router = APIRouter()
@@ -172,12 +175,13 @@ DEMO_ACTIVITY = [
 # ── Endpoints ────────────────────────────────────────────────────────────────
 
 @router.get("")
-async def list_workspaces(session: AsyncSession = Depends(get_session)):
+async def list_workspaces(current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
     """List all workspaces for the current user."""
     try:
         from sqlalchemy import text
         result = await session.execute(
-            text("SELECT id, title, description, created_at, updated_at FROM workspaces ORDER BY updated_at DESC")
+            text("SELECT id, title, description, created_at, updated_at FROM workspaces WHERE user_id = :uid ORDER BY updated_at DESC"),
+            {"uid": current_user.id}
         )
         rows = result.fetchall()
         if rows:
@@ -191,18 +195,18 @@ async def list_workspaces(session: AsyncSession = Depends(get_session)):
             ]
     except Exception:
         pass
-    return [DEMO_WORKSPACE]
+    return []
 
 
 @router.post("")
-async def create_workspace(body: WorkspaceCreate, session: AsyncSession = Depends(get_session)):
+async def create_workspace(body: WorkspaceCreate, current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
     """Create a new workspace."""
     try:
         from sqlalchemy import text
         ws_id = str(uuid.uuid4())
         await session.execute(
-            text("INSERT INTO workspaces (id, title, description, created_at, updated_at) VALUES (:id, :title, :desc, :now, :now)"),
-            {"id": ws_id, "title": body.title, "desc": body.description, "now": datetime.utcnow()},
+            text("INSERT INTO workspaces (id, user_id, title, description, created_at, updated_at) VALUES (:id, :uid, :title, :desc, :now, :now)"),
+            {"id": ws_id, "uid": current_user.id, "title": body.title, "desc": body.description, "now": datetime.utcnow()},
         )
         await session.commit()
         return {"id": ws_id, "title": body.title, "description": body.description, "status": "created"}
@@ -217,13 +221,13 @@ async def create_workspace(body: WorkspaceCreate, session: AsyncSession = Depend
 
 
 @router.get("/{workspace_id}")
-async def get_workspace(workspace_id: str, session: AsyncSession = Depends(get_session)):
+async def get_workspace(workspace_id: str, current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
     """Get workspace details by ID."""
     try:
         from sqlalchemy import text
         result = await session.execute(
-            text("SELECT id, title, description, created_at, updated_at FROM workspaces WHERE id = :id"),
-            {"id": workspace_id},
+            text("SELECT id, title, description, created_at, updated_at FROM workspaces WHERE id = :id AND user_id = :uid"),
+            {"id": workspace_id, "uid": current_user.id},
         )
         row = result.fetchone()
         if row:
@@ -234,8 +238,6 @@ async def get_workspace(workspace_id: str, session: AsyncSession = Depends(get_s
             }
     except Exception:
         pass
-    if workspace_id == WORKSPACE_ID:
-        return DEMO_WORKSPACE
     raise HTTPException(status_code=404, detail="Workspace not found")
 
 

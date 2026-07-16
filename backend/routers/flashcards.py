@@ -2,18 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import List
-from models.database import async_session, FlashcardDeck, Flashcard
+from models.database import FlashcardDeck, Flashcard
 from models.schemas import FlashcardDeckCreate, FlashcardDeckResponse, FlashcardCreate, FlashcardResponse, FlashcardUpdate
+from core import get_session
 from datetime import datetime
 import logging
 
 logger = logging.getLogger("juriscore")
 router = APIRouter()
-
-
-async def get_session() -> AsyncSession:
-    async with async_session() as session:
-        yield session
 
 
 @router.get("/decks", response_model=List[FlashcardDeckResponse])

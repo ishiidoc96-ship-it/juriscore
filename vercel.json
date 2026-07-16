@@ -1,24 +1,47 @@
 {
   "version": 2,
+  "buildCommand": "pip install -r requirements.txt",
+  "devCommand": "uvicorn api.backend.main:app --reload --host 0.0.0.0 --port 8000",
+  "installCommand": "pip install -r requirements.txt",
+  "framework": null,
   "builds": [
     {
-      "src": "api/index.py",
+      "src": "api/backend/main.py",
       "use": "@vercel/python",
-      "config": { "maxDuration": 30 }
+      "config": { "maxDuration": 60 }
     },
     {
       "src": "public/**",
       "use": "@vercel/static"
     }
   ],
+  "functions": {
+    "api/backend/main.py": { "maxDuration": 60 }
+  },
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.py"
+      "src": "/api/v1/(.*)",
+      "dest": "/api/backend/main.py"
     },
     {
       "src": "/(.*\\.(css|js|png|jpg|svg|ico|json|txt|woff|woff2|ttf|eot|html))",
       "dest": "/public/$1"
+    },
+    {
+      "src": "/health",
+      "dest": "/api/backend/main.py"
+    },
+    {
+      "src": "/ready",
+      "dest": "/api/backend/main.py"
+    },
+    {
+      "src": "/metrics",
+      "dest": "/api/backend/main.py"
+    },
+    {
+      "src": "/docs",
+      "dest": "/api/backend/main.py"
     },
     {
       "src": "/login",
@@ -36,5 +59,12 @@
       "src": "/",
       "dest": "/public/app.html"
     }
-  ]
+  ],
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "JWT_SECRET": "@jwt_secret",
+    "REDIS_URL": "@redis_url",
+    "OPENAI_API_KEY": "@openai_api_key",
+    "CORS_ORIGINS": "@cors_origins"
+  }
 }

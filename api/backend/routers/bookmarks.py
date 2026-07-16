@@ -4,31 +4,15 @@ from sqlalchemy import select, and_
 from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel
-from models.database import async_session, Base, engine, uuid_str
-from sqlalchemy import String, ForeignKey, DateTime, JSON
-from sqlalchemy.orm import Mapped, mapped_column
 import logging
+
+from api.backend.models.database import Bookmark, Collection, uuid_str
+from api.backend.routers.auth import get_current_user
+from api.backend.models.database import User
+from api.backend.core import get_session
 
 logger = logging.getLogger("juriscore")
 router = APIRouter()
-
-
-class Bookmark(Base):
-    __tablename__ = "bookmarks"
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
-    resource_type: Mapped[str] = mapped_column(String)
-    resource_id: Mapped[str] = mapped_column(String)
-    title: Mapped[str] = mapped_column(String)
-    metadata_json: Mapped[dict | None] = mapped_column("metadata", JSON, nullable=True)
-    collection_id: Mapped[str | None] = mapped_column(String, ForeignKey("collections.id"), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-
-
-class Collection(Base):
-    __tablename__ = "collections"
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
-    name: Mapped[str] = mapped_column(String)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
 class BookmarkCreate(BaseModel):
@@ -69,11 +53,12 @@ async def get_session():
 
 @router.get("/", response_model=List[BookmarkResponse])
 async def list_bookmarks(
+    current_user: User = Depends(get_current_user),
     tab: Optional[str] = Query(None, description="Filter by resource type: cases, statutes, gazettes, notes"),
     session: AsyncSession = Depends(get_session),
 ):
     try:
-        stmt = select(Bookmark)
+        stmt = select(Bookmark).where(Bookmark.user_id == current_user.id)
         if tab:
             stmt = stmt.where(Bookmark.resource_type == tab)
         stmt = stmt.order_by(Bookmark.created_at.desc())
@@ -99,11 +84,13 @@ async def list_bookmarks(
 @router.post("/", response_model=BookmarkResponse, status_code=201)
 async def create_bookmark(
     payload: BookmarkCreate,
+    current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
     try:
         bookmark = Bookmark(
             id=uuid_str(),
+            user_id=current_user.id,
             resource_type=payload.resource_type,
             resource_id=payload.resource_id,
             title=payload.title,
@@ -129,10 +116,11 @@ async def create_bookmark(
 @router.delete("/{bookmark_id}", status_code=204)
 async def delete_bookmark(
     bookmark_id: str,
+    current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
     try:
-        result = await session.execute(select(Bookmark).where(Bookmark.id == bookmark_id))
+        result = await session.execute(select(Bookmark).where(Bookmark.id == bookmark_id, Bookmark.user_id == current_user.id))
         bookmark = result.scalar_one_or_none()
         if not bookmark:
             raise HTTPException(status_code=404, detail="Bookmark not found")
@@ -149,10 +137,11 @@ async def delete_bookmark(
 async def move_bookmark(
     bookmark_id: str,
     payload: BookmarkMoveRequest,
+    current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
     try:
-        result = await session.execute(select(Bookmark).where(Bookmark.id == bookmark_id))
+        result = await session.execute(select(Bookmark).where(Bookmark.id == bookmark_id, Bookmark.user_id == current_user.id))
         bookmark = result.scalar_one_or_none()
         if not bookmark:
             raise HTTPException(status_code=404, detail="Bookmark not found")
@@ -182,7 +171,7 @@ async def move_bookmark(
 
 
 @router.get("/collections", response_model=List[CollectionResponse])
-async def list_collections(session: AsyncSession = Depends(get_session)):
+async def list_collections(current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
     try:
         result = await session.execute(select(Collection).order_by(Collection.created_at.desc()))
         collections = result.scalars().all()
@@ -198,6 +187,7 @@ async def list_collections(session: AsyncSession = Depends(get_session)):
 @router.post("/collections", response_model=CollectionResponse, status_code=201)
 async def create_collection(
     payload: CollectionCreate,
+    current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
     try:
@@ -214,6 +204,7 @@ async def create_collection(
 @router.delete("/collections/{collection_id}", status_code=204)
 async def delete_collection(
     collection_id: str,
+    current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
     try:
@@ -221,7 +212,7 @@ async def delete_collection(
         collection = result.scalar_one_or_none()
         if not collection:
             raise HTTPException(status_code=404, detail="Collection not found")
-        move_stmt = select(Bookmark).where(Bookmark.collection_id == collection_id)
+        move_stmt = select(Bookmark).where(Bookmark.collection_id == collection_id, Bookmark.user_id == current_user.id)
         move_result = await session.execute(move_stmt)
         bookmarks_in_collection = move_result.scalars().all()
         for bm in bookmarks_in_collection:

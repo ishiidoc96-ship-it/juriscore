@@ -1,4 +1,4 @@
-const API_BASE = window.location.origin + '/api';
+const API_BASE = window.location.origin + '/api/v1';
 
 async function apiFetch(endpoint, options = {}) {
   const token = localStorage.getItem('juriscore_token');

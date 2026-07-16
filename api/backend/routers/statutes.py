@@ -2,18 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_, and_
 from typing import Optional, List
-from models.database import async_session, Statute
-from models.schemas import StatuteResponse, StatuteSectionsQuery, StatuteSearchQuery
-from services.scraper import scrape_statute
+from api.backend.models.database import Statute
+from api.backend.models.schemas import StatuteResponse, StatuteSectionsQuery, StatuteSearchQuery
+from api.backend.services.scraper import scrape_statute
+from api.backend.core import get_session
 import logging
 
 logger = logging.getLogger("juriscore")
 router = APIRouter()
-
-
-async def get_session() -> AsyncSession:
-    async with async_session() as session:
-        yield session
 
 
 @router.get("/", response_model=List[StatuteResponse])

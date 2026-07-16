@@ -61,9 +61,14 @@ class User(Base):
     name: Mapped[str]
     email: Mapped[str]
     university: Mapped[str | None]
-    password_hash: Mapped[str | None] = mapped_column(String, nullable=True)
-    salt: Mapped[str | None] = mapped_column(String, nullable=True)
+    password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    salt: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    role: Mapped[str] = mapped_column(String(50), default="user")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    is_active: Mapped[bool] = mapped_column(default=True)
+    last_login: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    avatar_url: Mapped[str | None] = mapped_column(String, nullable=True)
 
 
 class Notebook(Base):
@@ -127,6 +132,81 @@ class SearchHistory(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
+class Bookmark(Base):
+    __tablename__ = "bookmarks"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
+    user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
+    resource_type: Mapped[str] = mapped_column(String)
+    resource_id: Mapped[str] = mapped_column(String)
+    title: Mapped[str] = mapped_column(String)
+    metadata_json: Mapped[dict | None] = mapped_column("metadata", JSON, nullable=True)
+    collection_id: Mapped[str | None] = mapped_column(String, ForeignKey("collections.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class Collection(Base):
+    __tablename__ = "collections"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
+    name: Mapped[str] = mapped_column(String)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class Workspace(Base):
+    __tablename__ = "workspaces"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
+    user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
+    title: Mapped[str]
+    description: Mapped[str] = mapped_column(String, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class WorkspaceCase(Base):
+    __tablename__ = "workspace_cases"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
+    workspace_id: Mapped[str] = mapped_column(String, ForeignKey("workspaces.id"))
+    case_id: Mapped[str] = mapped_column(String, ForeignKey("cases.id"))
+    saved_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class WorkspaceAct(Base):
+    __tablename__ = "workspace_acts"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
+    workspace_id: Mapped[str] = mapped_column(String, ForeignKey("workspaces.id"))
+    act_id: Mapped[str] = mapped_column(String, ForeignKey("statutes.id"))
+    section: Mapped[str] = mapped_column(String, default="")
+    saved_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class WorkspaceNote(Base):
+    __tablename__ = "workspace_notes"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
+    workspace_id: Mapped[str] = mapped_column(String, ForeignKey("workspaces.id"))
+    title: Mapped[str]
+    content: Mapped[str] = mapped_column(String, default="")
+    color: Mapped[str] = mapped_column(String, default="#ffffff")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class WorkspaceFile(Base):
+    __tablename__ = "workspace_files"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
+    workspace_id: Mapped[str] = mapped_column(String, ForeignKey("workspaces.id"))
+    name: Mapped[str]
+    size_bytes: Mapped[int] = mapped_column(Integer, default=0)
+    mime_type: Mapped[str] = mapped_column(String, default="application/octet-stream")
+    uploaded_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class WorkspaceActivity(Base):
+    __tablename__ = "workspace_activity"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
+    workspace_id: Mapped[str] = mapped_column(String, ForeignKey("workspaces.id"))
+    type: Mapped[str]
+    title: Mapped[str]
+    timestamp: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
 from sqlalchemy import Index
 
 Index("ix_cases_title", Case.title)
@@ -141,3 +221,10 @@ Index("ix_study_notes_user", StudyNote.user_id)
 Index("ix_study_notes_case", StudyNote.case_id)
 Index("ix_search_history_user", SearchHistory.user_id)
 Index("ix_search_history_created", SearchHistory.created_at)
+Index("ix_bookmarks_user", Bookmark.user_id)
+Index("ix_bookmarks_resource", Bookmark.resource_type, Bookmark.resource_id)
+Index("ix_workspace_cases_workspace", WorkspaceCase.workspace_id)
+Index("ix_workspace_acts_workspace", WorkspaceAct.workspace_id)
+Index("ix_workspace_notes_workspace", WorkspaceNote.workspace_id)
+Index("ix_workspace_files_workspace", WorkspaceFile.workspace_id)
+Index("ix_workspace_activity_workspace", WorkspaceActivity.workspace_id)

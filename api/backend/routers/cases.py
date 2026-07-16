@@ -3,20 +3,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-from models.database import async_session, Case
-from models.schemas import CaseResponse, CaseComparisonRequest, CaseComparisonResponse
-from services.scraper import search_cases as scrape_search_cases
-from services.ai_service import compare_cases as ai_compare_cases, generate_case_summary, generate_citation
+from api.backend.models.database import Case, User
+from api.backend.models.schemas import CaseResponse, CaseComparisonRequest, CaseComparisonResponse
+from api.backend.services.scraper import search_cases as scrape_search_cases
+from api.backend.services.ai_service import compare_cases as ai_compare_cases, generate_case_summary, generate_citation
+from api.backend.routers.auth import get_current_user
+from api.backend.core import get_session
 import logging
 import uuid
 
 logger = logging.getLogger("juriscore")
 router = APIRouter()
-
-
-async def get_session():
-    async with async_session() as session:
-        yield session
 
 
 @router.get("/search", response_model=List[CaseResponse])
@@ -73,7 +70,7 @@ async def get_recent_cases(limit: int = 10, session: AsyncSession = Depends(get_
         )
         cases = result.scalars().all()
         if not cases:
-            from services.scraper import DEMO_CASES
+            from api.backend.services.scraper import DEMO_CASES
             demo_results = []
             for c in DEMO_CASES[:limit]:
                 case = Case(
@@ -141,7 +138,12 @@ async def get_case_summary(case_id: str, session: AsyncSession = Depends(get_ses
 
 
 @router.post("/{case_id}/save")
-async def save_case(case_id: str, session: AsyncSession = Depends(get_session)):
+async def save_case(
+    case_id: str,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    """Save a case to user's library."""
     result = await session.execute(select(Case).where(Case.id == case_id))
     case = result.scalar_one_or_none()
     if not case:
@@ -157,11 +159,16 @@ async def save_case(case_id: str, session: AsyncSession = Depends(get_session)):
         session.add(case)
         await session.flush()
         await session.commit()
-    return {"status": "saved", "case_id": case_id}
+    return {"status": "saved", "case_id": case_id, "user_id": current_user.id}
 
 
 @router.post("/compare", response_model=CaseComparisonResponse)
-async def compare_cases(request: CaseComparisonRequest, session: AsyncSession = Depends(get_session)):
+async def compare_cases(
+    request: CaseComparisonRequest,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    """Compare two cases using AI analysis."""
     result_a = await session.execute(select(Case).where(Case.id == request.case_a_id))
     result_b = await session.execute(select(Case).where(Case.id == request.case_b_id))
     case_a = result_a.scalar_one_or_none()

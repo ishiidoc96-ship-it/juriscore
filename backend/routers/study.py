@@ -2,19 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import List, Optional
-from models.database import async_session, StudyNote
+from models.database import StudyNote
 from models.schemas import StudyNoteCreate, StudyNoteUpdate, StudyNoteResponse, GenerateNotesRequest
 from services.ai_service import generate_study_notes
+from core import get_session
 from datetime import datetime
 import json
 import logging
 
 router = APIRouter()
-
-
-async def get_session():
-    async with async_session() as session:
-        yield session
 
 
 @router.get("/notes", response_model=List[StudyNoteResponse])
