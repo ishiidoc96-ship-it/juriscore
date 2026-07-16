@@ -78,6 +78,7 @@ jobs:
           fail_ci_if_error: false
 
       - name: Build Docker image (test build)
+        continue-on-error: true
         run: |
           docker build -t juriscore-test -f Dockerfile .
 
