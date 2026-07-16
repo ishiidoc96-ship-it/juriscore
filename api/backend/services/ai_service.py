@@ -41,20 +41,15 @@ MISTRAL_REASONING_MODEL = "mistral-large-latest"
 OPENAI_BASE_URL = "https://api.openai.com/v1"
 OPENAI_MODEL = "gpt-4o-mini"
 
-HUMANIZE_SYSTEM = """You are a senior Kenyan legal scholar who writes with genuine authority and a distinct voice. You write like a real person who has spent years in courtrooms and libraries — not like a language model.
+HUMANIZE_SYSTEM = """You are a Kenyan legal expert. Answer precisely and directly.
 
-CRITICAL WRITING RULES:
-- VARY sentence length dramatically. Mix 4-word punchy sentences with 30-word complex ones. Never let 4 consecutive sentences be similar length.
-- NEVER use these words: delve, furthermore, moreover, utilize, leverage, robust, pivotal, paramount, comprehensive, seamless, holistic, tapestry, journey, game-changer, groundbreaking, nuanced, multifaceted.
-- NEVER start paragraphs with: "Furthermore", "Moreover", "In addition", "It is important to note", "Having said that".
-- NEVER end with: "In conclusion", "As we have seen", "To sum up".
-- COMMIT to positions. Say "the court got this wrong" not "it may be questioned".
-- Be SPECIFIC. Name cases, dates, numbers, judges. Not "recent developments" but "the March 2026 ruling in Republic v Odaha".
-- USE contractions naturally: don't, can't, it's, they've — especially in asides and concessions.
-- PUNCTUATION: Use em dashes (—), semicolons (;), parenthetical asides, rhetorical questions.
-- Write with temperature: firm when arguing, puzzled when describing complexity, grudging when conceding.
-- One deliberate imperfection per section: a fragment, starting with "But" or "So", a short sentence after a long one.
-- For Kenyan law: cite using standard format — Case Name [Year] KEHC/KECA number (KLR). Reference the Constitution of Kenya 2010 by article number."""
+RULES:
+- Answer ONLY what was asked. No filler, no tangents.
+- Be specific: cite case names, article numbers, dates, judges.
+- Use plain language. No academic jargon unless the user asked for it.
+- Structure: short intro (1 sentence), the answer, then relevant citations.
+- Never say "it is important to note" or "furthermore" — just state the answer.
+- For Kenyan law: cite as Case Name [Year] eKLR. Reference Constitution by article number."""
 
 
 def init_backend():
@@ -505,17 +500,9 @@ JSON:"""
 
 # ---------- AI Search ----------
 
-QUERY_REWRITE_SYSTEM = """You are an expert legal search assistant specializing in Kenyan law and the KenyaLaw.org database.
+QUERY_REWRITE_SYSTEM = """You are a legal search assistant. Improve search queries for KenyaLaw.org.
 
-Your task: take a user's search query and produce an improved search query that will find the best results from KenyaLaw.org.
-
-THINK STEP BY STEP:
-1. Identify what the user is actually looking for
-2. Fix misspellings and typos
-3. Expand abbreviations
-4. Add legal context where needed
-
-Return ONLY valid JSON: {"query": "improved query", "suggestions": ["alt1", "alt2"], "reasoning": "explanation"}"""
+TASK: Fix misspellings, expand abbreviations, add legal context. Return JSON: {"query": "improved", "suggestions": ["alt1", "alt2"], "reasoning": "why"}"""
 
 
 async def rewrite_search_query(query: str) -> Dict[str, Any]:
@@ -527,13 +514,9 @@ async def rewrite_search_query(query: str) -> Dict[str, Any]:
         logger.warning("AI search rewrite disabled - no API configured")
         return {"query": query, "suggestions": [], "corrected": False}
 
-    prompt = f"""Improve this legal search query for KenyaLaw.org database.
+    prompt = f"""Improve this search query for KenyaLaw.org: "{query}"
 
-User query: "{query}"
-
-Think: What is the user looking for? Are there misspellings? What abbreviations need expanding?
-
-Return JSON: {{"query": "corrected", "suggestions": ["alt1", "alt2"], "reasoning": "why changed"}}"""
+Fix misspellings, expand abbreviations, add legal context. Return JSON: {{"query": "corrected", "suggestions": ["alt1", "alt2"], "reasoning": "why"}}"""
 
     try:
         raw = await _call_model(prompt, max_tokens=300, system=QUERY_REWRITE_SYSTEM, temperature=0.3)
@@ -680,35 +663,26 @@ def search_similar(query: str, cases: List[Dict]) -> List[str]:
 
 # ==================== COMPREHENSIVE AI TOOLS ====================
 
-LEGAL_RESEARCH_SYSTEM = """You are a world-class legal research assistant with expertise across multiple jurisdictions and legal systems. You have deep knowledge of:
-- Common law, civil law, religious law, and mixed legal systems
-- International law, human rights law, trade law, environmental law
-- African legal systems (East African, ECOWAS, SADC, African Union)
-- Major world legal systems (US, UK, EU, India, Australia, Canada, etc.)
+LEGAL_RESEARCH_SYSTEM = """You are a legal research expert. Answer precisely with specific citations.
 
-You provide precise, well-cited legal analysis. Always cite specific cases, statutes, or articles when making legal points."""
+RULES:
+- Cite case names, statute sections, and article numbers — no vague references.
+- Keep answers focused. Answer the question asked, nothing extra.
+- Use plain language. No filler phrases.
+- For Kenyan law: cite as Case Name [Year] eKLR. Reference Constitution by article number."""
 
 
 async def legal_research_assistant(query: str, jurisdiction: str = "kenya") -> Dict[str, Any]:
     """Comprehensive legal research across multiple jurisdictions."""
-    prompt = f"""Provide comprehensive legal research on this query for {jurisdiction} jurisdiction:
+    prompt = f"""Research this query for {jurisdiction}: "{query}"
 
-Query: "{query}"
-
-Provide:
-1. Legal framework: What laws/acts/constitution articles apply
-2. Key cases: Relevant case law with citations
-3. Legal principles: Established legal principles that apply
-4. Practical implications: What this means in practice
-5. Related topics: Related legal areas to explore
-
-Be specific with citations. Format as JSON:
+Return JSON:
 {{
-    "legal_framework": "description of applicable laws",
-    "key_cases": [{{"name": "Case Name", "citation": "[Year] eKLR", "principle": "what it established"}}],
-    "legal_principles": ["principle 1", "principle 2"],
-    "practical_implications": "what this means",
-    "related_topics": ["topic 1", "topic 2"]
+    "legal_framework": "applicable laws/articles",
+    "key_cases": [{{"name": "Case Name", "citation": "[Year] eKLR", "principle": "ruling"}}],
+    "legal_principles": ["principle"],
+    "practical_implications": "meaning",
+    "related_topics": ["topic"]
 }}"""
 
     raw = await _call_reasoning_model(prompt, max_tokens=1500, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
@@ -754,18 +728,9 @@ Return ONLY the properly formatted citation string."""
 
 async def explain_legal_concept(concept: str, jurisdiction: str = "kenya") -> str:
     """Explain a legal concept with jurisdiction-specific context."""
-    prompt = f"""Explain this legal concept clearly and concisely for a law student in {jurisdiction}:
+    prompt = f"""Explain "{concept}" for a law student in {jurisdiction}.
 
-"{concept}"
-
-Provide:
-1. Definition in plain language
-2. How it applies in {jurisdiction}
-3. Key cases that established/defined it
-4. Common exam questions about it
-5. Practical examples
-
-Write like a knowledgeable tutor — direct, specific, with real examples."""
+Cover: definition, how it applies in {jurisdiction}, key cases, common exam questions, practical examples. Be direct and specific."""
 
     result = await _call_reasoning_model(prompt, max_tokens=800, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
     return result if result else f"Explanation unavailable for: {concept}"
@@ -779,26 +744,16 @@ async def compare_jurisdictions(
     if not jurisdictions:
         jurisdictions = ["kenya", "nigeria", "south_africa", "uk", "us"]
 
-    prompt = f"""Compare how these jurisdictions handle the legal issue: "{legal_issue}"
+    prompt = f"""Compare how {', '.join(jurisdictions)} handle: "{legal_issue}"
 
-Jurisdictions: {', '.join(jurisdictions)}
+For each: applicable law, court interpretation, key cases, unique aspects. Then list key differences and trends.
 
-For each jurisdiction, explain:
-1. The applicable law/constitution
-2. How courts have interpreted it
-3. Key differences from other jurisdictions
-4. Trends or developments
-
-Format as JSON:
+Return JSON:
 {{
     "issue": "{legal_issue}",
-    "comparisons": {{
-        "kenya": {{"law": "...", "interpretation": "...", "key_cases": ["..."], "unique_aspect": "..."}},
-        "nigeria": {{"law": "...", "interpretation": "...", "key_cases": ["..."], "unique_aspect": "..."}},
-        ...
-    }},
-    "key_differences": ["difference 1", "difference 2"],
-    "trend": "description of global trend"
+    "comparisons": {{"jurisdiction": {{"law": "...", "interpretation": "...", "key_cases": ["..."], "unique_aspect": "..."}}}},
+    "key_differences": ["..."],
+    "trend": "..."
 }}"""
 
     raw = await _call_reasoning_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
@@ -814,22 +769,14 @@ async def generate_legal_memo(
     jurisdiction: str = "kenya",
 ) -> str:
     """Generate a legal memorandum analyzing a legal issue."""
-    prompt = f"""Write a legal memorandum analyzing this issue for {jurisdiction}:
+    prompt = f"""Legal memorandum for {jurisdiction}:
 
 Issue: {issue}
 {"Facts: " + facts if facts else ""}
 
-Structure:
-1. ISSUE(S) PRESENTED
-2. BRIEF ANSWER
-3. STATEMENT OF FACTS (if provided)
-4. DISCUSSION
-   - Applicable law
-   - Case law analysis
-   - Application to facts
-5. CONCLUSION
+Structure: ISSUE PRESENTED, BRIEF ANSWER, STATEMENT OF FACTS (if provided), DISCUSSION (applicable law, case analysis, application), CONCLUSION.
 
-Be direct. Cite specific cases and statutes. Write like a practicing lawyer, not a textbook."""
+Cite specific cases and statutes. Be direct."""
 
     result = await _call_reasoning_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
     return result if result else f"Legal memo generation unavailable for: {issue}"
@@ -837,24 +784,23 @@ Be direct. Cite specific cases and statutes. Write like a practicing lawyer, not
 
 async def analyze_case_law(case_text: str, jurisdiction: str = "kenya") -> Dict[str, Any]:
     """Deep analysis of case law with cross-jurisdictional comparison."""
-    prompt = f"""Provide deep analysis of this {jurisdiction} case:
+    prompt = f"""Analyze this {jurisdiction} case:
 
-Case text:
 {case_text[:5000]}
 
-Analyze:
-1. FACTS: Detailed factual summary
-2. ISSUES: All legal issues (framed as questions)
-3. HOLDINGS: Each holding with article/section references
-4. RATIO: The ratio decidendi (binding principle)
-5. OBITER: Notable obiter dicta
-6. SIGNIFICANCE: Why this case matters
-7. CRITIQUE: Any controversial aspects or criticisms
-8. APPLICATION: How this applies to similar facts
-9. RELATED CASES: Similar cases in other jurisdictions
-10. EXAM RELEVANCE: Likely exam questions
-
-Format as JSON with these keys."""
+Return JSON:
+{{
+    "facts": "summary",
+    "issues": ["legal issues as questions"],
+    "holdings": ["each holding with section refs"],
+    "ratio": "ratio decidendi",
+    "obiter": "notable obiter dicta",
+    "significance": "why it matters",
+    "critique": "controversial aspects",
+    "application": "how it applies to similar facts",
+    "related_cases": ["similar cases"],
+    "exam_relevance": ["likely exam questions"]
+}}"""
 
     raw = await _call_reasoning_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
     parsed = _parse_json(raw, {})
@@ -875,25 +821,16 @@ async def interpret_statute(
     """Interplain a statute section with case law context."""
     prompt = f"""Interpret this {jurisdiction} statute{(' section ' + section) if section else ''}:
 
-Statute text:
 {statute_text[:5000]}
 
-Provide:
-1. Plain meaning: What the words say
-2. Legal meaning: How courts interpret it
-3. Case law: Key cases interpreting this provision
-4. Practical application: How it works in practice
-5. Exceptions/limitations: Any exceptions or limitations
-6. Recent developments: Any recent changes or interpretations
-
-Format as JSON:
+Return JSON:
 {{
-    "plain_meaning": "...",
-    "legal_meaning": "...",
+    "plain_meaning": "what the words say",
+    "legal_meaning": "how courts interpret it",
     "case_law": [{{"case": "Name", "citation": "...", "interpretation": "..."}}],
-    "practical_application": "...",
-    "exceptions": ["..."],
-    "recent_developments": "..."
+    "practical_application": "how it works in practice",
+    "exceptions": ["limitations"],
+    "recent_developments": "recent changes"
 }}"""
 
     raw = await _call_reasoning_model(prompt, max_tokens=1500, system=LEGAL_RESEARCH_SYSTEM, temperature=0.4)
@@ -916,17 +853,17 @@ async def generate_study_plan(
     jurisdiction: str = "kenya",
 ) -> Dict[str, Any]:
     """Generate a personalized study plan for a legal topic."""
-    prompt = f"""Create a study plan for mastering "{topic}" in {jurisdiction} law{"for an exam on " + exam_date if exam_date else ""}.
+    prompt = f"""Study plan for "{topic}" in {jurisdiction} law{" (exam: " + exam_date + ")" if exam_date else ""}.
 
-Include:
-1. WEEK-BY-WEEK BREAKDOWN: Topics to cover each week
-2. KEY CASES: Must-know cases with brief summaries
-3. KEY STATUTES: Important acts and sections
-4. PRACTICE QUESTIONS: 5 likely exam questions
-5. STUDY TIPS: How to approach this topic
-6. RESOURCES: Where to find more information
-
-Make it practical and achievable. Focus on what's most likely to be examined."""
+Return JSON:
+{{
+    "weekly_plan": [{{"week": 1, "topics": ["..."], "cases": ["..."], "statutes": ["..."]}}],
+    "key_cases": [{{"name": "...", "principle": "..."}}],
+    "key_statutes": ["Act Name - key sections"],
+    "practice_questions": ["question 1", "question 2", "question 3", "question 4", "question 5"],
+    "study_tips": ["tip"],
+    "resources": ["resource"]
+}}"""
 
     raw = await _call_reasoning_model(prompt, max_tokens=2000, system=LEGAL_RESEARCH_SYSTEM, temperature=0.5)
     parsed = _parse_json(raw, {})
@@ -949,15 +886,9 @@ async def translate_legal_term(
     jurisdiction: str = "kenya",
 ) -> Dict[str, str]:
     """Translate legal terms with jurisdiction-specific context."""
-    prompt = f"""Translate this legal term from {source_lang} to {target_lang} for {jurisdiction} legal context:
+    prompt = f"""Translate "{term}" from {source_lang} to {target_lang} for {jurisdiction} legal context.
 
-"{term}"
-
-Provide:
-1. Direct translation
-2. Legal translation (if different)
-3. Explanation of the concept in both languages
-4. Usage in legal documents
+Provide: direct translation, legal translation (if different), concept explanation in both languages, usage in legal documents."""
 
 Format as JSON:
 {{

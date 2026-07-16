@@ -246,17 +246,17 @@
             <button onclick="clearRecentSearches()" class="text-xs font-semibold text-primary hover:underline">Clear all</button>
           </div>
           <div id="home-recent-searches" class="space-y-2">
-            <div class="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+            <div onclick="document.getElementById('search-main-input').value='Constitutional interpretation of article 43';navigateTo('search');doSearch();" class="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
               <svg class="w-4 h-4 text-on-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               <span class="text-sm text-on-surface truncate">Constitutional interpretation of article 43</span>
               <span class="text-xs text-on-muted ml-auto flex-shrink-0">2h ago</span>
             </div>
-            <div class="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+            <div onclick="document.getElementById('search-main-input').value='Employment Act 2007 section 35';navigateTo('search');doSearch();" class="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
               <svg class="w-4 h-4 text-on-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               <span class="text-sm text-on-surface truncate">Employment Act 2007 section 35</span>
               <span class="text-xs text-on-muted ml-auto flex-shrink-0">Yesterday</span>
             </div>
-            <div class="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+            <div onclick="document.getElementById('search-main-input').value='Land Act compulsory acquisition';navigateTo('search');doSearch();" class="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
               <svg class="w-4 h-4 text-on-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               <span class="text-sm text-on-surface truncate">Land Act compulsory acquisition</span>
               <span class="text-xs text-on-muted ml-auto flex-shrink-0">3 days ago</span>
@@ -473,7 +473,7 @@
           <input id="notebook-search" type="text" placeholder="Search notes..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-surface text-on-background placeholder:text-on-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
         </div>
         <div id="notebook-notes-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer">
+          <div onclick="navigateTo('notebook')" class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer hover:border-primary/20 hover:shadow-md transition-all">
             <h3 class="text-sm font-bold text-on-surface mb-2">Constitutional Law Notes</h3>
             <p class="text-xs text-on-muted line-clamp-3 mb-3">Notes on chapter 4 bill of rights, article 43 economic rights, and related case law.</p>
             <div class="flex items-center gap-2 mb-3">
@@ -482,7 +482,7 @@
             </div>
             <p class="text-xs text-on-muted">2 hours ago</p>
           </div>
-          <div class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer">
+          <div onclick="navigateTo('notebook')" class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer hover:border-primary/20 hover:shadow-md transition-all">
             <h3 class="text-sm font-bold text-on-surface mb-2">Contract Law Summary</h3>
             <p class="text-xs text-on-muted line-clamp-3 mb-3">Key principles of contract formation, offer and acceptance, consideration.</p>
             <div class="flex items-center gap-2 mb-3">
@@ -490,7 +490,7 @@
             </div>
             <p class="text-xs text-on-muted">Yesterday</p>
           </div>
-          <div class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer">
+          <div onclick="navigateTo('notebook')" class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer hover:border-primary/20 hover:shadow-md transition-all">
             <h3 class="text-sm font-bold text-on-surface mb-2">Land Act Research</h3>
             <p class="text-xs text-on-muted line-clamp-3 mb-3">Research on compulsory acquisition procedures and compensation requirements.</p>
             <div class="flex items-center gap-2 mb-3">
@@ -514,7 +514,7 @@
           <button id="create-deck-btn" class="px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-semibold hover:bg-primary-dark transition-colors">Create Deck</button>
         </div>
         <div id="flashcard-decks" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-primary/30 hover:shadow-md transition-all" data-deck="1">
+          <div onclick="navigateTo('flashcards')" class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-primary/30 hover:shadow-md transition-all" data-deck="1">
             <div class="flex items-center justify-between mb-3">
               <span class="px-2 py-1 rounded-lg bg-blue-50 text-primary text-xs font-bold">Constitutional Law</span>
               <span class="text-xs text-on-muted">42 cards</span>
@@ -524,7 +524,7 @@
             <div class="w-full bg-surface-alt rounded-full h-1.5"><div class="bg-primary h-1.5 rounded-full" style="width:65%"></div></div>
             <p class="text-xs text-on-muted mt-2">27/42 studied</p>
           </div>
-          <div class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-green-300 hover:shadow-md transition-all" data-deck="2">
+          <div onclick="navigateTo('flashcards')" class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-green-300 hover:shadow-md transition-all" data-deck="2">
             <div class="flex items-center justify-between mb-3">
               <span class="px-2 py-1 rounded-lg bg-green-50 text-secondary text-xs font-bold">Contract Law</span>
               <span class="text-xs text-on-muted">28 cards</span>
@@ -534,7 +534,7 @@
             <div class="w-full bg-surface-alt rounded-full h-1.5"><div class="bg-secondary h-1.5 rounded-full" style="width:30%"></div></div>
             <p class="text-xs text-on-muted mt-2">8/28 studied</p>
           </div>
-          <div class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-amber-300 hover:shadow-md transition-all" data-deck="3">
+          <div onclick="navigateTo('flashcards')" class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-amber-300 hover:shadow-md transition-all" data-deck="3">
             <div class="flex items-center justify-between mb-3">
               <span class="px-2 py-1 rounded-lg bg-amber-50 text-accent text-xs font-bold">Land Law</span>
               <span class="text-xs text-on-muted">35 cards</span>
@@ -654,14 +654,14 @@
             <div class="space-y-4 ml-1">
               <div class="timeline-item flex gap-4">
                 <div class="timeline-dot mt-1.5"></div>
-                <div class="flex-1 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+                <div onclick="document.getElementById('search-main-input').value='Constitutional interpretation of article 43';navigateTo('search');doSearch();" class="flex-1 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
                   <div class="flex items-center gap-2 mb-1"><svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><span class="text-xs font-semibold text-primary">Search</span><span class="text-xs text-on-muted ml-auto">10:32 AM</span></div>
                   <p class="text-sm text-on-surface">Constitutional interpretation of article 43</p>
                 </div>
               </div>
               <div class="timeline-item flex gap-4">
                 <div class="timeline-dot mt-1.5"></div>
-                <div class="flex-1 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+                <div onclick="document.getElementById('search-main-input').value='Republic v Director of Public Prosecutions [2020] eKLR';navigateTo('search');doSearch();" class="flex-1 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
                   <div class="flex items-center gap-2 mb-1"><svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg><span class="text-xs font-semibold text-green-600">Viewed</span><span class="text-xs text-on-muted ml-auto">10:28 AM</span></div>
                   <p class="text-sm text-on-surface">Republic v Director of Public Prosecutions [2020] eKLR</p>
                 </div>
@@ -673,7 +673,7 @@
             <div class="space-y-4 ml-1">
               <div class="timeline-item flex gap-4">
                 <div class="timeline-dot mt-1.5"></div>
-                <div class="flex-1 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
+                <div onclick="document.getElementById('search-main-input').value='Employment Act 2007 section 35';navigateTo('search');doSearch();" class="flex-1 p-3 rounded-xl bg-surface border border-border hover:border-primary/20 cursor-pointer transition-all">
                   <div class="flex items-center gap-2 mb-1"><svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><span class="text-xs font-semibold text-primary">Search</span><span class="text-xs text-on-muted ml-auto">3:45 PM</span></div>
                   <p class="text-sm text-on-surface">Employment Act 2007 section 35</p>
                 </div>
@@ -703,17 +703,17 @@
           <button class="filter-chip">Government</button>
         </div>
         <div class="space-y-3 mb-6">
-          <div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
+          <div onclick="navigateTo('gazettes')" class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
             <div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg bg-blue-50 text-primary text-xs font-bold">Legal Notice</span><span class="text-xs text-on-muted">12 July 2024</span></div>
             <h3 class="text-sm font-bold text-on-surface mb-1">The Land (Extension and Renewal of Leases) Rules</h3>
             <p class="text-xs text-on-muted line-clamp-2">GN No. 123/2024 &mdash; Rules relating to the extension and renewal of leases of public land under the Land Act.</p>
           </div>
-          <div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
+          <div onclick="navigateTo('gazettes')" class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
             <div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg bg-green-50 text-secondary text-xs font-bold">Special Issue</span><span class="text-xs text-on-muted">10 July 2024</span></div>
             <h3 class="text-sm font-bold text-on-surface mb-1">Appointment of Judges &mdash; High Court</h3>
             <p class="text-xs text-on-muted line-clamp-2">Vol. CXXVI No. 120 &mdash; Appointment of twelve judges to the High Court of Kenya.</p>
           </div>
-          <div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
+          <div onclick="navigateTo('gazettes')" class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
             <div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg bg-amber-50 text-accent text-xs font-bold">Land Report</span><span class="text-xs text-on-muted">8 July 2024</span></div>
             <h3 class="text-sm font-bold text-on-surface mb-1">Adjudication Notice &mdash; Kiambu County</h3>
             <p class="text-xs text-on-muted line-clamp-2">LR No. 23456 &mdash; Notice of adjudication of land in Kiambu County under the Land Adjudication Act.</p>
@@ -820,13 +820,13 @@
           <div class="flex-1 min-w-0">
             <div class="md:hidden mb-4"><button class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border text-sm font-semibold text-on-surface hover:bg-surface-alt transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>Filters</button></div>
             <div class="space-y-3">
-              <div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
+              <div onclick="document.getElementById('search-main-input').value='Jane Wanjiku v County Government of Nairobi compulsory acquisition';navigateTo('search');doSearch();" class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
                 <div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg bg-green-50 text-secondary text-xs font-bold">Environment &amp; Land</span><span class="text-xs text-on-muted">Tribunal Case No. 234 of 2023</span></div>
                 <h3 class="text-sm font-bold text-on-surface mb-1">Jane Wanjiku v County Government of Nairobi</h3>
                 <p class="text-xs text-on-muted line-clamp-2 mb-2">Dispute over compulsory acquisition of land for public purpose and adequacy of compensation.</p>
                 <div class="flex gap-2"><span class="px-2 py-0.5 rounded-full bg-surface-alt text-on-muted text-xs">Compulsory Acquisition</span><span class="px-2 py-0.5 rounded-full bg-surface-alt text-on-muted text-xs">Compensation</span></div>
               </div>
-              <div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
+              <div onclick="document.getElementById('search-main-input').value='Peter Ochieng v Kenya Airways Ltd unfair termination';navigateTo('search');doSearch();" class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">
                 <div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg bg-purple-50 text-purple-600 text-xs font-bold">Employment &amp; Labour</span><span class="text-xs text-on-muted">Cause No. 1892 of 2022</span></div>
                 <h3 class="text-sm font-bold text-on-surface mb-1">Peter Ochieng v Kenya Airways Ltd</h3>
                 <p class="text-xs text-on-muted line-clamp-2 mb-2">Unfair termination claim and remedies under the Employment Act 2007.</p>
@@ -847,21 +847,21 @@
           <div class="bento-card bg-surface border border-border rounded-2xl p-5">
             <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center"><svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg></div><div><h3 class="text-sm font-bold text-on-surface">Saved Cases</h3><p class="text-xs text-on-muted">8 cases</p></div></div>
             <div class="space-y-2">
-              <div class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Republic v DPP [2020] eKLR</p></div>
-              <div class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Njoya v AG [2004] eKLR</p></div>
+              <div onclick="document.getElementById('search-main-input').value='Republic v DPP [2020] eKLR';navigateTo('search');doSearch();" class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Republic v DPP [2020] eKLR</p></div>
+              <div onclick="document.getElementById('search-main-input').value='Njoya v AG [2004] eKLR';navigateTo('search');doSearch();" class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Njoya v AG [2004] eKLR</p></div>
             </div>
           </div>
           <div class="bento-card bg-surface border border-border rounded-2xl p-5">
             <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center"><svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><div><h3 class="text-sm font-bold text-on-surface">Saved Acts</h3><p class="text-xs text-on-muted">4 statutes</p></div></div>
             <div class="space-y-2">
-              <div class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Companies Act, 2015</p></div>
-              <div class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Employment Act, 2007</p></div>
+              <div onclick="document.getElementById('search-main-input').value='Companies Act 2015';navigateTo('search');doSearch();" class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Companies Act, 2015</p></div>
+              <div onclick="document.getElementById('search-main-input').value='Employment Act 2007';navigateTo('search');doSearch();" class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Employment Act, 2007</p></div>
             </div>
           </div>
           <div class="bento-card bg-surface border border-border rounded-2xl p-5">
             <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></div><div><h3 class="text-sm font-bold text-on-surface">Research Notes</h3><p class="text-xs text-on-muted">6 notes</p></div></div>
             <div class="space-y-2">
-              <div class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Key Arguments &mdash; Applicant</p></div>
+              <div onclick="navigateTo('notebook')" class="p-2.5 rounded-lg bg-surface-alt/50 hover:bg-surface-alt cursor-pointer transition-colors"><p class="text-xs font-semibold text-on-surface">Key Arguments &mdash; Applicant</p></div>
             </div>
           </div>
           <div class="bento-card bg-surface border border-border rounded-2xl p-5">
@@ -958,6 +958,233 @@
   </button>
   <div id="workspace-detail-content">
     <!-- Populated dynamically -->
+  </div>
+</div>
+
+<!-- KABARAK LAW SCREEN -->
+<div id="screen-kabarak-law" class="screen">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-on-background mb-1 font-serif">Kabarak University School of Law</h1>
+    <p class="text-sm text-on-muted">Complete guide to law programs, units, and study resources</p>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+    <a href="https://www.kabarak.ac.ke/sol" target="_blank" class="bg-surface border border-border rounded-xl p-3 text-center hover:border-primary/30 hover:shadow-md transition-all cursor-pointer">
+      <div class="text-lg mb-1">&#127891;</div>
+      <div class="text-xs font-bold text-on-surface">School of Law</div>
+    </a>
+    <a href="https://moodle.kabarak.ac.ke" target="_blank" class="bg-surface border border-border rounded-xl p-3 text-center hover:border-primary/30 hover:shadow-md transition-all cursor-pointer">
+      <div class="text-lg mb-1">&#128218;</div>
+      <div class="text-xs font-bold text-on-surface">E-Learning</div>
+    </a>
+    <a href="https://www.kabarak.ac.ke/programme/bachelor-of-laws" target="_blank" class="bg-surface border border-border rounded-xl p-3 text-center hover:border-primary/30 hover:shadow-md transition-all cursor-pointer">
+      <div class="text-lg mb-1">&#127891;</div>
+      <div class="text-xs font-bold text-on-surface">Apply Now</div>
+    </a>
+    <a href="https://www.kabarak.ac.ke/sol-research" target="_blank" class="bg-surface border border-border rounded-xl p-3 text-center hover:border-primary/30 hover:shadow-md transition-all cursor-pointer">
+      <div class="text-lg mb-1">&#128214;</div>
+      <div class="text-xs font-bold text-on-surface">Research</div>
+    </a>
+  </div>
+
+  <!-- Undergraduate Programs -->
+  <div class="mb-8">
+    <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-primary"></span> Undergraduate Programs
+    </h2>
+    <div class="bg-surface border border-border rounded-xl p-5">
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex-1">
+          <h3 class="text-base font-bold text-on-surface mb-1">Bachelor of Laws (LLB)</h3>
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">4-7 Years</span>
+            <span class="px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-xs font-semibold">Main Campus - Nakuru</span>
+            <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold">Ksh 125,000/Semester</span>
+          </div>
+          <p class="text-sm text-on-muted mb-3">Produces creative thinkers and problem solvers fit for the fast-evolving legal profession. Intakes in <strong>May</strong> and <strong>September</strong>.</p>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-on-surface mb-1 uppercase tracking-wide">Entry Requirements</h4>
+            <ul class="text-sm text-on-muted space-y-1">
+              <li>&#8226; KCSE C+ mean grade with B plain in English or Kiswahili</li>
+              <li>&#8226; Application fee: Ksh 1,000</li>
+            </ul>
+          </div>
+        </div>
+        <a href="https://www.kabarak.ac.ke/programme/bachelor-of-laws" target="_blank" class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors whitespace-nowrap">View Details</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- LLB Core Units -->
+  <div class="mb-8">
+    <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-secondary"></span> LLB Core Units (Year 1-4)
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="bg-surface border border-border rounded-xl p-4">
+        <h3 class="text-sm font-bold text-on-surface mb-2">Year 1 - Foundation</h3>
+        <ul class="text-xs text-on-muted space-y-1">
+          <li>&#8226; Legal System & Method</li>
+          <li>&#8226; Constitutional Law I</li>
+          <li>&#8226; Contract Law I</li>
+          <li>&#8226; Criminal Law I</li>
+          <li>&#8226; Tort Law I</li>
+          <li>&#8226; Legal Writing & Research</li>
+          <li>&#8226; Introduction to Kenyan Legal System</li>
+        </ul>
+      </div>
+      <div class="bg-surface border border-border rounded-xl p-4">
+        <h3 class="text-sm font-bold text-on-surface mb-2">Year 2 - Core Law</h3>
+        <ul class="text-xs text-on-muted space-y-1">
+          <li>&#8226; Constitutional Law II</li>
+          <li>&#8226; Contract Law II</li>
+          <li>&#8226; Criminal Law II</li>
+          <li>&#8226; Tort Law II</li>
+          <li>&#8226; Land Law</li>
+          <li>&#8226; Family Law</li>
+          <li>&#8226; Evidence Law</li>
+        </ul>
+      </div>
+      <div class="bg-surface border border-border rounded-xl p-4">
+        <h3 class="text-sm font-bold text-on-surface mb-2">Year 3 - Advanced</h3>
+        <ul class="text-xs text-on-muted space-y-1">
+          <li>&#8226; Administrative Law</li>
+          <li>&#8226; Commercial Law</li>
+          <li>&#8226; International Law</li>
+          <li>&#8226; Equity & Trusts</li>
+          <li>&#8226; Company Law</li>
+          <li>&#8226; Employment & Labour Law</li>
+          <li>&#8226; Environmental Law</li>
+        </ul>
+      </div>
+      <div class="bg-surface border border-border rounded-xl p-4">
+        <h3 class="text-sm font-bold text-on-surface mb-2">Year 4 - Professional</h3>
+        <ul class="text-xs text-on-muted space-y-1">
+          <li>&#8226; Jurisprudence</li>
+          <li>&#8226; Professional Ethics & Practice</li>
+          <li>&#8226; Cyber Law & ICT</li>
+          <li>&#8226; Human Rights Law</li>
+          <li>&#8226; Clinical Legal Education</li>
+          <li>&#8226; Research Project / Dissertation</li>
+          <li>&#8226; Advocacy & Moot Court</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Postgraduate Programs -->
+  <div class="mb-8">
+    <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-accent"></span> Postgraduate Programs
+    </h2>
+    <div class="space-y-3">
+      <div class="bg-surface border border-border rounded-xl p-4">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-sm font-bold text-on-surface mb-1">LLM in Constitutional & Administrative Law</h3>
+            <p class="text-xs text-on-muted">Advanced study of constitutional principles, judicial review, administrative justice, and governance in Kenya and East Africa.</p>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold whitespace-nowrap">2 Years</span>
+        </div>
+      </div>
+      <div class="bg-surface border border-border rounded-xl p-4">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-sm font-bold text-on-surface mb-1">LLM in International Law</h3>
+            <p class="text-xs text-on-muted">Public international law, human rights, treaty law, diplomatic immunity, and international dispute resolution.</p>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold whitespace-nowrap">2 Years</span>
+        </div>
+      </div>
+      <div class="bg-surface border border-border rounded-xl p-4">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-sm font-bold text-on-surface mb-1">LLM in Business Law</h3>
+            <p class="text-xs text-on-muted">Commercial transactions, corporate governance, banking law, intellectual property, and competition law.</p>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold whitespace-nowrap">2 Years</span>
+        </div>
+      </div>
+      <div class="bg-surface border border-border rounded-xl p-4">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-sm font-bold text-on-surface mb-1">PhD in Law</h3>
+            <p class="text-xs text-on-muted">Original research in any area of law. Supervised by experienced faculty with publication support.</p>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 text-xs font-semibold whitespace-nowrap">3-5 Years</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Resources -->
+  <div class="mb-8">
+    <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-blue-500"></span> Study Resources
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="bg-surface border border-border rounded-xl p-4">
+        <h3 class="text-sm font-bold text-on-surface mb-2">Kabarak Law Journals</h3>
+        <ul class="text-xs text-on-muted space-y-2">
+          <li><a href="https://journals.kabarak.ac.ke/index.php/kjle" target="_blank" class="text-primary hover:underline">Kabarak Journal of Law & Ethics</a></li>
+          <li><a href="https://journals.kabarak.ac.ke/index.php/klr" target="_blank" class="text-primary hover:underline">Kabarak Law Review Journal</a></li>
+          <li><a href="https://journals.kabarak.ac.ke/index.php/ajcl" target="_blank" class="text-primary hover:underline">African Journal of Commercial Law</a></li>
+          <li><a href="https://journals.kabarak.ac.ke/index.php/eacl" target="_blank" class="text-primary hover:underline">East African Community Law Journal</a></li>
+        </ul>
+      </div>
+      <div class="bg-surface border border-border rounded-xl p-4">
+        <h3 class="text-sm font-bold text-on-surface mb-2">Academic Resources</h3>
+        <ul class="text-xs text-on-muted space-y-2">
+          <li><a href="https://www.kabarak.ac.ke/journals" target="_blank" class="text-primary hover:underline">All University Journals</a></li>
+          <li><a href="https://ir.kabarak.ac.ke" target="_blank" class="text-primary hover:underline">Institutional Repository</a></li>
+          <li><a href="http://opac.kabarak.ac.ke" target="_blank" class="text-primary hover:underline">Library Catalogue</a></li>
+          <li><a href="https://www.kabarak.ac.ke/ebooks" target="_blank" class="text-primary hover:underline">Electronic Books</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Legal Topics for Kabarak Students -->
+  <div class="mb-8">
+    <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-amber-500"></span> Key Legal Topics
+    </h2>
+    <p class="text-xs text-on-muted mb-3">Click any topic to search relevant cases and statutes on Juriscore.</p>
+    <div class="flex flex-wrap gap-2">
+      <button onclick="document.getElementById('search-main-input').value='Constitutional Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Constitutional Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Criminal Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Criminal Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Contract Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Contract Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Tort Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Tort Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Land Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Land Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Family Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Family Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Commercial Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Commercial Law</button>
+      <button onclick="document.getElementById('search-main-input').value='International Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">International Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Administrative Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Administrative Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Employment Labour Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Employment Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Environmental Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Environmental Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Human Rights Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Human Rights Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Cyber Law ICT Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Cyber Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Evidence Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Evidence Law</button>
+      <button onclick="document.getElementById('search-main-input').value='Equity Trusts Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Equity & Trusts</button>
+      <button onclick="document.getElementById('search-main-input').value='Company Law Kenya';navigateTo('search');doSearch();" class="px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-on-surface hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">Company Law</button>
+    </div>
+  </div>
+
+  <!-- Quick Study Actions -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <button onclick="document.getElementById('search-main-input').value='Kabarak University law';navigateTo('search');doSearch();" class="bg-surface border border-border rounded-xl p-4 text-left hover:border-primary/30 hover:shadow-md transition-all cursor-pointer">
+      <div class="text-sm font-bold text-on-surface mb-1">Search Kabarak Cases</div>
+      <div class="text-xs text-on-muted">Find cases cited in Kabarak law curriculum</div>
+    </button>
+    <button onclick="navigateTo('constitution')" class="bg-surface border border-border rounded-xl p-4 text-left hover:border-primary/30 hover:shadow-md transition-all cursor-pointer">
+      <div class="text-sm font-bold text-on-surface mb-1">Constitution of Kenya</div>
+      <div class="text-xs text-on-muted">Read the 2010 Constitution with all articles</div>
+    </button>
+    <button onclick="navigateTo('flashcards')" class="bg-surface border border-border rounded-xl p-4 text-left hover:border-primary/30 hover:shadow-md transition-all cursor-pointer">
+      <div class="text-sm font-bold text-on-surface mb-1">Create Flashcards</div>
+      <div class="text-xs text-on-muted">Make study flashcards for your exams</div>
+    </button>
   </div>
 </div>
 
@@ -1179,6 +1406,10 @@
             <a href="#student-workspace" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="student-workspace">
               <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
               Student Workspace
+            </a>
+            <a href="#kabarak-law" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="kabarak-law">
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-8H7v8M7 3v5h8"/></svg>
+              Kabarak Law
             </a>
           </nav>
           <div class="p-3 border-t border-border">
@@ -1554,7 +1785,7 @@
           container.innerHTML = '<p class="text-sm text-on-muted py-4">No daily updates available</p>';
           return;
         }
-        container.innerHTML = results.slice(0, 8).map(function(r) {
+        container.innerHTML = results.slice(0, 8).map(function(r, idx) {
           var title = r.title || 'Untitled';
           var court = r.court || '';
           var date = r.date || '';
@@ -1563,7 +1794,7 @@
           var badgeColor = 'bg-primary/10 text-primary';
           if (docType === 'legislation') badgeColor = 'bg-green-50 text-green-700';
           else if (docType === 'gazette') badgeColor = 'bg-amber-50 text-amber-700';
-          return '<div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">' +
+          return '<div onclick="document.getElementById(\'search-main-input\').value=\'' + (title || '').replace(/'/g, "\\'") + '\';navigateTo(\'search\');doSearch();" class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">' +
             '<div class="flex items-center gap-2 mb-2">' +
               '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ' + badgeColor + '">' + docType + '</span>' +
               (court ? '<span class="text-xs text-on-muted">' + court + '</span>' : '') +
@@ -1684,7 +1915,7 @@
           try { var parsed = JSON.parse(text); text = parsed.facts || parsed.summary || text; } catch(e) {}
           var date = n.updated_at || n.created_at || '';
           var timeAgo = formatTimeAgo(date);
-          return '<div class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer">' +
+          return '<div onclick="navigateTo(\'notebook\')" class="note-card bg-surface border border-border rounded-xl p-4 cursor-pointer hover:border-primary/20 hover:shadow-md transition-all">' +
             '<h3 class="text-sm font-bold text-on-surface mb-2">Study Note</h3>' +
             '<p class="text-xs text-on-muted line-clamp-3 mb-3">' + text.substring(0, 200) + '</p>' +
             '<p class="text-xs text-on-muted">' + timeAgo + '</p>' +
@@ -1718,7 +1949,7 @@
         var colors = ['bg-blue-50 text-primary', 'bg-green-50 text-secondary', 'bg-amber-50 text-accent', 'bg-purple-50 text-purple-600'];
         container.innerHTML = decks.map(function(d, i) {
           var colorClass = colors[i % colors.length];
-          return '<div class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-primary/30 hover:shadow-md transition-all" data-deck="' + d.id + '">' +
+          return '<div onclick="navigateTo(\'flashcards\')" class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-primary/30 hover:shadow-md transition-all" data-deck="' + d.id + '">' +
             '<div class="flex items-center justify-between mb-3">' +
               '<span class="px-2 py-1 rounded-lg ' + colorClass + ' text-xs font-bold">' + (d.subject || 'General') + '</span>' +
             '</div>' +
@@ -1755,7 +1986,7 @@
           var typeLabel = 'Case';
           if (b.resource_type === 'statute') { typeBadge = 'current'; typeLabel = 'Statute'; }
           else if (b.resource_type === 'gazette') { typeBadge = 'caution'; typeLabel = 'Gazette'; }
-          return '<div class="bookmark-card bg-surface border border-border rounded-xl p-4">' +
+          return '<div onclick="openBookmarkDetail(\'' + (b.id || '') + '\',\'' + (b.resource_type || 'case') + '\',\'' + (b.title || '').replace(/'/g, "\\'") + '\')" class="bookmark-card bg-surface border border-border rounded-xl p-4 cursor-pointer hover:border-primary/30 hover:shadow-md transition-all">' +
             '<div class="flex items-start justify-between gap-3">' +
               '<div class="flex-1 min-w-0">' +
                 '<div class="flex items-center gap-2 mb-1"><span class="status-badge ' + typeBadge + '">' + typeLabel + '</span></div>' +
@@ -1798,7 +2029,7 @@
           if (g.category === 'Environmental') catColor = 'bg-green-50 text-secondary';
           else if (g.category === 'Land') catColor = 'bg-amber-50 text-accent';
           else if (g.category === 'Government') catColor = 'bg-purple-50 text-purple-600';
-          return '<div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">' +
+          return '<div onclick="document.getElementById(\'search-main-input\').value=\'' + (g.title || '').replace(/'/g, "\\'") + '\';navigateTo(\'search\');doSearch();" class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">' +
             '<div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg ' + catColor + ' text-xs font-bold">' + g.category + '</span><span class="text-xs text-on-muted">' + g.date + '</span></div>' +
             '<h3 class="text-sm font-bold text-on-surface mb-1">' + g.title + '</h3>' +
             '<p class="text-xs text-on-muted line-clamp-2">' + g.gazette_number + ' &mdash; ' + (g.summary || '').substring(0, 120) + '</p>' +
@@ -1827,7 +2058,7 @@
           if (t.tribunal_type === 'TAT') tColor = 'bg-blue-50 text-primary';
           else if (t.tribunal_type === 'BPRT') tColor = 'bg-amber-50 text-accent';
           else if (t.tribunal_type === 'PPRA') tColor = 'bg-purple-50 text-purple-600';
-          return '<div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">' +
+          return '<div onclick="document.getElementById(\'search-main-input\').value=\'' + (t.title || '').replace(/'/g, "\\'") + '\';navigateTo(\'search\');doSearch();" class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 transition-all cursor-pointer">' +
             '<div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded-lg ' + tColor + ' text-xs font-bold">' + t.tribunal_name + '</span><span class="text-xs text-on-muted">' + t.citation + '</span></div>' +
             '<h3 class="text-sm font-bold text-on-surface mb-1">' + t.title + '</h3>' +
             '<p class="text-xs text-on-muted line-clamp-2 mb-2">' + (t.summary || '').substring(0, 150) + '</p>' +
@@ -1902,6 +2133,8 @@
     let currentDocType = '';
     let currentCourt = '';
 
+    var _lastSearchResults = [];
+
     async function doSearch() {
       const input = document.getElementById('search-main-input');
       const query = input ? input.value.trim() : '';
@@ -1928,6 +2161,7 @@
         const data = await res.json();
 
         const results = data.results || data || [];
+        _lastSearchResults = results;
         const count = data.count || results.length || 0;
         if (countEl) countEl.textContent = count;
 
@@ -1953,7 +2187,7 @@
           if (docType === 'legislation' || docType === 'statute') badgeColor = 'bg-green-50 text-green-700';
           else if (docType === 'gazette') badgeColor = 'bg-amber-50 text-amber-700';
 
-          return '<div class="bg-surface border border-border rounded-2xl p-5 hover:border-primary/20 hover:shadow-md transition-all cursor-pointer">' +
+          return '<div onclick="openCaseDetail(' + idx + ')" class="bg-surface border border-border rounded-2xl p-5 hover:border-primary/20 hover:shadow-md transition-all cursor-pointer">' +
             '<div class="flex items-start justify-between gap-3 mb-2">' +
               '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wide ' + badgeColor + '">' + docType + '</span>' +
               (court ? '<span class="text-xs text-on-muted">' + court + '</span>' : '') +
@@ -2032,6 +2266,99 @@
     }
 
     /* ===========================
+       CASE DETAIL MODAL
+       =========================== */
+
+    function openCaseDetail(idx) {
+      var r = _lastSearchResults[idx];
+      if (!r) return;
+
+      var title = r.title || 'Untitled';
+      var citation = r.citation || '';
+      var court = r.court || '';
+      var year = r.year || '';
+      var docType = r.doc_type || r.type || 'case';
+      var excerpt = r.excerpt || r.summary || '';
+      if (typeof excerpt === 'object') excerpt = excerpt.facts || JSON.stringify(excerpt);
+      var tags = (r.subject_tags || r.topics || []);
+
+      var badgeColor = 'bg-primary/10 text-primary';
+      if (docType === 'legislation' || docType === 'statute') badgeColor = 'bg-green-50 text-green-700';
+      else if (docType === 'gazette') badgeColor = 'bg-amber-50 text-amber-700';
+
+      var html = '<div class="flex items-start justify-between gap-3 mb-4">' +
+        '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wide ' + badgeColor + '">' + docType + '</span>' +
+        '<button onclick="closeCaseDetail()" class="text-on-muted hover:text-on-surface p-1 rounded-lg hover:bg-surface-alt transition-colors">' +
+          '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>' +
+        '</button>' +
+      '</div>' +
+      '<h2 class="text-xl font-bold text-on-background mb-2 font-serif">' + title + '</h2>';
+
+      if (citation || court || year) {
+        html += '<div class="flex flex-wrap items-center gap-3 text-sm text-on-muted mb-4">';
+        if (court) html += '<span>' + court + '</span>';
+        if (year) html += '<span class="text-on-muted/50">' + year + '</span>';
+        if (citation) html += '<span class="font-mono text-xs bg-surface-alt px-2 py-0.5 rounded">' + citation + '</span>';
+        html += '</div>';
+      }
+
+      if (excerpt) {
+        html += '<div class="mb-4">' +
+          '<h3 class="text-sm font-semibold text-on-surface mb-2 uppercase tracking-wide">Summary</h3>' +
+          '<p class="text-on-surface leading-relaxed">' + excerpt + '</p>' +
+        '</div>';
+      }
+
+      if (tags.length) {
+        html += '<div class="flex flex-wrap gap-2 mb-4">';
+        tags.forEach(function(t) {
+          html += '<span class="px-3 py-1 rounded-full bg-surface-alt text-on-muted text-xs">' + t + '</span>';
+        });
+        html += '</div>';
+      }
+
+      html += '<div class="flex gap-3 mt-6 pt-4 border-t border-border">' +
+        '<button onclick="bookmarkCase(\'' + title.replace(/'/g, "\\'") + '\')" class="px-4 py-2 rounded-xl bg-primary/10 text-primary text-sm font-semibold hover:bg-primary/20 transition-colors flex items-center gap-2">' +
+          '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>' +
+          'Bookmark' +
+        '</button>' +
+        (citation ? '<button onclick="copyCitation(\'' + citation.replace(/'/g, "\\'") + '\')" class="px-4 py-2 rounded-xl bg-surface-alt text-on-muted text-sm font-semibold hover:bg-surface transition-colors flex items-center gap-2">' +
+          '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>' +
+          'Copy Citation' +
+        '</button>' : '') +
+        (r.url ? '<a href="' + r.url + '" target="_blank" class="px-4 py-2 rounded-xl bg-surface-alt text-on-muted text-sm font-semibold hover:bg-surface transition-colors flex items-center gap-2">' +
+          '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>' +
+          'View Full Text' +
+        '</a>' : '') +
+      '</div>';
+
+      document.getElementById('case-detail-content').innerHTML = html;
+      document.getElementById('case-detail-modal').classList.remove('hidden');
+    }
+
+    function closeCaseDetail() {
+      document.getElementById('case-detail-modal').classList.add('hidden');
+    }
+
+    function openBookmarkDetail(id, type, title) {
+      document.getElementById('search-main-input').value = title || '';
+      navigateTo('search');
+      doSearch();
+    }
+
+    function bookmarkCase(title) {
+      showToast('Bookmarked: ' + title, 'success');
+    }
+
+    function copyCitation(citation) {
+      navigator.clipboard.writeText(citation).then(function() {
+        showToast('Citation copied to clipboard', 'success');
+      }).catch(function() {
+        showToast('Failed to copy citation', 'error');
+      });
+    }
+
+    /* ===========================
        INIT
        =========================== */
 
@@ -2047,6 +2374,18 @@
     window.toggleAccordion = toggleAccordion;
     window.flipFlashcard = flipFlashcard;
     window.showToast = showToast;
+    window.openCaseDetail = openCaseDetail;
+    window.closeCaseDetail = closeCaseDetail;
+    window.bookmarkCase = bookmarkCase;
+    window.copyCitation = copyCitation;
   </script>
+
+  <!-- Case Detail Modal -->
+  <div id="case-detail-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" onclick="if(event.target===this)closeCaseDetail()">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeCaseDetail()"></div>
+    <div class="relative bg-card rounded-2xl border border-border shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6">
+      <div id="case-detail-content"></div>
+    </div>
+  </div>
 </body>
 </html>
