@@ -22,6 +22,7 @@ from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
 
 from api.backend.models.database import engine, Base, async_session
+from sqlalchemy import text
 from api.backend.middleware.auth import SupabaseAuthMiddleware
 from api.backend.middleware.security import (
     SecurityHeadersMiddleware,
@@ -241,7 +242,7 @@ async def check_db_connection() -> bool:
     """Check database connectivity."""
     try:
         async with async_session() as session:
-            await session.execute("SELECT 1")
+            await session.execute(text("SELECT 1"))
         return True
     except Exception as e:
         logger.warning("Database health check failed", error=str(e))
@@ -270,16 +271,25 @@ async def lifespan(app: FastAPI):
     logger.info("Starting Juriscore API...")
 
     # Configure tracing
-    configure_tracing()
+    try:
+        configure_tracing()
+    except Exception as e:
+        logger.warning("Tracing setup failed, continuing without tracing", error=str(e))
 
     # Create database tables
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database tables created")
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Database tables created")
+    except Exception as e:
+        logger.warning("Database table creation failed", error=str(e))
 
     # Initialize AI service
-    ai_service.init_backend()
-    logger.info("AI service initialized")
+    try:
+        ai_service.init_backend()
+        logger.info("AI service initialized")
+    except Exception as e:
+        logger.warning("AI service init failed", error=str(e))
 
     # Load local DB (brain)
     try:
