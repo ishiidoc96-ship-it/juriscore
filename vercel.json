@@ -15,9 +15,6 @@
       "use": "@vercel/static"
     }
   ],
-  "functions": {
-    "api/backend/main.py": { "maxDuration": 60 }
-  },
   "routes": [
     {
       "src": "/api/v1/(.*)",
