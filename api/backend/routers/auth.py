@@ -29,9 +29,6 @@ router = APIRouter()
 # Get JWT secret from environment, with a default only for development
 SECRET_KEY = os.getenv("JWT_SECRET")
 if not SECRET_KEY:
-    # Only allow missing secret in development
-    if os.getenv("ENVIRONMENT") == "production":
-        raise ValueError("JWT_SECRET environment variable is required in production")
     logger.warning("JWT_SECRET not set, using development default")
     SECRET_KEY = "juriscore-dev-secret-change-in-production"
 
