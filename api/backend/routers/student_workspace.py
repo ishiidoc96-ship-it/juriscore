@@ -1,3 +1,7 @@
+import json
+import os
+from pathlib import Path
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.backend.core import get_session
@@ -9,6 +13,40 @@ from typing import Optional
 from datetime import datetime
 
 router = APIRouter()
+
+_DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+
+
+@router.get("/academic")
+async def get_academic_data():
+    """Return law school course data for the Legal Repo file tree."""
+    courses_file = _DATA_DIR / "law_school_courses.json"
+    if not courses_file.exists():
+        return {"institution": "", "title": "Law_School", "courses": []}
+    with open(courses_file) as f:
+        raw = json.load(f)
+    courses = []
+    for c in raw.get("courses", []):
+        mat_count = sum(
+            len(v) for v in c.get("materials", {}).values() if isinstance(v, list)
+        )
+        courses.append({
+            "code": c.get("code", ""),
+            "name": c.get("full_name") or c.get("name", "").replace("_", " "),
+            "year": c.get("year", 1),
+            "semester": c.get("semester", 1),
+            "description": c.get("description", ""),
+            "folder": c.get("folder", ""),
+            "material_count": mat_count,
+            "materials": c.get("materials", {}),
+            "key_topics": c.get("key_topics", []),
+            "key_cases": c.get("key_cases", []),
+        })
+    return {
+        "institution": raw.get("institution", ""),
+        "title": raw.get("workspace_title", "Law_School"),
+        "courses": courses,
+    }
 
 
 class WorkspaceCreate(BaseModel):
