@@ -11,9 +11,9 @@ All case law and statutes are sourced from [kenyalaw.org](https://www.kenyalaw.o
 ## Features
 
 - **Smart Case Search** - Search and filter cases by keyword, court level, year, judge, or legal subject area
-- **Structured Case Briefs** - AI-generated summaries including facts, issues, holdings, ratio decidendi, and obiter dicta
-- **Case Comparison** - AI-powered side-by-side comparison of two cases
-- **Citation Generator** - AI-generated properly formatted eKLR citations
+- **Structured Case Briefs** - Automated summaries including facts, issues, holdings, ratio decidendi, and obiter dicta
+- **Case Comparison** - Side-by-side comparison of two cases
+- **Citation Generator** - Properly formatted eKLR citations
 - **Constitution Hub** - Browse the Constitution of Kenya (2010) with chapter-level navigation
 - **Flashcard System** - Study with spaced-repetition flashcards organized by legal subject
 - **Research Notebook** - Save cases and take notes organized in folders
@@ -28,7 +28,7 @@ All case law and statutes are sourced from [kenyalaw.org](https://www.kenyalaw.o
 | Frontend | React Native (Expo) with Expo Router |
 | Backend | FastAPI (Python 3.11+) |
 | Database | Supabase (PostgreSQL 15) |
-| AI | OpenAI GPT-4o-mini |
+| Processing | Rule-based NLP |
 | Auth | Supabase Auth (Email + Google OAuth) |
 | Scraping | httpx + BeautifulSoup |
 
@@ -41,7 +41,7 @@ All case law and statutes are sourced from [kenyalaw.org](https://www.kenyalaw.o
 - Node.js 18+
 - Python 3.11+
 - A [Supabase](https://supabase.com) account
-- An [OpenAI](https://platform.openai.com) API key
+- No external AI APIs required
 
 ### 1. Backend
 
@@ -111,7 +111,7 @@ docker-compose up
 ```env
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-anon-key
-OPENAI_API_KEY=your-openai-key
+PROCESSING_MODE=rule-based
 DATABASE_URL=sqlite+aiosqlite:///./juriscore.db
 KENYALAW_BASE=https://www.kenyalaw.org
 CORS_ORIGINS=*
