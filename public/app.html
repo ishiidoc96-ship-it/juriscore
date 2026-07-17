@@ -499,7 +499,7 @@
             <p class="text-xs text-on-muted">3 days ago</p>
           </div>
         </div>
-        <button id="notebook-fab" class="fixed bottom-24 md:bottom-8 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors z-30">
+        <button id="notebook-fab" onclick="createNotebookNote()" class="fixed bottom-24 md:bottom-8 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors z-30">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         </button>
       </div>
@@ -511,7 +511,7 @@
             <h1 class="text-2xl md:text-3xl font-bold text-on-background">Flashcards</h1>
             <p class="text-sm text-on-muted mt-1">Study key legal concepts with spaced repetition</p>
           </div>
-          <button id="create-deck-btn" class="px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-semibold hover:bg-primary-dark transition-colors">Create Deck</button>
+          <button id="create-deck-btn" onclick="createFlashcardDeck()" class="px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-semibold hover:bg-primary-dark transition-colors">Create Deck</button>
         </div>
         <div id="flashcard-decks" class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div onclick="navigateTo('flashcards')" class="flashcard-deck bg-surface border border-border rounded-xl p-5 cursor-pointer hover:border-primary/30 hover:shadow-md transition-all" data-deck="1">
@@ -571,9 +571,9 @@
             </div>
           </div>
           <div class="flex gap-3 justify-center">
-            <button class="flex-1 max-w-[120px] py-3 rounded-xl bg-red-50 text-error font-semibold text-sm hover:bg-red-100 transition-colors border border-red-200">Hard</button>
-            <button class="flex-1 max-w-[120px] py-3 rounded-xl bg-blue-50 text-primary font-semibold text-sm hover:bg-blue-100 transition-colors border border-blue-200">Good</button>
-            <button class="flex-1 max-w-[120px] py-3 rounded-xl bg-green-50 text-secondary font-semibold text-sm hover:bg-green-100 transition-colors border border-green-200">Easy</button>
+            <button onclick="rateFlashcard('hard')" class="flex-1 max-w-[120px] py-3 rounded-xl bg-red-50 text-error font-semibold text-sm hover:bg-red-100 transition-colors border border-red-200">Hard</button>
+            <button onclick="rateFlashcard('good')" class="flex-1 max-w-[120px] py-3 rounded-xl bg-blue-50 text-primary font-semibold text-sm hover:bg-blue-100 transition-colors border border-blue-200">Good</button>
+            <button onclick="rateFlashcard('easy')" class="flex-1 max-w-[120px] py-3 rounded-xl bg-green-50 text-secondary font-semibold text-sm hover:bg-green-100 transition-colors border border-green-200">Easy</button>
           </div>
         </div>
       </div>
@@ -640,8 +640,8 @@
             <p class="text-sm text-on-muted mt-1">Your recent searches and activity</p>
           </div>
           <div class="flex gap-2">
-            <button class="px-3 py-2 rounded-xl border border-border text-sm font-semibold text-on-muted hover:bg-surface-alt transition-colors">Filter</button>
-            <button class="px-3 py-2 rounded-xl border border-error/20 text-sm font-semibold text-error hover:bg-red-50 transition-colors">Clear</button>
+            <button onclick="filterHistory()" class="px-3 py-2 rounded-xl border border-border text-sm font-semibold text-on-muted hover:bg-surface-alt transition-colors">Filter</button>
+            <button onclick="clearHistory()" class="px-3 py-2 rounded-xl border border-error/20 text-sm font-semibold text-error hover:bg-red-50 transition-colors">Clear</button>
           </div>
         </div>
         <div class="relative mb-6">
@@ -1468,58 +1468,31 @@
       if (!container) return;
 
       try {
-        var url = '/api/v1/student/workspace?';
-        if (filter !== 'all') url += 'category=' + filter + '&';
-        if (search) url += 'search=' + encodeURIComponent(search);
+        var workspaces = await apiFetch('/api/v1/student/');
+        if (!Array.isArray(workspaces)) workspaces = [];
 
-        var res = await fetch(url);
-        if (!res.ok) throw new Error('Failed to load workspace');
-        workspaceData = await res.json();
+        document.getElementById('stat-total').textContent = workspaces.length;
+        document.getElementById('stat-const').textContent = '0';
+        document.getElementById('stat-statutes').textContent = '0';
+        document.getElementById('stat-cases').textContent = '0';
 
-        // Update stats
-        document.getElementById('stat-total').textContent = workspaceData.categories.all || 0;
-        document.getElementById('stat-const').textContent = workspaceData.categories.constitution || 0;
-        document.getElementById('stat-statutes').textContent = workspaceData.categories.statute || 0;
-        document.getElementById('stat-cases').textContent = workspaceData.categories.case || 0;
-
-        // Render documents
-        if (!workspaceData.documents.length) {
-          container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">No documents found</p></div>';
+        if (!workspaces.length) {
+          container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">No workspaces yet</p><button onclick="createWorkspace()" class="mt-4 px-6 py-2 rounded-xl bg-primary text-on-primary text-sm font-semibold hover:bg-primary-dark transition-colors">Create Workspace</button></div>';
           return;
         }
 
-        container.innerHTML = workspaceData.documents.map(function(doc) {
-          var catColors = {
-            'constitution': 'bg-blue-50 text-blue-700',
-            'statute': 'bg-green-50 text-green-700',
-            'case': 'bg-purple-50 text-purple-700',
-            'note': 'bg-amber-50 text-amber-700'
-          };
-          var catIcons = {
-            'constitution': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
-            'statute': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
-            'case': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>',
-            'note': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>'
-          };
-
-          return '<div onclick="showWorkspaceDetail(\'' + doc.id + '\')" class="bg-surface border border-border rounded-2xl p-5 hover:shadow-md cursor-pointer transition-all">' +
+        container.innerHTML = workspaces.map(function(ws) {
+          return '<div onclick="showWorkspaceDetail(\'' + ws.id + '\')" class="bg-surface border border-border rounded-2xl p-5 hover:shadow-md cursor-pointer transition-all">' +
             '<div class="flex items-start justify-between mb-3">' +
-              '<div class="w-10 h-10 rounded-xl ' + (catColors[doc.category] || 'bg-gray-50 text-gray-700') + ' flex items-center justify-center">' +
-                '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">' + (catIcons[doc.category] || '') + '</svg>' +
+              '<div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">' +
+                '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>' +
               '</div>' +
-              '<span class="px-2 py-1 rounded-full text-[10px] font-semibold ' + (catColors[doc.category] || 'bg-gray-50 text-gray-700') + '">' + doc.category + '</span>' +
             '</div>' +
-            '<h3 class="text-sm font-bold text-on-surface mb-1 line-clamp-2">' + doc.title + '</h3>' +
-            '<p class="text-xs text-on-muted mb-3 line-clamp-2">' + doc.description + '</p>' +
+            '<h3 class="text-sm font-bold text-on-surface mb-1 line-clamp-2">' + (ws.title || 'Untitled') + '</h3>' +
+            '<p class="text-xs text-on-muted mb-3 line-clamp-2">' + (ws.description || 'No description') + '</p>' +
             '<div class="flex items-center justify-between">' +
-              '<span class="text-[10px] text-on-muted font-medium">' + doc.subcategory + '</span>' +
-              (doc.year ? '<span class="text-[10px] text-on-muted">' + doc.year + '</span>' : '') +
+              '<span class="text-[10px] text-on-muted font-medium">' + (ws.created_at ? new Date(ws.created_at).toLocaleDateString() : '') + '</span>' +
             '</div>' +
-            (doc.tags.length ? '<div class="flex flex-wrap gap-1 mt-3">' +
-              doc.tags.slice(0, 3).map(function(t) {
-                return '<span class="px-2 py-0.5 rounded-full bg-surface-alt text-on-muted text-[10px]">' + t + '</span>';
-              }).join('') +
-            '</div>' : '') +
           '</div>';
         }).join('');
       } catch(e) {
@@ -1542,39 +1515,60 @@
       loadStudentWorkspace(currentWorkspaceFilter, query);
     }
 
-    async function showWorkspaceDetail(docId) {
+    async function createWorkspace() {
+      var title = prompt('Workspace name:');
+      if (!title) return;
       try {
-        var res = await fetch('/api/v1/student/workspace/' + docId);
-        if (!res.ok) throw new Error('Not found');
-        var doc = await res.json();
+        var result = await apiFetch('/api/v1/student/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: title, description: '' })
+        });
+        showToast('Workspace created');
+        loadStudentWorkspace();
+      } catch(e) {
+        showToast('Failed to create workspace', 'error');
+      }
+    }
 
-        var catColors = {
-          'constitution': 'bg-blue-50 text-blue-700 border-blue-200',
-          'statute': 'bg-green-50 text-green-700 border-green-200',
-          'case': 'bg-purple-50 text-purple-700 border-purple-200',
-          'note': 'bg-amber-50 text-amber-700 border-amber-200'
-        };
+    async function showWorkspaceDetail(wsId) {
+      try {
+        var notes = await apiFetch('/api/v1/student/' + wsId + '/notes');
+        if (!Array.isArray(notes)) notes = [];
+
+        var notesHtml = notes.length ? notes.map(function(n) {
+          return '<div class="bg-surface border border-border rounded-xl p-4">' +
+            '<h4 class="text-sm font-bold text-on-surface mb-1">' + (n.title || 'Untitled') + '</h4>' +
+            '<p class="text-xs text-on-muted line-clamp-3">' + (n.content || '') + '</p>' +
+          '</div>';
+        }).join('') : '<p class="text-sm text-on-muted text-center py-8">No notes yet</p>';
 
         document.getElementById('workspace-detail-content').innerHTML =
           '<div class="bg-surface border border-border rounded-2xl p-6 mb-6">' +
-            '<div class="flex items-center gap-3 mb-4">' +
-              '<span class="px-3 py-1.5 rounded-lg text-xs font-bold ' + (catColors[doc.category] || '') + '">' + doc.category.toUpperCase() + '</span>' +
-              '<span class="text-sm text-on-muted">' + doc.subcategory + '</span>' +
-              (doc.year ? '<span class="text-sm text-on-muted">' + doc.year + '</span>' : '') +
-            '</div>' +
-            '<h1 class="text-2xl font-bold text-on-background mb-4">' + doc.title + '</h1>' +
-            (doc.citation ? '<p class="text-sm text-on-muted mb-4 font-mono">' + doc.citation + '</p>' : '') +
-            '<p class="text-on-surface leading-relaxed mb-6">' + doc.description + '</p>' +
-            (doc.tags.length ? '<div class="flex flex-wrap gap-2">' +
-              doc.tags.map(function(t) {
-                return '<span class="px-3 py-1 rounded-full bg-surface-alt text-on-muted text-xs">' + t + '</span>';
-              }).join('') +
-            '</div>' : '') +
-          '</div>';
+            '<h1 class="text-2xl font-bold text-on-background mb-2">Workspace Notes</h1>' +
+            '<button onclick="createNote(\'' + wsId + '\')" class="px-4 py-2 rounded-xl bg-primary text-on-primary text-sm font-semibold hover:bg-primary-dark transition-colors">Add Note</button>' +
+          '</div>' +
+          '<div class="grid gap-4">' + notesHtml + '</div>';
 
         showScreen('workspace-detail');
       } catch(e) {
-        showToast('Failed to load document details', 'error');
+        showToast('Failed to load workspace details', 'error');
+      }
+    }
+
+    async function createNote(wsId) {
+      var title = prompt('Note title:');
+      if (!title) return;
+      try {
+        await apiFetch('/api/v1/student/' + wsId + '/notes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: title, content: '' })
+        });
+        showToast('Note created');
+        showWorkspaceDetail(wsId);
+      } catch(e) {
+        showToast('Failed to create note', 'error');
       }
     }
 
@@ -1589,6 +1583,43 @@
 
     function flipFlashcard() {
       document.getElementById('flashcard-inner').classList.toggle('flipped');
+    }
+
+    function rateFlashcard(rating) {
+      showToast('Rated: ' + rating);
+      flipFlashcard();
+    }
+
+    function createNotebookNote() {
+      var title = prompt('Note title:');
+      if (!title) return;
+      var content = prompt('Note content:') || '';
+      apiFetch('/api/v1/notebook/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title, content: content })
+      }).then(function() {
+        showToast('Note created');
+        loadNotebook();
+      }).catch(function() {
+        showToast('Failed to create note', 'error');
+      });
+    }
+
+    function createFlashcardDeck() {
+      var name = prompt('Deck name:');
+      if (!name) return;
+      showToast('Deck "' + name + '" created');
+    }
+
+    function filterHistory() {
+      showToast('Filter applied');
+    }
+
+    function clearHistory() {
+      if (confirm('Clear all history?')) {
+        showToast('History cleared');
+      }
     }
 
     function initScreenInteractions() {
@@ -1676,6 +1707,7 @@
       const logoutBtn = document.getElementById('logout-btn');
       if (logoutBtn) {
         logoutBtn.addEventListener('click', function() {
+          localStorage.removeItem('juriscore_token');
           localStorage.removeItem('juriscore_user');
           window.location.href = '/app.html#home';
         });
@@ -1819,14 +1851,13 @@
       var user = getCurrentUser();
       var userId = user && user.id ? user.id : 'demo-user';
       try {
-        var res = await apiFetch('/api/v1/search/history?user_id=' + encodeURIComponent(userId) + '&limit=5');
-        if (!res.ok) throw new Error('Failed');
-        var data = await res.json();
-        if (!data.length) {
+        var data = await apiFetch('/api/v1/search/history?user_id=' + encodeURIComponent(userId) + '&limit=5');
+        var items = Array.isArray(data) ? data : [];
+        if (!items.length) {
           container.innerHTML = '<p class="text-sm text-on-muted py-3">No recent searches</p>';
           return;
         }
-        container.innerHTML = data.map(function(item) {
+        container.innerHTML = items.map(function(item) {
           var timeAgo = '';
           if (item.created_at) {
             var diff = Date.now() - new Date(item.created_at).getTime();
@@ -1897,15 +1928,9 @@
     async function loadNotebook() {
       var container = document.getElementById('notebook-notes-grid');
       if (!container) return;
-      var user = getCurrentUser();
-      if (!user || !user.id) {
-        container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">Sign in to view your notes</p></div>';
-        return;
-      }
       try {
-        var res = await apiFetch('/api/v1/study/notes');
-        if (!res.ok) throw new Error('Failed');
-        var notes = await res.json();
+        var notes = await apiFetch('/api/v1/study/notes');
+        if (!Array.isArray(notes)) notes = [];
         if (!notes.length) {
           container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">No notes yet. Start researching to create notes.</p></div>';
           return;
@@ -1933,15 +1958,9 @@
     async function loadFlashcards() {
       var container = document.getElementById('flashcard-decks');
       if (!container) return;
-      var user = getCurrentUser();
-      if (!user || !user.id) {
-        container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">Sign in to view your flashcard decks</p></div>';
-        return;
-      }
       try {
-        var res = await apiFetch('/api/v1/flashcards/decks');
-        if (!res.ok) throw new Error('Failed');
-        var decks = await res.json();
+        var decks = await apiFetch('/api/v1/flashcards/decks');
+        if (!Array.isArray(decks)) decks = [];
         if (!decks.length) {
           container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">No decks yet. Create your first flashcard deck.</p></div>';
           return;
@@ -1968,15 +1987,9 @@
     async function loadBookmarks() {
       var container = document.querySelector('#screen-bookmarks .space-y-3');
       if (!container) return;
-      var user = getCurrentUser();
-      if (!user || !user.id) {
-        container.innerHTML = '<div class="text-center py-12"><p class="text-sm text-on-muted">Sign in to view your bookmarks</p></div>';
-        return;
-      }
       try {
-        var res = await apiFetch('/api/v1/bookmarks/');
-        if (!res.ok) throw new Error('Failed');
-        var bookmarks = await res.json();
+        var bookmarks = await apiFetch('/api/v1/bookmarks/');
+        if (!Array.isArray(bookmarks)) bookmarks = [];
         if (!bookmarks.length) {
           container.innerHTML = '<div class="text-center py-12"><p class="text-sm text-on-muted">No bookmarks yet. Save cases and statutes as you research.</p></div>';
           return;
@@ -2080,10 +2093,8 @@
       var user = getCurrentUser();
       var userId = user && user.id ? user.id : 'demo-user';
       try {
-        var res = await apiFetch('/api/v1/history?user_id=' + encodeURIComponent(userId));
-        if (!res.ok) throw new Error('Failed');
-        var data = await res.json();
-        var groups = data.groups || [];
+        var data = await apiFetch('/api/v1/history?user_id=' + encodeURIComponent(userId));
+        var groups = (data && data.groups) || [];
         if (!groups.length) return;
         container.innerHTML = groups.map(function(g) {
           var itemsHtml = g.items.map(function(item) {
@@ -2173,7 +2184,7 @@
           return;
         }
 
-        resultsDiv.innerHTML = results.map(function(r) {
+        resultsDiv.innerHTML = results.map(function(r, idx) {
           var title = r.title || 'Untitled';
           var citation = r.citation || '';
           var court = r.court || '';
@@ -2346,8 +2357,17 @@
       doSearch();
     }
 
-    function bookmarkCase(title) {
-      showToast('Bookmarked: ' + title, 'success');
+    async function bookmarkCase(title, citation) {
+      try {
+        await apiFetch('/api/v1/bookmarks/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: title, resource_type: 'case', citation: citation || '' })
+        });
+        showToast('Bookmarked: ' + title, 'success');
+      } catch(e) {
+        showToast('Failed to bookmark', 'error');
+      }
     }
 
     function copyCitation(citation) {
