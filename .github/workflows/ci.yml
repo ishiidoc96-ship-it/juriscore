@@ -103,13 +103,7 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ env.VERCEL_TOKEN }}
-          vercel-org-id: ${{ env.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ env.VERCEL_PROJECT_ID }}
-          vercel-args: "--prod"
-          working-directory: ./
+        run: vercel --prod --yes --token=$VERCEL_TOKEN --scope=team_X47B3tc6KvnEwEr5boEw09jN
 
   integration-tests:
     name: Integration Tests (Docker Compose)
