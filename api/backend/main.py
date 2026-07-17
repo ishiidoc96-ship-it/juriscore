@@ -79,6 +79,12 @@ try:
         workspaces,
         history,
         student_workspace,
+        treaties,
+        eac,
+        counties,
+        cause_list,
+        parliament,
+        publications,
     )
 except Exception as e:
     _import_errors["routers"] = str(e)
@@ -486,6 +492,12 @@ _routers = [
     (workspaces, "workspaces", "Workspaces"),
     (history, "history", "History"),
     (student_workspace, "student", "Student Workspace"),
+    (treaties, "treaties", "Treaties"),
+    (eac, "eac", "EAC Legislation"),
+    (counties, "counties", "Counties"),
+    (cause_list, "cause-list", "Cause Lists"),
+    (parliament, "parliament", "Parliament"),
+    (publications, "publications", "Publications"),
 ]
 for mod, prefix, tag in _routers:
     try:
