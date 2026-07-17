@@ -88,12 +88,59 @@ def search_local_db(
     if not words:
         return []
 
-    # Score documents by matching query words
+    # TF-IDF-like scoring with field weighting
     scores: Dict[int, float] = {}
+    doc_count = len(_data)
+
+    # Calculate IDF for each query word
+    idf = {}
+    for w in words:
+        if w in _index:
+            df = len(_index[w])
+            idf[w] = max(0.1, 1.0 + (doc_count / (1 + df)))
+        else:
+            idf[w] = 0
+
+    # Score documents with field-weighted TF-IDF
     for w in words:
         if w in _index:
             for idx in _index[w]:
-                scores[idx] = scores.get(idx, 0) + 1
+                case = _data[idx]
+                tf = 1.0  # term frequency (binary)
+
+                # Field weighting: title > citation > court > topics > excerpt
+                field_weight = 1.0
+                title = case.get("title", "").lower()
+                citation = case.get("citation", "").lower()
+                court = case.get("court", "").lower()
+                topics_raw = case.get("topics", "")
+                topics = topics_raw.lower() if isinstance(topics_raw, str) else " ".join(topics_raw).lower() if isinstance(topics_raw, list) else ""
+                excerpt = case.get("excerpt", "").lower()
+
+                if w in title:
+                    field_weight = 3.0  # Title match = 3x
+                elif w in citation:
+                    field_weight = 2.5  # Citation match = 2.5x
+                elif w in court:
+                    field_weight = 2.0  # Court match = 2x
+                elif w in topics:
+                    field_weight = 1.8  # Topic match = 1.8x
+                elif w in excerpt:
+                    field_weight = 1.0  # Excerpt match = 1x
+
+                scores[idx] = scores.get(idx, 0) + (tf * idf[w] * field_weight)
+
+    # Phrase matching bonus: if multi-word query appears as phrase
+    if len(words) > 1:
+        full_phrase = " ".join(words)
+        for i, case in enumerate(_data):
+            text = " ".join([
+                case.get("title", ""),
+                case.get("citation", ""),
+                case.get("excerpt", ""),
+            ]).lower()
+            if full_phrase in text:
+                scores[i] = scores.get(i, 0) + 5.0  # Big bonus for exact phrase
 
     # Sort by score descending
     scored = sorted(scores.items(), key=lambda x: x[1], reverse=True)

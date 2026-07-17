@@ -2671,18 +2671,31 @@
         }
         var html = '';
         items.forEach(function(c) {
-          html += '<a href="' + (c.url || '#') + '" target="_blank" class="block bg-surface border border-border rounded-xl p-4 hover:border-primary/20 hover:shadow-md transition-all">' +
-            '<div class="flex items-center gap-3">' +
+          var regionColors = {
+            'Rift Valley': 'bg-amber-50 text-amber-700',
+            'Western': 'bg-green-50 text-green-700',
+            'Eastern': 'bg-blue-50 text-blue-700',
+            'Nyanza': 'bg-purple-50 text-purple-700',
+            'Central': 'bg-rose-50 text-rose-700',
+            'Coast': 'bg-cyan-50 text-cyan-700',
+            'North Eastern': 'bg-orange-50 text-orange-700',
+            'Nairobi': 'bg-indigo-50 text-indigo-700',
+          };
+          var rc = regionColors[c.region] || 'bg-gray-50 text-gray-700';
+          html += '<div class="bg-surface border border-border rounded-xl p-4 hover:border-primary/20 hover:shadow-md transition-all">' +
+            '<div class="flex items-start gap-3">' +
               '<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">' +
                 '<svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>' +
               '</div>' +
               '<div class="flex-1 min-w-0">' +
-                '<h3 class="text-sm font-bold text-on-surface truncate">' + (c.name || 'Unknown') + '</h3>' +
-                '<p class="text-xs text-on-muted">' + (c.region || '') + '</p>' +
+                '<h3 class="text-sm font-bold text-on-surface">' + (c.name || 'Unknown') + '</h3>' +
+                '<div class="flex items-center gap-2 mt-1">' +
+                  '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide ' + rc + '">' + (c.region || '') + '</span>' +
+                  '<span class="text-xs text-on-muted">Capital: ' + (c.county_seat || 'N/A') + '</span>' +
+                '</div>' +
               '</div>' +
-              '<svg class="w-4 h-4 text-on-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>' +
             '</div>' +
-          '</a>';
+          '</div>';
         });
         container.innerHTML = html;
       } catch(e) {
