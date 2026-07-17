@@ -11,43 +11,77 @@ from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
-from prometheus_fastapi_instrumentator import Instrumentator
-from opentelemetry import trace
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
-from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
-from opentelemetry.instrumentation.logging import LoggingInstrumentor
 
-from api.backend.models.database import engine, Base, async_session
-from sqlalchemy import text
-from api.backend.middleware.auth import SupabaseAuthMiddleware
-from api.backend.middleware.security import (
-    SecurityHeadersMiddleware,
-    RateLimitMiddleware,
-    InputValidationMiddleware,
-)
-from api.backend.services import ai_service
-from api.backend.services.local_db import is_ready as local_db_ready
-from api.backend.routers import (
-    cases,
-    statutes,
-    constitution,
-    notebook,
-    flashcards,
-    study,
-    export,
-    search,
-    bookmarks,
-    gazettes,
-    tribunals,
-    auth,
-    workspaces,
-    history,
-    student_workspace,
-)
+# Track import failures for debugging
+_import_errors = {}
+
+try:
+    from prometheus_fastapi_instrumentator import Instrumentator
+except Exception as e:
+    _import_errors["prometheus"] = str(e)
+
+try:
+    from opentelemetry import trace
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+    from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+    from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+    from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
+    from opentelemetry.instrumentation.logging import LoggingInstrumentor
+except Exception as e:
+    _import_errors["opentelemetry"] = str(e)
+
+try:
+    from api.backend.models.database import engine, Base, async_session
+    from sqlalchemy import text
+except Exception as e:
+    _import_errors["database"] = str(e)
+
+try:
+    from api.backend.middleware.auth import SupabaseAuthMiddleware
+except Exception as e:
+    _import_errors["middleware_auth"] = str(e)
+
+try:
+    from api.backend.middleware.security import (
+        SecurityHeadersMiddleware,
+        RateLimitMiddleware,
+        InputValidationMiddleware,
+    )
+except Exception as e:
+    _import_errors["middleware_security"] = str(e)
+
+try:
+    from api.backend.services import ai_service
+except Exception as e:
+    _import_errors["ai_service"] = str(e)
+
+try:
+    from api.backend.services.local_db import is_ready as local_db_ready
+except Exception as e:
+    _import_errors["local_db"] = str(e)
+
+try:
+    from api.backend.routers import (
+        cases,
+        statutes,
+        constitution,
+        notebook,
+        flashcards,
+        study,
+        export,
+        search,
+        bookmarks,
+        gazettes,
+        tribunals,
+        auth,
+        workspaces,
+        history,
+        student_workspace,
+    )
+except Exception as e:
+    _import_errors["routers"] = str(e)
 
 load_dotenv()
 
@@ -78,10 +112,17 @@ def configure_structlog():
     )
 
     # Capture stdlib logs via structlog
-    LoggingInstrumentor().instrument(set_logging_format=True)
+    try:
+        LoggingInstrumentor().instrument(set_logging_format=True)
+    except Exception:
+        pass
 
 
-configure_structlog()
+try:
+    configure_structlog()
+except Exception as e:
+    logging.basicConfig(level=logging.INFO)
+    print(f"structlog setup failed: {e}")
 logger = structlog.get_logger(__name__)
 
 
@@ -175,37 +216,53 @@ def configure_metrics(app: FastAPI):
 
 async def request_id_middleware(request: Request, call_next):
     """Add request ID to all requests and log structured request/response info."""
-    request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
-    request.state.request_id = request_id
+    try:
+        request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
+        request.state.request_id = request_id
+    except Exception:
+        request_id = "unknown"
 
-    # Bind request ID to structlog context
-    structlog.contextvars.bind_contextvars(request_id=request_id)
+    try:
+        structlog.contextvars.bind_contextvars(request_id=request_id)
+    except Exception:
+        pass
 
     start_time = time.perf_counter()
 
-    # Increment active requests gauge
-    if hasattr(request.app.state, "metrics"):
-        request.app.state.metrics["active_requests"].inc()
+    try:
+        if hasattr(request.app.state, "metrics"):
+            request.app.state.metrics["active_requests"].inc()
+    except Exception:
+        pass
 
     try:
         response = await call_next(request)
     except Exception as e:
-        logger.exception("Request failed", error=str(e))
+        try:
+            logger.exception("Request failed", error=str(e))
+        except Exception:
+            pass
         raise
     finally:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        if hasattr(request.app.state, "metrics"):
-            request.app.state.metrics["active_requests"].dec()
+        try:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            if hasattr(request.app.state, "metrics"):
+                request.app.state.metrics["active_requests"].dec()
+            status_code = response.status_code if 'response' in locals() else 500
+            logger.info(
+                "Request completed",
+                method=request.method,
+                path=request.url.path,
+                status_code=status_code,
+                duration_ms=round(duration_ms, 2),
+            )
+        except Exception:
+            pass
 
-        logger.info(
-            "Request completed",
-            method=request.method,
-            path=request.url.path,
-            status_code=response.status_code if 'response' in locals() else 500,
-            duration_ms=round(duration_ms, 2),
-        )
-
-    response.headers["X-Request-ID"] = request_id
+    try:
+        response.headers["X-Request-ID"] = request_id
+    except Exception:
+        pass
     return response
 
 
@@ -272,29 +329,33 @@ async def lifespan(app: FastAPI):
 
     # Configure tracing
     try:
-        configure_tracing()
+        if 'configure_tracing' in globals():
+            configure_tracing()
     except Exception as e:
         logger.warning("Tracing setup failed, continuing without tracing", error=str(e))
 
     # Create database tables
     try:
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        logger.info("Database tables created")
+        if 'engine' in globals() and 'Base' in globals():
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            logger.info("Database tables created")
     except Exception as e:
         logger.warning("Database table creation failed", error=str(e))
 
     # Initialize AI service
     try:
-        ai_service.init_backend()
-        logger.info("AI service initialized")
+        if 'ai_service' in globals():
+            ai_service.init_backend()
+            logger.info("AI service initialized")
     except Exception as e:
         logger.warning("AI service init failed", error=str(e))
 
     # Load local DB (brain)
     try:
-        local_db_ready()
-        logger.info("Local database loaded")
+        if 'local_db_ready' in globals():
+            local_db_ready()
+            logger.info("Local database loaded")
     except Exception as e:
         logger.warning("Local database not loaded", error=str(e))
 
@@ -326,19 +387,28 @@ app.add_middleware(
 )
 
 # Auth middleware
-app.add_middleware(SupabaseAuthMiddleware)
+try:
+    app.add_middleware(SupabaseAuthMiddleware)
+except Exception as e:
+    logger.warning("Auth middleware not loaded", error=str(e))
 
 # Security middlewares
-app.add_middleware(SecurityHeadersMiddleware)
-app.add_middleware(InputValidationMiddleware)
-app.add_middleware(RateLimitMiddleware, requests_per_minute=int(os.getenv("RATE_LIMIT_PER_MINUTE", "100")))
+try:
+    app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(InputValidationMiddleware)
+    app.add_middleware(RateLimitMiddleware, requests_per_minute=int(os.getenv("RATE_LIMIT_PER_MINUTE", "100")))
+except Exception as e:
+    logger.warning("Security middleware not loaded", error=str(e))
 
 # Add middlewares
 app.middleware("http")(request_id_middleware)
 app.add_exception_handler(Exception, global_exception_handler)
 
 # Configure metrics after app creation
-configure_metrics(app)
+try:
+    configure_metrics(app)
+except Exception as e:
+    logger.warning("Metrics setup failed", error=str(e))
 
 
 # ── Health & Readiness Endpoints ─────────────────────────────────────────────
@@ -347,20 +417,17 @@ configure_metrics(app)
 @app.get("/health", tags=["Health"])
 async def health():
     """Liveness probe - always returns 200 if process is alive."""
-    from api.backend.services import ai_service
-
-    ai_configured = ai_service._is_configured()
-
     return {
         "status": "healthy",
         "service": "juriscore-api",
         "version": "1.0.0",
-        "features": {
-            "ai_enabled": ai_configured,
-            "ai_fast_provider": ai_service._provider.value if ai_service._provider else None,
-            "ai_reasoning_provider": ai_service._reasoning_provider.value if ai_service._reasoning_provider else None,
-        }
     }
+
+
+@app.get("/debug-imports", tags=["Debug"])
+async def debug_imports():
+    """Show which imports failed."""
+    return {"import_errors": _import_errors}
 
 
 @app.get("/ready", tags=["Health"])
@@ -403,18 +470,25 @@ async def root():
 
 API_PREFIX = "/api/v1"
 
-app.include_router(cases.router, prefix=f"{API_PREFIX}/cases", tags=["Cases"])
-app.include_router(statutes.router, prefix=f"{API_PREFIX}/statutes", tags=["Statutes"])
-app.include_router(constitution.router, prefix=f"{API_PREFIX}/constitution", tags=["Constitution"])
-app.include_router(notebook.router, prefix=f"{API_PREFIX}/notebook", tags=["Notebook"])
-app.include_router(flashcards.router, prefix=f"{API_PREFIX}/flashcards", tags=["Flashcards"])
-app.include_router(study.router, prefix=f"{API_PREFIX}/study", tags=["Study"])
-app.include_router(export.router, prefix=f"{API_PREFIX}/export", tags=["Export"])
-app.include_router(search.router, prefix=f"{API_PREFIX}/search", tags=["Search"])
-app.include_router(bookmarks.router, prefix=f"{API_PREFIX}/bookmarks", tags=["Bookmarks"])
-app.include_router(gazettes.router, prefix=f"{API_PREFIX}/gazettes", tags=["Gazettes"])
-app.include_router(tribunals.router, prefix=f"{API_PREFIX}/tribunals", tags=["Tribunals"])
-app.include_router(auth.router, prefix=f"{API_PREFIX}/auth", tags=["Auth"])
-app.include_router(workspaces.router, prefix=f"{API_PREFIX}/workspaces", tags=["Workspaces"])
-app.include_router(history.router, prefix=f"{API_PREFIX}/history", tags=["History"])
-app.include_router(student_workspace.router, prefix=f"{API_PREFIX}/student", tags=["Student Workspace"])
+_routers = [
+    (cases, "cases", "Cases"),
+    (statutes, "statutes", "Statutes"),
+    (constitution, "constitution", "Constitution"),
+    (notebook, "notebook", "Notebook"),
+    (flashcards, "flashcards", "Flashcards"),
+    (study, "study", "Study"),
+    (export, "export", "Export"),
+    (search, "search", "Search"),
+    (bookmarks, "bookmarks", "Bookmarks"),
+    (gazettes, "gazettes", "Gazettes"),
+    (tribunals, "tribunals", "Tribunals"),
+    (auth, "auth", "Auth"),
+    (workspaces, "workspaces", "Workspaces"),
+    (history, "history", "History"),
+    (student_workspace, "student", "Student Workspace"),
+]
+for mod, prefix, tag in _routers:
+    try:
+        app.include_router(mod.router, prefix=f"{API_PREFIX}/{prefix}", tags=[tag])
+    except Exception as e:
+        logger.warning(f"Router {tag} not loaded", error=str(e))

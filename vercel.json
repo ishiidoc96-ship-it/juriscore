@@ -29,6 +29,10 @@
       "dest": "/api/backend/main.py"
     },
     {
+      "src": "/debug-imports",
+      "dest": "/api/backend/main.py"
+    },
+    {
       "src": "/ready",
       "dest": "/api/backend/main.py"
     },

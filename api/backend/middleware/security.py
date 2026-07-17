@@ -42,7 +42,8 @@ class InputValidationMiddleware(BaseHTTPMiddleware):
     """Basic input validation middleware."""
 
     async def dispatch(self, request: Request, call_next):
-        if request.headers.get("content-length", "0").isdigit():
-            if int(request.headers["content-length"]) > 10 * 1024 * 1024:
+        content_length = request.headers.get("content-length")
+        if content_length and content_length.isdigit():
+            if int(content_length) > 10 * 1024 * 1024:
                 return Response(status_code=413, content="Request too large")
         return await call_next(request)
