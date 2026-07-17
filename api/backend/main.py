@@ -86,6 +86,7 @@ try:
         parliament,
         publications,
         chat,
+        uploads,
     )
 except Exception as e:
     _import_errors["routers"] = str(e)
@@ -500,6 +501,7 @@ _router_specs = [
     ("parliament", "parliament", "Parliament"),
     ("publications", "publications", "Publications"),
     ("chat", "chat", "Chat"),
+    ("uploads", "uploads", "Uploads"),
 ]
 for mod_name, prefix, tag in _router_specs:
     try:
