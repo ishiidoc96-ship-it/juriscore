@@ -2,11 +2,14 @@
    CSS CUSTOM PROPERTIES (Design Tokens)
    ======================================== */
 :root {
-  --color-primary: #00327d;
-  --color-primary-container: #0047ab;
+  /* Kenya Law Brand Colors */
+  --color-primary: #8F2A2B;
+  --color-primary-container: #b33d3e;
   --color-on-primary: #ffffff;
-  --color-on-primary-container: #a5bdff;
-  --color-surface-tint: #2559bd;
+  --color-on-primary-container: #ffdad6;
+  --color-primary-bg-subtle: #f5e0e0;
+  --color-primary-border-subtle: #d2a8a8;
+  --color-surface-tint: #8F2A2B;
   --color-surface: #f9f9f9;
   --color-surface-bright: #f9f9f9;
   --color-surface-container-lowest: #ffffff;
@@ -14,31 +17,31 @@
   --color-surface-container: #eeeeee;
   --color-surface-container-high: #e8e8e8;
   --color-surface-container-highest: #e2e2e2;
-  --color-on-surface: #1a1c1c;
-  --color-on-surface-variant: #434653;
-  --color-outline: #737784;
-  --color-outline-variant: #c3c6d5;
-  --color-tertiary: #651f00;
-  --color-tertiary-container: #8b2e01;
-  --color-error: #ba1a1a;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
-  --color-secondary: #5f5e5e;
-  --color-secondary-container: #e5e2e1;
-  --color-on-secondary-container: #656464;
-  --color-background: #f9f9f9;
-  --color-on-background: #1a1c1c;
-  --font-display: "EB Garamond", serif;
-  --font-body: "Inter", sans-serif;
+  --color-on-surface: #212529;
+  --color-on-surface-variant: #6c757d;
+  --color-outline: #dee2e6;
+  --color-outline-variant: #ced4da;
+  --color-tertiary: #FAA21B;
+  --color-tertiary-container: #ffc107;
+  --color-error: #dc3545;
+  --color-error-container: #f8d7da;
+  --color-on-error-container: #721c24;
+  --color-secondary: #FAA21B;
+  --color-secondary-container: #fff3cd;
+  --color-on-secondary-container: #856404;
+  --color-background: #ffffff;
+  --color-on-background: #212529;
+  --font-display: "Optima", "EB Garamond", serif;
+  --font-body: "Optima", "Inter", sans-serif;
   --spacing-unit: 4px;
   --spacing-gutter: 16px;
   --radius: 0.25rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
   --radius-full: 9999px;
-  --shadow-card: 0 8px 30px rgba(0,0,0,0.04);
-  --shadow-card-hover: 0 8px 30px rgba(0,0,0,0.08);
-  --shadow-float: 0 16px 40px rgba(0,0,0,0.04);
+  --shadow-card: 0 8px 30px rgba(143, 42, 43, 0.1);
+  --shadow-card-hover: 0 8px 30px rgba(143, 42, 43, 0.15);
+  --shadow-float: 0 16px 40px rgba(143, 42, 43, 0.12);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -60,8 +63,8 @@ ul, ol { list-style: none; }
   padding: 10px 24px; border-radius: var(--radius-lg); border: none; cursor: pointer;
   transition: all 0.2s ease; white-space: nowrap; user-select: none;
 }
-.btn-primary { background-color: #0A0A0A; color: #ffffff; }
-.btn-primary:hover { background-color: #1a1a1a; }
+.btn-primary { background-color: var(--color-primary); color: var(--color-on-primary); }
+.btn-primary:hover { background-color: var(--color-primary-container); }
 .btn-primary:active { transform: scale(0.98); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 .btn-outline { background-color: transparent; color: var(--color-on-surface); border: 1.5px solid var(--color-outline-variant); }
@@ -88,7 +91,7 @@ ul, ol { list-style: none; }
   color: var(--color-on-surface-variant); cursor: pointer; transition: all 0.2s ease; user-select: none;
 }
 .filter-chip:hover { border-color: var(--color-outline); }
-.filter-chip.active { border-color: var(--color-primary); background-color: #dce8ff; color: var(--color-primary); }
+.filter-chip.active { border-color: var(--color-primary); background-color: var(--color-primary-bg-subtle); color: var(--color-primary); }
 
 .skeleton {
   position: relative; background-color: var(--color-surface-container-high);

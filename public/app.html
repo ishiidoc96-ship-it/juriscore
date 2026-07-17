@@ -9,6 +9,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+  <link href="https://www.kenyalaw.org/static/fonts/Optima.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
+  <link href="https://www.kenyalaw.org/static/fonts/Optima-Medium.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
+  <link href="https://www.kenyalaw.org/static/fonts/Optima-Bold.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
+  <style>
+    @font-face {
+      font-family: "Optima";
+      src: url("https://www.kenyalaw.org/static/fonts/Optima.woff2") format("woff2"),
+           url("https://www.kenyalaw.org/static/fonts/Optima.woff") format("woff");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Optima";
+      src: url("https://www.kenyalaw.org/static/fonts/Optima-Medium.woff2") format("woff2"),
+           url("https://www.kenyalaw.org/static/fonts/Optima-Medium.woff") format("woff");
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Optima";
+      src: url("https://www.kenyalaw.org/static/fonts/Optima-Bold.woff2") format("woff2"),
+           url("https://www.kenyalaw.org/static/fonts/Optima-Bold.woff") format("woff");
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script>
     tailwind.config = {
@@ -16,11 +45,11 @@
       theme: {
         extend: {
           "colors": {
-            "primary": "#00327d",
-            "primary-container": "#0047ab",
+            "primary": "#8F2A2B",
+            "primary-container": "#b33d3e",
             "on-primary": "#ffffff",
-            "on-primary-container": "#a5bdff",
-            "surface-tint": "#2559bd",
+            "on-primary-container": "#ffdad6",
+            "surface-tint": "#8F2A2B",
             "surface": "#f9f9f9",
             "surface-bright": "#f9f9f9",
             "surface-container-lowest": "#ffffff",
@@ -28,20 +57,20 @@
             "surface-container": "#eeeeee",
             "surface-container-high": "#e8e8e8",
             "surface-container-highest": "#e2e2e2",
-            "on-surface": "#1a1c1c",
-            "on-surface-variant": "#434653",
-            "outline": "#737784",
-            "outline-variant": "#c3c6d5",
-            "tertiary": "#651f00",
-            "tertiary-container": "#8b2e01",
-            "error": "#ba1a1a",
-            "error-container": "#ffdad6",
-            "on-error-container": "#93000a",
-            "secondary": "#5f5e5e",
-            "secondary-container": "#e5e2e1",
-            "on-secondary-container": "#656464",
-            "background": "#f9f9f9",
-            "on-background": "#1a1c1c"
+            "on-surface": "#212529",
+            "on-surface-variant": "#6c757d",
+            "outline": "#dee2e6",
+            "outline-variant": "#ced4da",
+            "tertiary": "#FAA21B",
+            "tertiary-container": "#ffc107",
+            "error": "#dc3545",
+            "error-container": "#f8d7da",
+            "on-error-container": "#721c24",
+            "secondary": "#FAA21B",
+            "secondary-container": "#fff3cd",
+            "on-secondary-container": "#856404",
+            "background": "#ffffff",
+            "on-background": "#212529"
           },
           "borderRadius": {
             "DEFAULT": "0.25rem",
@@ -50,12 +79,12 @@
             "full": "9999px"
           },
           "fontFamily": {
-            "display-lg": ["EB Garamond", "serif"],
-            "headline-sm": ["Inter", "sans-serif"],
-            "body-reading": ["EB Garamond", "serif"],
-            "body-ui": ["Inter", "sans-serif"],
-            "label-caps": ["Inter", "sans-serif"],
-            "headline-lg-mobile": ["EB Garamond", "serif"]
+            "display-lg": ["Optima", "EB Garamond", "serif"],
+            "headline-sm": ["Optima", "Inter", "sans-serif"],
+            "body-reading": ["Optima", "EB Garamond", "serif"],
+            "body-ui": ["Optima", "Inter", "sans-serif"],
+            "label-caps": ["Optima", "Inter", "sans-serif"],
+            "headline-lg-mobile": ["Optima", "EB Garamond", "serif"]
           },
           "fontSize": {
             "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
@@ -82,12 +111,12 @@
     }
     .toast {
       padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
-      box-shadow: 0 8px 30px rgba(0,0,0,.12); animation: toastIn .3s ease;
+      box-shadow: 0 8px 30px rgba(143, 42, 43, 0.15); animation: toastIn .3s ease;
       max-width: 360px;
     }
-    .toast.success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-    .toast.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-    .toast.info { background: #ffdad6; color: #ba1a1a; border: 1px solid #ffdad6; }
+    .toast.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .toast.error { background: var(--color-error-container); color: var(--color-on-error-container); border: 1px solid #f5c6cb; }
+    .toast.info { background: var(--color-primary-bg-subtle); color: var(--color-primary); border: 1px solid var(--color-primary-border-subtle); }
     @keyframes toastIn {
       from { opacity: 0; transform: translateY(-12px) scale(.96); }
       to { opacity: 1; transform: translateY(0) scale(1); }
