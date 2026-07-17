@@ -16,11 +16,16 @@ from typing import Optional, List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 
+from api.backend.services.session_store import (
+    save_session,
+    load_session,
+    delete_session,
+    list_sessions as list_persistent_sessions,
+    extract_session_context,
+)
+
 logger = logging.getLogger("juriscore")
 router = APIRouter()
-
-# ── In-memory session store (per-server; swap for Redis/DB in production) ─────
-_sessions: Dict[str, Dict[str, Any]] = {}
 
 # ── Anti-AI Writer: Banned Words & Phrases (2026 detectors) ──────────────────
 # These are instant AI flags to any detector (GPTZero, Turnitin, Originality.ai)
@@ -132,9 +137,11 @@ def _anti_ai_writer(text: str) -> str:
 
 
 def _get_or_create_session(session_id: Optional[str] = None) -> Dict[str, Any]:
-    """Get existing session or create a new one."""
-    if session_id and session_id in _sessions:
-        return _sessions[session_id]
+    """Get existing session from disk or create a new one."""
+    if session_id:
+        existing = load_session(session_id)
+        if existing:
+            return existing
 
     new_id = session_id or str(uuid.uuid4())
     session = {
@@ -144,7 +151,7 @@ def _get_or_create_session(session_id: Optional[str] = None) -> Dict[str, Any]:
         "last_active": datetime.utcnow().isoformat(),
         "context": {},
     }
-    _sessions[new_id] = session
+    save_session(new_id, session)
     return session
 
 
@@ -276,6 +283,7 @@ async def send_message(body: ChatMessage):
         "timestamp": datetime.utcnow().isoformat(),
     })
     session["last_active"] = datetime.utcnow().isoformat()
+    save_session(session["id"], session)
 
     # Detect intent
     intent = _detect_search_intent(message)
@@ -372,6 +380,11 @@ Provide a thorough, well-structured response. Include specific citations where a
         "sources": sources_used,
     })
 
+    # Step 5b: Extract learning context and persist session
+    session["context"] = extract_session_context(session["messages"])
+    session["last_active"] = datetime.utcnow().isoformat()
+    save_session(session["id"], session)
+
     # Step 6: Return clean response (zero AI references)
     return ChatResponse(
         response=clean_response,
@@ -422,23 +435,15 @@ async def get_chat_history(session_id: str):
 @router.delete("/session/{session_id}")
 async def clear_session(session_id: str):
     """Clear a chat session."""
-    if session_id in _sessions:
-        del _sessions[session_id]
+    delete_session(session_id)
     return {"status": "cleared", "session_id": session_id}
 
 
 @router.get("/sessions")
 async def list_sessions():
-    """List all active sessions (for admin/debug)."""
+    """List all sessions (stored persistently on disk)."""
+    sessions = list_persistent_sessions()
     return {
-        "count": len(_sessions),
-        "sessions": [
-            {
-                "id": s["id"],
-                "message_count": len(s["messages"]),
-                "created_at": s["created_at"],
-                "last_active": s["last_active"],
-            }
-            for s in _sessions.values()
-        ],
+        "count": len(sessions),
+        "sessions": sessions,
     }

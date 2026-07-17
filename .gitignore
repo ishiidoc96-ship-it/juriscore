@@ -26,3 +26,5 @@
 npm-debug.log*
 .vercel
 .env*
+*.bak
+api/backend/scripts/upload_progress.json
