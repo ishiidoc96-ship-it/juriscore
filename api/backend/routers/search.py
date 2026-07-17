@@ -59,35 +59,58 @@ async def universal_search(
 
     jurisdiction = jurisdiction.lower().strip()
 
-    # Kenya Law search — FTS5 instant search, then brain fallback
+    # Kenya Law search — universal across all document types
     if jurisdiction == "kenya" or jurisdiction == "ke":
-        # Try FTS5 local database (instant, 12,000+ real cases)
+        all_results = []
+        sources_used = []
+
+        # Layer 1: Local database (instant, 12,000+ real cases — if available)
         local_results = search_local_db(q, doc_type=doc_type, court=court, limit=limit)
         if local_results:
+            for r in local_results:
+                r["source"] = "local_db"
+            all_results.extend(local_results)
+            sources_used.append("local_db")
             logger.info(f"Local DB returned {len(local_results)} results for '{q}'")
-            return {
-                "count": len(local_results),
-                "results": local_results,
-                "jurisdiction": "kenya",
-                "source": "local_db",
-            }
 
-        # Fall back to brain search
+        # Layer 2: Brain search (instant, searches ALL types: cases, legislation, gazettes, bills, articles)
         brain_result = brain_search(q, doc_type=doc_type, court=court, limit=limit)
-        if brain_result.get("count", 0) > 0 and brain_result.get("source") == "brain":
-            brain_result["jurisdiction"] = "kenya"
+        if brain_result.get("count", 0) > 0:
+            for r in brain_result.get("results", []):
+                r["source"] = "brain"
+            all_results.extend(brain_result.get("results", []))
+            sources_used.append("brain")
             logger.info(f"Brain returned {brain_result['count']} results for '{q}'")
-            return brain_result
 
-        # Final fallback to KB
-        from api.backend.services.scraper import _search_kenyan_kb
-        kb_results = _search_kenyan_kb(q, limit=limit)
-        logger.info(f"KB returned {len(kb_results)} results for '{q}'")
+        # Layer 3: Live KenyaLaw.org search (additional results from web)
+        try:
+            kenya_results = await search_kenyalaw(query=q, limit=limit)
+            if kenya_results.get("results"):
+                for r in kenya_results["results"]:
+                    r["source"] = "kenyalaw"
+                all_results.extend(kenya_results["results"])
+                sources_used.append("kenyalaw")
+        except Exception as e:
+            logger.warning(f"KenyaLaw search failed: {e}")
+
+        # Deduplicate by title
+        seen_titles = set()
+        unique_results = []
+        for r in all_results:
+            t = r.get("title", "")
+            if t and t not in seen_titles:
+                seen_titles.add(t)
+                unique_results.append(r)
+
+        results = unique_results[:limit]
+        logger.info(f"Universal Kenya search: {len(results)} results from {sources_used}")
+
         return {
-            "count": len(kb_results),
-            "results": kb_results,
+            "count": len(results),
+            "results": results,
             "jurisdiction": "kenya",
-            "source": "kenyan_kb",
+            "source": "universal",
+            "sources_used": sources_used,
         }
 
     # Africa Law search

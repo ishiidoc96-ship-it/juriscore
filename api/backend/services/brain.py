@@ -34,16 +34,18 @@ def _find_brain_dir() -> Optional[Path]:
     if BRAIN_DIR and os.path.exists(BRAIN_DIR):
         return Path(BRAIN_DIR)
 
-    # Check common locations
+    # Resolve relative to this file's location (works on Vercel + local)
+    here = Path(__file__).resolve().parent  # api/backend/services/
+    data_dir = here / ".." / ".." / "data" / "brain"
+
     candidates = [
-        Path("data/brain"),
-        Path("../data/brain"),
-        Path("../../data/brain"),
-        Path("/tmp/brain"),
+        data_dir,                          # api/backend/data/brain
+        here / ".." / "data" / "brain",    # api/backend/data/brain (alt)
+        Path("/tmp/brain"),                # Vercel temp fallback
     ]
     for p in candidates:
         if p.exists() and (p / "metadata" / "cases.json").exists():
-            return p
+            return p.resolve()
     return None
 
 

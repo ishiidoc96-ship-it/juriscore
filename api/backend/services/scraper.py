@@ -185,7 +185,7 @@ async def _ai_search_web(query: str, limit: int = 10) -> List[Dict]:
     This works even when sites are down, JS-rendered, or inaccessible to humans.
     The model has internet knowledge and can synthesize info from any source.
     """
-    from services.ai_service import _call_model
+    from api.backend.services.ai_service import _call_model
 
     prompt = f"""You are a legal research assistant. Search your knowledge for information about: "{query}"
 
@@ -222,7 +222,7 @@ async def _ai_search_fallback(query: str, limit: int = 10) -> List[Dict]:
     When kenyalaw.org is down or returns nothing, use AI to search broadly.
     This is the REAL fallback — not static KB, but intelligent web search.
     """
-    from services.ai_service import _call_model
+    from api.backend.services.ai_service import _call_model
 
     prompt = f"""You are a senior legal researcher. I need information about: "{query}"
 
@@ -287,7 +287,7 @@ async def scrape_daily_updates(court: Optional[str] = None, limit: int = 30) -> 
         logger.warning(f"Daily updates scrape failed: {e}")
 
     # Fallback: AI-powered recent cases
-    from services.ai_service import _call_model
+    from api.backend.services.ai_service import _call_model
     court_filter = f" from {court}" if court and court != "all" else ""
     prompt = f"""List the most recent notable Kenyan court decisions{court_filter} from the last week.
 Include case name, court, date, and a brief summary of the holding.
@@ -347,7 +347,7 @@ async def fetch_document_text(url: str) -> str:
         return text
 
     # Approach 2: AI-powered extraction (works even when site is JS-rendered)
-    from services.ai_service import _call_model
+    from api.backend.services.ai_service import _call_model
     prompt = f"""I need the full text or detailed summary of the legal document at: {url}
 
 Please provide whatever you know about this document from your training data.
@@ -380,7 +380,7 @@ async def search_kenyalaw(
     3. If no results → AI-powered web search
     4. If still nothing → knowledge base
     """
-    from services.ai_service import (
+    from api.backend.services.ai_service import (
         rewrite_search_query, rank_search_results,
         fuzzy_match_court, fuzzy_match_doc_type,
     )
@@ -650,7 +650,7 @@ async def scrape_statute(act_id: str) -> Dict[str, Any]:
         logger.warning(f"Brain statute fallback failed: {e}")
 
     # AI fallback for statute
-    from services.ai_service import _call_model
+    from api.backend.services.ai_service import _call_model
     prompt = f"Provide the key provisions of {act_id}. Include section numbers and their content. Be thorough and detailed."
     try:
         result = await _call_model(prompt, max_tokens=4096, temperature=0.3)
