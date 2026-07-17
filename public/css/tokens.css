@@ -2,14 +2,11 @@
    CSS CUSTOM PROPERTIES (Design Tokens)
    ======================================== */
 :root {
-  /* Kenya Law Brand Colors */
-  --color-primary: #8F2A2B;
-  --color-primary-container: #b33d3e;
+  --color-primary: #00327d;
+  --color-primary-container: #0047ab;
   --color-on-primary: #ffffff;
-  --color-on-primary-container: #ffdad6;
-  --color-primary-bg-subtle: #f5e0e0;
-  --color-primary-border-subtle: #d2a8a8;
-  --color-surface-tint: #8F2A2B;
+  --color-on-primary-container: #a5bdff;
+  --color-surface-tint: #2559bd;
   --color-surface: #f9f9f9;
   --color-surface-bright: #f9f9f9;
   --color-surface-container-lowest: #ffffff;
@@ -17,31 +14,31 @@
   --color-surface-container: #eeeeee;
   --color-surface-container-high: #e8e8e8;
   --color-surface-container-highest: #e2e2e2;
-  --color-on-surface: #212529;
-  --color-on-surface-variant: #6c757d;
-  --color-outline: #dee2e6;
-  --color-outline-variant: #ced4da;
-  --color-tertiary: #FAA21B;
-  --color-tertiary-container: #ffc107;
-  --color-error: #dc3545;
-  --color-error-container: #f8d7da;
-  --color-on-error-container: #721c24;
-  --color-secondary: #FAA21B;
-  --color-secondary-container: #fff3cd;
-  --color-on-secondary-container: #856404;
-  --color-background: #ffffff;
-  --color-on-background: #212529;
-  --font-display: "Optima", "EB Garamond", serif;
-  --font-body: "Optima", "Inter", sans-serif;
+  --color-on-surface: #1a1c1c;
+  --color-on-surface-variant: #434653;
+  --color-outline: #737784;
+  --color-outline-variant: #c3c6d5;
+  --color-tertiary: #651f00;
+  --color-tertiary-container: #8b2e01;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-secondary: #5f5e5e;
+  --color-secondary-container: #e5e2e1;
+  --color-on-secondary-container: #656464;
+  --color-background: #f9f9f9;
+  --color-on-background: #1a1c1c;
+  --font-display: "EB Garamond", serif;
+  --font-body: "Inter", sans-serif;
   --spacing-unit: 4px;
   --spacing-gutter: 16px;
   --radius: 0.25rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
   --radius-full: 9999px;
-  --shadow-card: 0 8px 30px rgba(143, 42, 43, 0.1);
-  --shadow-card-hover: 0 8px 30px rgba(143, 42, 43, 0.15);
-  --shadow-float: 0 16px 40px rgba(143, 42, 43, 0.12);
+  --shadow-card: 0 8px 30px rgba(0,0,0,0.04);
+  --shadow-card-hover: 0 8px 30px rgba(0,0,0,0.08);
+  --shadow-float: 0 16px 40px rgba(0,0,0,0.04);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
