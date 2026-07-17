@@ -145,17 +145,59 @@ function renderTopBar(title, options = {}) {
   `;
 }
 
+function navigateTo(screen) {
+  const hashMap = {
+    dashboard: 'home',
+    search: 'search',
+    constitution: 'constitution',
+    notebook: 'notebook',
+    flashcards: 'flashcards',
+    bookmarks: 'bookmarks',
+    history: 'history',
+    profile: 'profile'
+  };
+
+  const hash = hashMap[screen] || 'home';
+
+  if (window.location.hash !== `#${hash}`) {
+    window.location.hash = `#${hash}`;
+  }
+
+  setActivePage(screen);
+
+  const activeHash = window.location.hash === '' ? 'home' : window.location.hash.replace('#', '');
+  history.replaceState({}, '', `/app.html#${activeHash}`);
+}
+
 function initNav() {
   const sidebarContainer = document.getElementById('sidebar-container');
   const bottomNavContainer = document.getElementById('bottomnav-container');
 
   if (sidebarContainer) {
     sidebarContainer.innerHTML = renderSidebar();
+    const sidebarLinks = sidebarContainer.querySelectorAll('[data-page]');
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        const pageName = this.dataset.page;
+        e.preventDefault();
+        navigateTo(pageName);
+      });
+    });
   }
 
   if (bottomNavContainer) {
     bottomNavContainer.innerHTML = renderBottomNav();
+    const bottomNavLinks = bottomNavContainer.querySelectorAll('[data-page]');
+    bottomNavLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        const pageName = this.dataset.page;
+        e.preventDefault();
+        navigateTo(pageName);
+      });
+    });
   }
+
+  setActivePage(getActivePage());
 }
 
 function setActivePage(pageName) {

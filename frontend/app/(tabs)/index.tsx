@@ -10,10 +10,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   Linking,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { sendChatMessage, ChatResponse } from '../../lib/api';
+import { sendChatMessage, ChatResponse, searchCases } from '../../lib/api';
 
 interface Message {
   id: string;
@@ -61,13 +62,36 @@ export default function SearchScreen() {
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: 'Something went wrong. Please try again.',
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      // If chat endpoint fails, try the regular search endpoint as fallback
+      try {
+        const searchResponse = await searchCases(query.trim());
+        if (searchResponse && searchResponse.results) {
+          const assistantMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: `Found ${searchResponse.results.length} results for your search:`,
+            results: searchResponse.results,
+            timestamp: new Date(),
+          };
+          setMessages(prev => [...prev, assistantMessage]);
+        } else {
+          const errorMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: 'Search failed. Please try again.',
+            timestamp: new Date(),
+          };
+          setMessages(prev => [...prev, errorMessage]);
+        }
+      } catch (searchError) {
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: 'Search failed. Please try again.',
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      }
     } finally {
       setLoading(false);
     }
