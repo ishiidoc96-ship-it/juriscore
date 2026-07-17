@@ -2,10 +2,15 @@ from fastapi import APIRouter, Query, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from api.backend.services.scraper import search_all, search_kenyalaw
-from api.backend.services.brain import brain_search, brain_get_case, brain_get_related_cases, brain_get_statutes, brain_stats, load_brain
+from api.backend.services.brain import (
+    brain_search, brain_get_case, brain_get_related_cases,
+    brain_get_statutes, brain_get_all_courts, brain_get_all_doc_types,
+    brain_stats, load_brain,
+)
 from api.backend.services.africa_law_scraper import search_africanlii, search_african_court, get_african_jurisdictions, get_african_courts
 from api.backend.services.world_law_scraper import search_worldlii, search_global_case_law, get_world_jurisdictions, get_world_sources, get_legal_systems
 from api.backend.services.local_db import search_local_db, get_db_stats
+from api.backend.services.ai_orchestrator import ai_reason_and_search, ai_legal_concept, ai_case_analysis
 from api.backend.services.ai_service import (
     generate_summary_from_metadata, legal_research_assistant,
     format_citation, explain_legal_concept, compare_jurisdictions,
@@ -139,18 +144,15 @@ async def universal_search(
             logger.error(f"World search failed: {e}")
             return {"count": 0, "results": [], "facets": {}, "jurisdiction": "world", "error": str(e)}
 
-    # Default: Kenya Law
+    # Default: AI-First Search with comprehensive results
     else:
-        filters = {
-            "doc_type": doc_type,
-            "court": court,
-            "page": page,
-            "ordering": ordering,
-            "limit": limit,
-        }
-        result = await search_all(q, filters)
-        result["jurisdiction"] = "kenya"
-        return result
+        return await ai_reason_and_search(
+            query=q,
+            doc_type=doc_type,
+            court=court,
+            jurisdiction=jurisdiction,
+            limit=limit,
+        )
 
 
 @router.get("/jurisdictions")
@@ -216,8 +218,18 @@ async def list_courts(q: Optional[str] = Query(None), jurisdiction: Optional[str
         return all_courts
 
     else:
-        data = await search_kenyalaw(query=q or "a", limit=0)
-        return data.get("facets", {}).get("courts", [])
+        # Try live KenyaLaw first
+        try:
+            data = await search_kenyalaw(query=q or "a", limit=0)
+            courts = data.get("facets", {}).get("courts", [])
+            if courts:
+                return courts
+        except Exception as e:
+            logger.warning(f"Live courts fetch failed: {e}")
+
+        # Fallback to brain data
+        brain_courts = brain_get_all_courts()
+        return [{"key": c, "count": 0} for c in brain_courts]
 
 
 @router.get("/types")
@@ -243,8 +255,17 @@ async def list_doc_types(q: Optional[str] = Query(None), jurisdiction: Optional[
         ]
 
     else:
-        data = await search_kenyalaw(query=q or "a", limit=0)
-        return data.get("facets", {}).get("doc_types", [])
+        # Try live KenyaLaw first
+        try:
+            data = await search_kenyalaw(query=q or "a", limit=0)
+            doc_types = data.get("facets", {}).get("doc_types", [])
+            if doc_types:
+                return doc_types
+        except Exception as e:
+            logger.warning(f"Live doc types fetch failed: {e}")
+
+        # Fallback to brain data
+        return brain_get_all_doc_types()
 
 
 @router.get("/rewrite")
@@ -505,7 +526,18 @@ async def get_daily_updates(
 ):
     """Get recently added/updated cases from KenyaLaw.org, organized by court."""
     from api.backend.services.scraper import scrape_daily_updates
-    results = await scrape_daily_updates(court=court, limit=limit)
+
+    results = []
+    try:
+        results = await scrape_daily_updates(court=court, limit=limit)
+    except Exception as e:
+        logger.warning(f"Live daily updates failed, using brain data: {e}")
+
+    # Fallback to brain data if no live results
+    if not results:
+        brain = brain_search(court or "", doc_type="case", limit=limit)
+        results = brain.get("results", [])
+        logger.info(f"Brain daily updates returned {len(results)} results")
 
     # Group by court
     by_court = {}
@@ -538,3 +570,35 @@ async def get_brain_stats():
 async def get_local_db_stats_endpoint():
     """Get local database statistics."""
     return get_db_stats()
+
+
+# --- AI-Powered Endpoints ---
+
+@router.get("/concept")
+async def explain_concept(q: str = Query(...)):
+    """AI explains a legal concept with detailed analysis and citations."""
+    return await ai_legal_concept(q)
+
+
+@router.get("/case-analysis")
+async def analyze_case(q: str = Query(...)):
+    """AI provides comprehensive case analysis with facts, holdings, and significance."""
+    return await ai_case_analysis(q)
+
+
+@router.get("/ai-research")
+async def ai_research(
+    q: str = Query(...),
+    doc_type: Optional[str] = Query(None),
+    court: Optional[str] = Query(None),
+    jurisdiction: str = Query("kenya"),
+    limit: int = Query(20, le=50),
+):
+    """AI-first search: AI reasons about the query, decides what to fetch, returns detailed results."""
+    return await ai_reason_and_search(
+        query=q,
+        doc_type=doc_type,
+        court=court,
+        jurisdiction=jurisdiction,
+        limit=limit,
+    )

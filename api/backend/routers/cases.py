@@ -6,11 +6,18 @@ from datetime import datetime
 from api.backend.models.database import Case, User
 from api.backend.models.schemas import CaseResponse, CaseComparisonRequest, CaseComparisonResponse
 from api.backend.services.scraper import search_cases as scrape_search_cases
+from api.backend.services.brain import brain_search, load_brain
+from api.backend.services.local_db import search_local_db
 from api.backend.services.ai_service import compare_cases as ai_compare_cases, generate_case_summary, generate_citation
 from api.backend.routers.auth import get_current_user
 from api.backend.core import get_session
 import logging
 import uuid
+
+try:
+    load_brain()
+except Exception:
+    pass
 
 logger = logging.getLogger("juriscore")
 router = APIRouter()
@@ -27,19 +34,50 @@ async def search_cases_endpoint(
     limit: int = Query(20, le=100),
     session: AsyncSession = Depends(get_session),
 ):
+    # Fallback chain: Live → Local DB → Brain
+    external_cases = None
+
+    # 1. Try live scraping
     try:
         external_cases = await scrape_search_cases(
             q, filters={"court": court, "year_from": year_from, "year_to": year_to, "subject": subject}
         )
-        results: List[CaseResponse] = []
-        for c in external_cases[:limit]:
+    except Exception as e:
+        logger.warning(f"Live scrape failed: {e}")
+
+    # 2. Try local DB
+    if not external_cases and q:
+        try:
+            db_results = search_local_db(q, limit=limit)
+            if db_results:
+                external_cases = db_results
+                logger.info(f"Local DB returned {len(db_results)} results")
+        except Exception as e:
+            logger.warning(f"Local DB search failed: {e}")
+
+    # 3. Try brain data
+    if not external_cases and q:
+        try:
+            brain_results = brain_search(q, doc_type="case", limit=limit)
+            if brain_results.get("results"):
+                external_cases = brain_results["results"]
+                logger.info(f"Brain returned {len(external_cases)} results")
+        except Exception as e:
+            logger.warning(f"Brain search failed: {e}")
+
+    if not external_cases:
+        external_cases = []
+
+    results: List[CaseResponse] = []
+    for c in external_cases[:limit]:
+        try:
             case = Case(
                 id=str(uuid.uuid4()),
                 title=c.get("title", "Untitled"),
                 citation=c.get("citation", ""),
                 court=c.get("court", ""),
                 year=int(c.get("year", 0)) if c.get("year") else 0,
-                subject_tags=c.get("subject_tags"),
+                subject_tags=c.get("subject_tags", c.get("topics")),
                 full_text=c.get("full_text", ""),
                 judges=c.get("judges"),
             )
@@ -55,11 +93,12 @@ async def search_cases_endpoint(
                 judges=case.judges,
                 created_at=case.created_at,
             ))
-        await session.commit()
-        return results
-    except Exception as e:
-        logger.error(f"search_cases error: {e}")
-        raise HTTPException(status_code=500, detail=f"Search service temporarily unavailable: {str(e)}")
+        except Exception as e:
+            logger.warning(f"Failed to create case response: {e}")
+            continue
+
+    await session.commit()
+    return results
 
 
 @router.get("/recent", response_model=List[CaseResponse])

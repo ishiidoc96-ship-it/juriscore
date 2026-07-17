@@ -1,0 +1,662 @@
+{
+  "program": "LL.B Programme",
+  "institution": "Kabarak University School of Law",
+  "curriculum": "2023-2027",
+  "academic_year": "Year 1",
+  "semester": "Semester 1",
+  "workspace_title": "Law_School",
+  "courses": [
+    {
+      "code": "KLS_110",
+      "name": "Law_of_Torts",
+      "full_name": "Law of Torts",
+      "semester": 1,
+      "year": 1,
+      "description": "Principles of tortious liability, negligence, nuisance, defamation, trespass, vicarious liability, remedies",
+      "folder": "KLS_110_Law_of_Torts",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [],
+        "group_work": [],
+        "research_materials": [
+          {
+            "name": "Tort Law Moot Court Competition",
+            "description": "Moot court competition problem question and memorial",
+            "source_files": ["TORT LAW MOOT COURT COMPETITION.docx"]
+          },
+          {
+            "name": "Tort Moot Memorial - Defendants",
+            "description": "Defendants' memorial for tort law moot",
+            "source_files": ["Tort_Moot_Memorial_Q4_Defendants.docx", "Tort_Moot_Memorial_Q4_Defendants_v2.docx"]
+          }
+        ]
+      },
+      "key_topics": [
+        "Principles of tortious liability",
+        "Negligence: duty of care, breach, causation, remoteness",
+        "Nuisance: private and public nuisance",
+        "Defamation: libel and slander",
+        "Trespass to person, land, and goods",
+        "Vicarious liability",
+        "Remedies: damages, injunctions, interdicts"
+      ],
+      "key_cases": [
+        "Donoghue v Stevenson [1932] AC 562",
+        "Bolam v Friern Hospital Management Committee [1957] 1 WLR 582",
+        "Rylands v Fletcher (1868) LR 3 HL 330",
+        "Miller v Jackson [1977] QB 966",
+        "Capital and Counties plc v Hampshire County Council [1997] QB 1004"
+      ]
+    },
+    {
+      "code": "KLS_111",
+      "name": "Legal_Research_and_Writing_I",
+      "full_name": "Legal Research and Writing I",
+      "semester": 1,
+      "year": 1,
+      "description": "Legal writing, annotated bibliographies, citation methods, legal analysis, research methodology",
+      "folder": "KLS_111_Legal_Research_and_Writing_I",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [
+          {
+            "name": "Annotated Bibliography - Environmental Conservation in Kenya",
+            "type": "CAT",
+            "description": "Annotated bibliography on law of environmental conservation in Kenya. 10 publications + 5 cases, KALCI-compliant.",
+            "source_files": ["annotated_bibliography_environmental_conservation.docx"]
+          }
+        ],
+        "group_work": [],
+        "research_materials": []
+      },
+      "key_topics": [
+        "Legal writing fundamentals",
+        "Annotated bibliographies (KALCI format)",
+        "Citation methods and legal referencing",
+        "Legal analysis and IRAC method",
+        "Research methodology for law"
+      ],
+      "key_cases": [
+        "Peter K Waweru v Republic [2006] eKLR",
+        "Kenya Shell Limited v Milkah Kerubo Onkoba [2010] eKLR",
+        "Mitu-Bell Welfare Society v Kenya Airports Authority [2020] eKLR",
+        "Save Lamu v NEMA [2019] eKLR",
+        "Boniface S Katana v Director General NEMA [2020] eKLR"
+      ],
+      "key_statutes": [
+        "Constitution of Kenya 2010 - Articles 42, 69, 70",
+        "Environmental Management and Co-ordination Act (EMCA) Cap 387",
+        "Wildlife Conservation and Management Act 2013"
+      ]
+    },
+    {
+      "code": "KLS_112",
+      "name": "Constitutional_Law",
+      "full_name": "Constitutional Law",
+      "semester": 1,
+      "year": 1,
+      "description": "Constitution of Kenya 2010, constitutional principles, structure of government, separation of powers",
+      "folder": "KLS_112_Constitutional_Law",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [
+          {
+            "name": "Citizenship CAT Guide",
+            "description": "Study guide on Citizenship (Shachar) - Jus soli, jus sanguinis, naturalization, dual nationality",
+            "source_files": ["Citizenship_CAT_Guide.docx"]
+          },
+          {
+            "name": "Gachagua Impeachment CAT Notes",
+            "description": "Notes on the Gachagua impeachment process",
+            "source_files": ["Gachagua_Impeachment_CAT_Notes.docx"]
+          }
+        ],
+        "group_work": [],
+        "research_materials": [
+          {
+            "name": "Citizenship Legal Overview",
+            "description": "Comprehensive study guide on citizenship law based on Shachar - covers jus soli, jus sanguinis, naturalization, cultural turn, dual nationality, EU citizenship, jus nexi",
+            "source_files": ["ALL_MATERIALS.txt"]
+          },
+          {
+            "name": "Plaintiff Memorial - Moot Court",
+            "description": "Moot court memorial for constitutional law case",
+            "source_files": ["Ali_Njoroge_Plaintiff_Memorial.docx", "Ali_Njoroge_Plaintiff_Memorial_v2.docx", "Question5_Plaintiff_Memorial_v5.docx"]
+          },
+          {
+            "name": "Issues for Determination",
+            "description": "Legal issues for determination in constitutional matter",
+            "source_files": ["Issues_for_Determination_v2.docx"]
+          }
+        ]
+      },
+      "key_topics": [
+        "Constitution of Kenya 2010 - structure and principles",
+        "Supremacy of the Constitution (Art. 2)",
+        "Bill of Rights (Chapter 4, Art. 19-59)",
+        "Structure of government: Legislature, Executive, Judiciary",
+        "Separation of powers",
+        "Devolution (Chapter 11)",
+        "Amendment of the Constitution (Art. 255-259)",
+        "Citizenship: jus soli vs jus sanguinis",
+        "Dual nationality and cultural turn"
+      ],
+      "key_cases": [
+        "Njoya v Attorney General [2004] 1 KLR (E&L) 143",
+        "Commission for the Implementation of the Constitution v Senate [2013] eKLR",
+        "Speaker of the Senate v Attorney General & 4 others [2013] eKLR",
+        "Mumo Matemu v Trusted Society of Human Rights Alliance [2013] eKLR",
+        "Okiya Omtatah Okoiti v Attorney General [2023] eKLR"
+      ],
+      "key_statutes": [
+        "Constitution of Kenya 2010"
+      ]
+    },
+    {
+      "code": "KLS_113",
+      "name": "Law_of_Contracts",
+      "full_name": "Law of Contracts",
+      "semester": 1,
+      "year": 1,
+      "description": "Formation of contracts, offer and acceptance, consideration, terms, breach, remedies",
+      "folder": "KLS_113_Law_of_Contracts",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [
+          {
+            "name": "Contract Law CAT 1 - Q&A",
+            "type": "CAT",
+            "description": "20 Questions & Answers covering Offers, Acceptance, Contents of an Agreement",
+            "source_files": ["contract_law_qa.docx"]
+          }
+        ],
+        "group_work": [
+          {
+            "name": "Group Presentation - Offers and Invitation to Treat",
+            "description": "GROUP ONE: Offers, invitation to treat, types of offers, termination",
+            "source_files": ["GROUP_ONE_CONTRACT_LAW_PRESENTATION.docx"]
+          },
+          {
+            "name": "Group Work - Acceptance",
+            "description": "Acceptance rules, postal rule, electronic communications, privity",
+            "source_files": ["Acceptance_Group_Work.docx 1.docx"]
+          },
+          {
+            "name": "Group Work - Contents of an Agreement",
+            "description": "Express/implied terms, parol evidence, conditions/warranties, privity",
+            "source_files": ["TEAM 5 CONTENTS OF AN AGREEMENT.docx"]
+          }
+        ],
+        "research_materials": [
+          {
+            "name": "NotebookLM Study Guide",
+            "description": "Condensed study guide: Offers, Acceptance, Contents, Conditions/Warranties, Privity. 15 key cases to memorise.",
+            "source_files": ["notebooklm_study_guide.docx"]
+          }
+        ]
+      },
+      "key_topics": [
+        "Formation of contracts: offer, acceptance, consideration",
+        "Types of offers and invitation to treat",
+        "Termination of offers",
+        "Acceptance: postal rule, electronic communications",
+        "Contents of agreements: express and implied terms",
+        "Conditions and warranties",
+        "Parol evidence rule",
+        "Privity of contract",
+        "Remedies for breach"
+      ],
+      "key_cases": [
+        "Carlill v Carbolic Smoke Ball Co [1893] 1 QB 256",
+        "Hyde v Wrench (1840) 3 Beav 334",
+        "Felthouse v Bindley (1862) 11 CBNS 869",
+        "Dickinson v Dodds (1876) 2 Ch D 463",
+        "Byrne v Van Tienhoven (1880) 5 CPD 344",
+        "Adams v Lindsell (1818) 1 B & Ald 681",
+        "Entores v Miles Far East Corp [1955] 2 QB 327",
+        "Pharmaceutical Society v Boots [1953] 1 QB 401",
+        "Fisher v Bell [1961] 1 QB 394",
+        "Partridge v Crittenden [1968] 1 WLR 1204",
+        "Harris v Nickerson (1873) LR 8 QB 286",
+        "Tinn v Hoffman & Co (1873) 29 LT 271",
+        "Ramsgate Victoria Hotel v Montefiore (1866) LR 1 Ex 109",
+        "Financings Ltd v Stimson [1962] 1 WLR 1184",
+        "Payne v Cave (1789) 3 T R 148",
+        "R v Clarke [1927] 1 KB 559",
+        "Powell v Lee (1908) 99 LT 284",
+        "L'Estrange v Graucob [1934] 2 KB 394",
+        "Curtis v Chemical Cleaning and Dyeing Co [1951] 1 KB 805",
+        "Parker v South Eastern Railway (1877) 2 CPD 416",
+        "Olley v Marlborough Court Hotel [1949] 1 KB 532",
+        "Thornton v Shoe Lane Parking [1971] 2 QB 163",
+        "Henry Kendall v Lillico [1969] 2 AC 31",
+        "Hollier v Rambler Motors [1972] 2 QB 71",
+        "The Moorcock (1889) 14 PD 64",
+        "Liverpool City Council v Irwin [1977] AC 239",
+        "Malik v BCCI [1998] AC 20",
+        "Poussard v Spiers and Pond (1876) 1 QBD 410",
+        "Bettini v Gye (1876) 1 QBD 183",
+        "Agricultural Finance Corporation v Lengetia [1985] eKLR",
+        "Savings & Loan v Kanyenje [1997] eKLR",
+        "Tweddle v Atkinson (1861) 1 B&S 393",
+        "Dunlop v Selfridge [1915] AC 79",
+        "May and Butcher v R [1934] 2 KB 17",
+        "Kukal Properties v Tafazzal H Maloo [1990] eKLR",
+        "Government of USA v Githongo [2018] eKLR",
+        "National Bank of Kenya v Pipeplastic [1998] eKLR",
+        "Silverstar Automobiles v Fidelity Shield [2004] eKLR"
+      ],
+      "key_statutes": [
+        "Law of Contract Act Cap 23",
+        "Evidence Act Cap 80 (sections 97-98)",
+        "Sale of Goods Act Cap 31 (section 13(2))",
+        "Kenya Information and Communication Act (section 83J)"
+      ]
+    },
+    {
+      "code": "KLS_114",
+      "name": "Personal_and_Social_Skills_for_Lawyers",
+      "full_name": "Personal and Social Skills for Lawyers",
+      "semester": 1,
+      "year": 1,
+      "description": "Professional skills, communication, ethics, social awareness",
+      "folder": "KLS_114_Personal_and_Social_Skills_for_Lawyers",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [],
+        "group_work": [
+          {
+            "name": "Debate Speech - IQ vs EQ",
+            "description": "Group debate on IQ vs EQ for lawyers",
+            "source_files": ["Debate_Speech_IQ_vs_EQ.docx", "Debate_Speech_IQ_vs_EQ_v2.docx", "Debate_Speech_IQ_vs_EQ_v3.docx"]
+          },
+          {
+            "name": "Group 12 Debate Brief - Outliers",
+            "description": "Debate brief on outliers topic",
+            "source_files": ["Group12_Debate_Brief_Outliers.docx", "Group12_Debate_Brief_Outliers_Bothsides.docx"]
+          },
+          {
+            "name": "Group 15 Debate Guide",
+            "description": "Complete debate guide for Group 15",
+            "source_files": ["Group_15_Debate_Guide_KLS_114.docx", "Group15_Debate_Master_Guide.docx"]
+          },
+          {
+            "name": "Group 15 Outliers Motion Analysis",
+            "description": "Motion analysis and opposition speech for outliers debate",
+            "source_files": ["Group15_Outliers_Motion_Analysis.docx", "Group15_Outliers_Shadrack_First_Opposition.docx", "Group15_First_Opposition_Speech.docx"]
+          }
+        ],
+        "research_materials": []
+      },
+      "key_topics": [
+        "Professional communication skills",
+        "Legal ethics and professional responsibility",
+        "Client interviewing and counseling",
+        "Negotiation and mediation skills",
+        "Social awareness and cultural competence",
+        "Lawyer wellness and stress management",
+        "Debate and oral advocacy",
+        "IQ vs EQ in legal practice"
+      ]
+    },
+    {
+      "code": "KLS_115",
+      "name": "Digital_Literacy_for_Lawyers",
+      "full_name": "Digital Literacy for Lawyers",
+      "semester": 1,
+      "year": 1,
+      "description": "Computer applications, legal tech, digital research tools",
+      "folder": "KLS_115_Digital_Literacy_for_Lawyers",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [
+          {
+            "name": "Digital Literacy Case Study Notes",
+            "description": "Case study notes on digital literacy for lawyers",
+            "source_files": ["Digital_Literacy_Case_Study_Notes.docx"]
+          }
+        ],
+        "group_work": [],
+        "research_materials": []
+      },
+      "key_topics": [
+        "Computer applications for legal practice",
+        "Legal technology overview",
+        "Digital legal research tools",
+        "Case management software",
+        "E-filing and digital courts",
+        "Cybersecurity for lawyers"
+      ]
+    },
+    {
+      "code": "KLS_121",
+      "name": "The_Bill_of_Rights",
+      "full_name": "The Bill of Rights",
+      "semester": 2,
+      "year": 1,
+      "description": "In-depth study of the Bill of Rights under the Constitution of Kenya 2010",
+      "folder": "KLS_121_The_Bill_of_Rights",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [],
+        "group_work": [],
+        "research_materials": []
+      },
+      "key_topics": [
+        "Rights and fundamental freedoms (Art. 19)",
+        "Application of Bill of Rights (Art. 20)",
+        "Enforcement of Bill of Rights (Art. 22-23)",
+        "Limitation of rights (Art. 24)",
+        "Non-derogable rights (Art. 25)",
+        "Specific rights: life, equality, dignity, freedom, property",
+        "Economic and social rights (Art. 43)"
+      ]
+    },
+    {
+      "code": "KLS_122",
+      "name": "Administrative_Law",
+      "full_name": "Administrative Law",
+      "semester": 2,
+      "year": 1,
+      "description": "Principles of administrative law, judicial review, natural justice, administrative tribunals",
+      "folder": "KLS_122_Administrative_Law",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [],
+        "group_work": [],
+        "research_materials": []
+      },
+      "key_topics": [
+        "Sources and principles of administrative law",
+        "Administrative tribunals and quasi-judicial bodies",
+        "Judicial review: grounds and remedies",
+        "Principles of natural justice",
+        "Fair administrative action (Art. 47)",
+        "Delegated legislation",
+        "Government liability in tort"
+      ]
+    },
+    {
+      "code": "KLS_123",
+      "name": "Legal_Systems_and_Methods",
+      "full_name": "Legal Systems and Methods",
+      "semester": 2,
+      "year": 1,
+      "description": "Study of legal systems, legal methodology, sources of law, statutory interpretation",
+      "folder": "KLS_123_Legal_Systems_and_Methods",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [],
+        "group_work": [],
+        "research_materials": []
+      },
+      "key_topics": [
+        "Common law vs civil law systems",
+        "Sources of law: legislation, precedent, custom",
+        "Statutory interpretation rules",
+        "Legal reasoning and methodology",
+        "Kenya's legal system: colonial legacy and reform",
+        "International law and Kenyan law"
+      ]
+    },
+    {
+      "code": "KLS_124",
+      "name": "Criminal_Law",
+      "full_name": "Criminal Law",
+      "semester": 2,
+      "year": 1,
+      "description": "Principles of criminal liability, specific offences, defences, sentencing",
+      "folder": "KLS_124_Criminal_Law",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [],
+        "group_work": [],
+        "research_materials": []
+      },
+      "key_topics": [
+        "Elements of crime: actus reus and mens rea",
+        "Parties to offences: principal, aiders, abettors",
+        "Specific offences against persons, property, public order",
+        "Defences: insanity, intoxication, necessity, consent",
+        "Inchoate offences: attempt, conspiracy, incitement",
+        "Sentencing principles and alternatives"
+      ]
+    },
+    {
+      "code": "KLS_125",
+      "name": "Law_and_Society",
+      "full_name": "Law and Society",
+      "semester": 2,
+      "year": 1,
+      "description": "Relationship between law and society, sociological jurisprudence, law and social change",
+      "folder": "KLS_125_Law_and_Society",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [],
+        "group_work": [],
+        "research_materials": []
+      },
+      "key_topics": [
+        "Sociological jurisprudence",
+        "Law as an instrument of social change",
+        "Law and poverty",
+        "Law and gender",
+        "Law and youth",
+        "Access to justice",
+        "Customary law and modern legal systems"
+      ]
+    },
+    {
+      "code": "KLS_126",
+      "name": "Data_Science_for_Lawyers",
+      "full_name": "Data Science for Lawyers",
+      "semester": 2,
+      "year": 1,
+      "description": "Introduction to data science, legal analytics, AI in law, computational legal research",
+      "folder": "KLS_126_Data_Science_for_Lawyers",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [],
+        "group_work": [],
+        "research_materials": []
+      },
+      "key_topics": [
+        "Introduction to data science and analytics",
+        "Legal analytics and litigation prediction",
+        "AI and machine learning in law",
+        "Computational legal research",
+        "Natural language processing for legal texts",
+        "Data visualization for legal arguments"
+      ]
+    },
+    {
+      "code": "BIBL_114",
+      "name": "Bible_1_for_Lawyers",
+      "full_name": "Bible I for Lawyers",
+      "semester": 1,
+      "year": 1,
+      "description": "Old Testament structure, Pentateuch, Historical Books, Poetic & Wisdom Literature, Prophetic Literature",
+      "folder": "BIBL_114_Bible_1_for_Lawyers",
+      "lecturer": "Rev. Dr. Elkanah Cheboi",
+      "lecturer_email": "elkanahc@kabarak.ac.ke",
+      "materials": {
+        "course_outlines": [
+          {
+            "name": "BIBL 114 Course Outline",
+            "description": "Full course outline: Old Testament literature from Pentateuch to Prophets",
+            "source_files": ["BIBL_114_Course_Outline.txt", "BIBL 114 BIBLE I FOR LAWYERS COURSE OUTLINE.pdf"]
+          }
+        ],
+        "lecture_notes": [
+          {
+            "name": "BIBL 114 Lecture Notes",
+            "description": "Complete lecture notes for Bible I for Lawyers",
+            "source_files": ["BIBL 114 LECTURE NOTES.pdf"]
+          }
+        ],
+        "assignments": [
+          {
+            "name": "BIBL 114 CAT 1 Results",
+            "description": "CAT 1 results",
+            "source_files": ["BIBL 114 CAT 1 RESULTS.pdf"]
+          },
+          {
+            "name": "BIBL 114 Group Assignment",
+            "description": "Group assignment",
+            "source_files": ["BIBL 114 GROUP ASSIGNMENT (1).pdf"]
+          }
+        ],
+        "group_work": [],
+        "research_materials": [
+          {
+            "name": "Annotated Bibliography - ADR Land Succession",
+            "description": "Annotated bibliography on ADR in land succession",
+            "source_files": ["Annotated_Bibliography_ADR_Land_Succession.docx"]
+          },
+          {
+            "name": "Annotated Bibliography - Environmental Conservation",
+            "description": "Annotated bibliography on environmental conservation law",
+            "source_files": ["annotated_bibliography_environmental_conservation.docx"]
+          },
+          {
+            "name": "Annotated Bibliography - Medical Negligence",
+            "description": "Annotated bibliography on medical negligence",
+            "source_files": ["Annotated_Bibliography_Medical_Negligence_FINAL.docx"]
+          },
+          {
+            "name": "Annotated Bibliography - Digital Evidence",
+            "description": "Annotated bibliography on digital evidence in Kenyan courts",
+            "source_files": ["Annotated Bibliography Digital Evidence in Kenyan Courts (14) - Copy.docx"]
+          },
+          {
+            "name": "Bibliography on Legal Research",
+            "description": "General bibliography on legal research topics",
+            "source_files": ["Bibliography on Legal Research topic.docx"]
+          }
+        ]
+      },
+      "key_topics": [
+        "Introduction to the Old Testament",
+        "Pentateuch Literature: Genesis to Deuteronomy",
+        "Historical Books: Joshua to Esther",
+        "Poetic and Wisdom Literature: Job to Song of Solomon",
+        "Prophetic Literature: Isaiah to Malachi",
+        "Creation, covenant, and redemption themes",
+        "Israel's formation and kingdom period",
+        "Pre-exilic, exilic, and post-exilic prophets"
+      ]
+    },
+    {
+      "code": "BIBL_124",
+      "name": "Bible_2_for_Lawyers",
+      "full_name": "Bible II for Lawyers",
+      "semester": 2,
+      "year": 1,
+      "description": "New Testament studies for law students",
+      "folder": "BIBL_124_Bible_2_for_Lawyers",
+      "materials": {
+        "course_outlines": [],
+        "lecture_notes": [],
+        "assignments": [],
+        "group_work": [],
+        "research_materials": []
+      },
+      "key_topics": [
+        "New Testament structure and themes",
+        "The Gospels and the life of Christ",
+        "Acts of the Apostles",
+        "Pauline Epistles",
+        "General Epistles",
+        "Revelation",
+        "Law and justice in the New Testament"
+      ]
+    }
+  ],
+  "general_materials": {
+    "administrative": [
+      {
+        "name": "Year 1 Semester 1 Courses",
+        "description": "Complete list of Year 1 Semester 1 courses and lecturers",
+        "source_files": ["01_YEAR_1_SEMESTER_1_COURSES.txt"]
+      },
+      {
+        "name": "Approved Research Topics",
+        "description": "Approved research topics for May-August 2026",
+        "source_files": ["APPROVED RESEARCH TOPICS - MAY - AUG 2026.pdf"]
+      },
+      {
+        "name": "Moot Court - Alfred Deakin",
+        "description": "Call for participation in the Alfred Deakin Moot",
+        "source_files": ["Call_for_Participation_in_the_Alfred_Deakin_Moot.pdf"]
+      }
+    ],
+    "session_notes": [
+      {
+        "date": "2026-07-01",
+        "topic": "Contract Law CAT 1 Preparation",
+        "summary": "20 Q&As on Offers, Acceptance, Contents of an Agreement. Study guide created. 15 key cases to memorise.",
+        "source_files": ["session_summary_2026-07-01.txt"]
+      }
+    ],
+    "study_guides": [
+      {
+        "name": "NotebookLM Podcast Prompt",
+        "description": "2-host podcast format for contract law review",
+        "source_files": ["notebooklm_podcast_prompt.txt"]
+      },
+      {
+        "name": "NotebookLM Video Prompt",
+        "description": "Animated whiteboard video prompt (5 segments)",
+        "source_files": ["notebooklm_video_prompt.txt"]
+      },
+      {
+        "name": "NotebookLM Study Guide - Contract Law",
+        "description": "Condensed study guide: Offers, Acceptance, Contents, Conditions/Warranties, Privity. 15 key cases.",
+        "source_files": ["notebooklm_study_guide.docx"]
+      },
+      {
+        "name": "Citizenship Podcast Prompt",
+        "description": "Podcast prompt for citizenship law review",
+        "source_files": ["Shacar_Citizenship_Podcast_Prompt.txt"]
+      }
+    ],
+    "moot_court": [
+      {
+        "name": "Ali Njoroge Plaintiff Memorial",
+        "description": "Moot court memorial for plaintiff in constitutional law case",
+        "source_files": ["Ali_Njoroge_Plaintiff_Memorial.docx", "Ali_Njoroge_Plaintiff_Memorial_v2.docx"]
+      },
+      {
+        "name": "Issues for Determination",
+        "description": "Legal issues for determination in constitutional matter",
+        "source_files": ["Issues_for_Determination_v2.docx"]
+      }
+    ],
+    "group_work": [
+      {
+        "name": "Group 8 Debate Master Guide",
+        "description": "Debate master guide for Group 8",
+        "source_files": ["Group8_Debate_Master_Guide.docx"]
+      },
+      {
+        "name": "Group 9 Debate Master Guide",
+        "description": "Debate master guide for Group 9 (v2)",
+        "source_files": ["Group9_Debate_Master_Guide_v2.docx"]
+      }
+    ]
+  },
+  "source_repo": "https://github.com/ishiidoc96-ship-it/pixel-archive.git",
+  "last_updated": "2026-07-17"
+}

@@ -16,7 +16,7 @@ class SupabaseAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         # Skip auth for public paths
         public_paths = ("/health", "/ready", "/", "/docs", "/openapi.json", "/api/v1/docs", "/api/v1/redoc", "/api/v1/openapi.json", "/metrics")
-        if request.url.path in public_paths or request.url.path.startswith("/metrics"):
+        if request.url.path in public_paths or request.url.path.startswith("/metrics") or request.url.path.startswith("/api/v1/chat"):
             return await call_next(request)
 
         auth_header = request.headers.get("Authorization")

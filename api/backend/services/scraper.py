@@ -11,6 +11,7 @@ import logging
 import re
 import time
 from typing import Any, Dict, List, Optional
+from urllib.parse import quote as _url_quote
 import httpx
 
 logger = logging.getLogger("juriscore")
@@ -116,7 +117,32 @@ async def _get(
 def _build_result(item: Dict) -> Dict[str, Any]:
     doc_type = item.get("doc_type", "unknown")
     frbr_uri = item.get("expression_frbr_uri", "")
+    title = item.get("title", "")
+    citation = item.get("citation", "")
+
+    # Build primary URL from frbr_uri
     url = f"{KENYALAW_BASE}{frbr_uri}" if frbr_uri else ""
+
+    # Detect broken URL patterns on KenyaLaw.org and provide working fallback
+    # Pages under /kl/publications/ and certain other paths often return 404
+    is_likely_broken = False
+    if url:
+        broken_patterns = ["/publications/", "/legislation/", "/regulations/", "/treaties/"]
+        for pat in broken_patterns:
+            if pat in url.lower():
+                is_likely_broken = True
+                break
+
+    # Build a reliable search URL as fallback (always works)
+    search_query = title if title else citation
+    search_url = f"{KENYALAW_BASE}/kl/search/#stq={_url_quote(search_query)}&stp=1" if search_query else ""
+
+    # Use the primary URL if likely valid, otherwise use search URL
+    # Also provide search_url as a fallback for the frontend to use
+    if is_likely_broken and search_url:
+        display_url = search_url
+    else:
+        display_url = url
 
     case_numbers = item.get("case_number", [])
     case_number = case_numbers[0] if case_numbers else ""
@@ -132,8 +158,8 @@ def _build_result(item: Dict) -> Dict[str, Any]:
         "id": item.get("id", ""),
         "doc_type": doc_type,
         "doc_type_label": DOC_TYPE_MAP.get(doc_type, doc_type),
-        "title": item.get("title", ""),
-        "citation": item.get("citation", ""),
+        "title": title,
+        "citation": citation,
         "date": item.get("date", ""),
         "year": item.get("year", 0),
         "court": item.get("court", ""),
@@ -143,7 +169,9 @@ def _build_result(item: Dict) -> Dict[str, Any]:
         "registry": item.get("registry", ""),
         "labels": item.get("labels", []),
         "topics": item.get("topic_path_names", []),
-        "url": url,
+        "url": display_url,
+        "direct_url": url,
+        "search_url": search_url,
         "excerpt": excerpt,
         "score": item.get("_score", 0),
         "frbr_uri": frbr_uri,
@@ -168,7 +196,7 @@ Provide results in JSON format (an array). Each result should have:
 - "year": year if known
 - "doc_type": "judgment" or "legislation" or "article"
 - "excerpt": 2-3 sentence summary of the key holding/provision
-- "url": source URL if you know one (use kenyalaw.org format: https://www.kenyalaw.org/kl/caselaw/cases/...)
+- "url": a WORKING search URL on KenyaLaw.org (format: https://www.kenyalaw.org/kl/search/#stq=TITLE&stp=1 — use the case/act title as the search query). Do NOT use /kl/caselaw/ or /kl/publications/ paths as they may be broken.
 - "relevance": why this is relevant to the query (1 sentence)
 
 Return ONLY a JSON array, no other text. Include at least {min(limit, 8)} results.
@@ -207,7 +235,7 @@ For each result, give:
 - "year": year
 - "doc_type": "judgment" or "legislation"
 - "excerpt": substantive summary (2-3 sentences, specific details)
-- "url": if you know a valid URL
+- "url": a WORKING search URL on KenyaLaw.org (format: https://www.kenyalaw.org/kl/search/#stq=TITLE&stp=1). If you don't know a valid URL, use an empty string.
 - "source": where this information comes from
 
 Return ONLY a JSON array. Be thorough — include landmark cases, recent decisions, and relevant legislation. Include at least {min(limit, 10)} results."""
@@ -580,8 +608,19 @@ async def search_all(query: Optional[str], filters: Optional[Dict] = None) -> Di
         logger.warning(f"Live search failed/timeout for '{query}': {e}")
         data = {"count": 0, "results": [], "facets": {}}
 
-    # If live + AI search both returned nothing, search Kenyan KB
+    # If live search returned nothing, use fallback chain
     if not data.get("results") or len(data["results"]) == 0:
+        # 1. Try brain data (instant, local)
+        try:
+            from api.backend.services.brain import brain_search
+            brain_result = brain_search(query, doc_type=doc_type, court=court, limit=limit)
+            if brain_result.get("count", 0) > 0:
+                brain_result["source"] = "brain"
+                return brain_result
+        except Exception as e:
+            logger.warning(f"Brain fallback failed: {e}")
+
+        # 2. Try Kenyan KB (curated, reliable)
         kb_results = _search_kenyan_kb(query, limit=limit)
         if kb_results:
             data["results"] = kb_results
@@ -601,9 +640,18 @@ async def scrape_statute(act_id: str) -> Dict[str, Any]:
     except Exception as e:
         logger.warning(f"Failed to scrape statute {act_id}: {e}")
 
+    # Brain data fallback for statute
+    try:
+        from api.backend.services.brain import brain_get_statute
+        brain_stat = brain_get_statute(act_id)
+        if brain_stat:
+            return {"act_id": act_id, "title": brain_stat.get("title", act_id), "full_text": brain_stat.get("full_text", brain_stat.get("excerpt", ""))}
+    except Exception as e:
+        logger.warning(f"Brain statute fallback failed: {e}")
+
     # AI fallback for statute
     from services.ai_service import _call_model
-    prompt = f"Provide the key provisions of {act_id}. Include section numbers and their content. Be thorough."
+    prompt = f"Provide the key provisions of {act_id}. Include section numbers and their content. Be thorough and detailed."
     try:
         result = await _call_model(prompt, max_tokens=4096, temperature=0.3)
         if result and len(result) > 200:
@@ -615,6 +663,15 @@ async def scrape_statute(act_id: str) -> Dict[str, Any]:
 
 
 async def scrape_constitution() -> Dict[str, Any]:
+    # Try brain data first (instant, local)
+    try:
+        from api.backend.services.brain import brain_get_constitution
+        brain_const = brain_get_constitution()
+        if brain_const and brain_const.get("full_text"):
+            return brain_const
+    except Exception as e:
+        logger.warning(f"Brain constitution fallback failed: {e}")
+
     try:
         url = f"{KENYALAW_BASE}/akn/ke/act/2010/constitution"
         text = await _scrape_site(url)

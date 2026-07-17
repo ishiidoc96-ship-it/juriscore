@@ -7,6 +7,8 @@ from pydantic import BaseModel
 from api.backend.models.database import async_session, Case, Statute
 import logging
 import uuid
+import json
+import os
 
 from api.backend.routers.auth import get_current_user
 from api.backend.models.database import User
@@ -219,6 +221,107 @@ async def create_workspace(body: WorkspaceCreate, current_user: User = Depends(g
             "status": "created_demo",
         }
 
+
+# ── Academic Workspace (preloaded law school courses) ─────────────────────────
+
+def _load_law_school_data() -> Dict[str, Any]:
+    """Load the preloaded law school course data."""
+    data_path = os.path.join(os.path.dirname(__file__), "..", "data", "law_school_courses.json")
+    try:
+        with open(data_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        logger.warning(f"Failed to load law school data: {e}")
+        return {"courses": [], "general_materials": {}}
+
+
+@router.get("/academic")
+async def get_academic_workspace():
+    """Get the preloaded Law School academic workspace with all courses and materials."""
+    data = _load_law_school_data()
+
+    workspace = {
+        "id": "academic-law-school",
+        "title": data.get("workspace_title", "Law_School"),
+        "description": f"{data.get('program', 'LL.B Programme')} — {data.get('institution', 'Kabarak University School of Law')}",
+        "institution": data.get("institution"),
+        "program": data.get("program"),
+        "curriculum": data.get("curriculum"),
+        "academic_year": data.get("academic_year"),
+        "semester": data.get("semester"),
+        "courses": [],
+        "general_materials": data.get("general_materials", {}),
+        "source_repo": data.get("source_repo"),
+        "last_updated": data.get("last_updated"),
+    }
+
+    for course in data.get("courses", []):
+        materials = course.get("materials", {})
+        material_count = sum(
+            len(materials.get(k, []))
+            for k in ["course_outlines", "lecture_notes", "assignments", "group_work", "research_materials"]
+        )
+        workspace["courses"].append({
+            "code": course.get("code"),
+            "name": course.get("name"),
+            "full_name": course.get("full_name"),
+            "folder": course.get("folder"),
+            "semester": course.get("semester"),
+            "year": course.get("year"),
+            "description": course.get("description"),
+            "lecturer": course.get("lecturer"),
+            "lecturer_email": course.get("lecturer_email"),
+            "key_topics": course.get("key_topics", []),
+            "key_cases": course.get("key_cases", []),
+            "key_statutes": course.get("key_statutes", []),
+            "materials": materials,
+            "material_count": material_count,
+        })
+
+    return workspace
+
+
+@router.get("/academic/courses/{course_code}")
+async def get_academic_course(course_code: str):
+    """Get detailed info for a specific course."""
+    data = _load_law_school_data()
+    for course in data.get("courses", []):
+        if course.get("code", "").upper() == course_code.upper():
+            return course
+    raise HTTPException(status_code=404, detail=f"Course {course_code} not found")
+
+
+@router.get("/academic/search")
+async def search_academic_materials(q: str = Query(...)):
+    """Search across all academic materials by keyword."""
+    data = _load_law_school_data()
+    results = []
+    query_lower = q.lower()
+
+    for course in data.get("courses", []):
+        matches = []
+        for topic in course.get("key_topics", []):
+            if query_lower in topic.lower():
+                matches.append({"type": "topic", "text": topic})
+        for case in course.get("key_cases", []):
+            if query_lower in case.lower():
+                matches.append({"type": "case", "text": case})
+        for mat_type, mats in course.get("materials", {}).items():
+            for mat in mats:
+                if query_lower in mat.get("name", "").lower() or query_lower in mat.get("description", "").lower():
+                    matches.append({"type": mat_type, "text": mat["name"], "description": mat.get("description", "")})
+        if matches:
+            results.append({
+                "course_code": course.get("code"),
+                "course_name": course.get("full_name"),
+                "folder": course.get("folder"),
+                "matches": matches,
+            })
+
+    return {"query": q, "results": results, "total_matches": sum(len(r["matches"]) for r in results)}
+
+
+# ── Authenticated workspace endpoints below ───────────────────────────────────
 
 @router.get("/{workspace_id}")
 async def get_workspace(workspace_id: str, current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
@@ -443,3 +546,5 @@ async def export_workspace(workspace_id: str, session: AsyncSession = Depends(ge
         "pages": 12,
         "size_bytes": 389120,
     }
+
+

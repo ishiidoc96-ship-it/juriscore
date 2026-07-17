@@ -328,6 +328,62 @@ def brain_get_court_info(court_name: str) -> Optional[Dict]:
     return None
 
 
+def brain_get_constitution() -> Optional[Dict]:
+    """Get the Constitution of Kenya 2010 from brain data."""
+    if not _data_loaded:
+        load_brain()
+
+    for item in _legislation:
+        if "constitution" in item.get("title", "").lower():
+            result = dict(item)
+            url = item.get("url", "")
+            if url and url in _full_text_index:
+                result["full_text"] = _full_text_index[url]
+            return result
+
+    # Return the hardcoded text if brain has no constitution
+    return {
+        "title": "Constitution of Kenya, 2010",
+        "citation": "Cap. 16",
+        "year": 2010,
+        "url": "https://kenyalaw.org/kl/fileadmin/pdfdownloads/Constitutions/Constitution_of_Kenya_2010.pdf",
+        "excerpt": "The supreme law of the Republic of Kenya providing for the structure of government, devolution, and bill of rights.",
+        "topics": ["constitution", "supreme law", "bill of rights", "devolution"],
+    }
+
+
+def brain_get_statute(title: str) -> Optional[Dict]:
+    """Get a specific statute by title (fuzzy match)."""
+    if not _data_loaded:
+        load_brain()
+
+    title_lower = title.lower()
+    for stat in _legislation:
+        if title_lower in stat.get("title", "").lower() or stat.get("title", "").lower() in title_lower:
+            return dict(stat)
+    return None
+
+
+def brain_get_all_courts() -> List[str]:
+    """Get all court names from brain data."""
+    if not _data_loaded:
+        load_brain()
+    return list(_court_hierarchy.keys())
+
+
+def brain_get_all_doc_types() -> List[Dict]:
+    """Get all document types with counts from brain data."""
+    if not _data_loaded:
+        load_brain()
+
+    type_counts: Dict[str, int] = {}
+    for item in _all_metadata:
+        t = item.get("type", "unknown")
+        type_counts[t] = type_counts.get(t, 0) + 1
+
+    return [{"key": t, "count": c} for t, c in sorted(type_counts.items(), key=lambda x: -x[1])]
+
+
 def brain_stats() -> Dict[str, Any]:
     """Get brain statistics."""
     if not _data_loaded:

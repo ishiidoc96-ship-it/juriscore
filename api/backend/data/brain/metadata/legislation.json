@@ -1,0 +1,358 @@
+[
+  {
+    "title": "Constitution of Kenya, 2010",
+    "citation": "Cap. 16 (Supplement No. 4)",
+    "cap_number": "Cap. 16",
+    "year": 2010,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Constitution%20of%20Kenya%2C%202010&stp=1",
+    "excerpt": "The supreme law of the Republic of Kenya providing for the structure of government, devolution, and bill of rights.",
+    "topics": [
+      "constitution",
+      "supreme law",
+      "bill of rights",
+      "devolution",
+      "fundamental rights"
+    ]
+  },
+  {
+    "title": "Penal Code",
+    "citation": "Cap. 63",
+    "cap_number": "Cap. 63",
+    "year": 1930,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Penal%20Code&stp=1",
+    "excerpt": "An Act of Parliament to establish a code of criminal law defining offences and prescribing punishments.",
+    "topics": [
+      "criminal law",
+      "offences",
+      "punishment",
+      "penal code"
+    ]
+  },
+  {
+    "title": "Criminal Procedure Code",
+    "citation": "Cap. 75",
+    "cap_number": "Cap. 75",
+    "year": 1930,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Criminal%20Procedure%20Code&stp=1",
+    "excerpt": "An Act to regulate criminal procedure in the courts, including arrest, bail, trials, and sentencing.",
+    "topics": [
+      "criminal procedure",
+      "bail",
+      "trial",
+      "sentencing"
+    ]
+  },
+  {
+    "title": "Civil Procedure Act",
+    "citation": "Cap. 21",
+    "cap_number": "Cap. 21",
+    "year": 1924,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Civil%20Procedure%20Act&stp=1",
+    "excerpt": "An Act to consolidate and amend the law relating to civil procedure in the courts of Kenya.",
+    "topics": [
+      "civil procedure",
+      "lawsuits",
+      "court process",
+      "civil litigation"
+    ]
+  },
+  {
+    "title": "Employment Act",
+    "citation": "No. 11 of 2007",
+    "year": 2007,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Employment%20Act&stp=1",
+    "excerpt": "An Act to consolidate and amend the law relating to employment and for connected purposes.",
+    "topics": [
+      "employment",
+      "labour",
+      "worker rights",
+      "employment contract"
+    ]
+  },
+  {
+    "title": "Land Act",
+    "citation": "No. 6 of 2012",
+    "year": 2012,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Land%20Act&stp=1",
+    "excerpt": "An Act to give effect to the principle that land is held by the people of Kenya collectively as a national resource.",
+    "topics": [
+      "land law",
+      "land ownership",
+      "land management",
+      "community land"
+    ]
+  },
+  {
+    "title": "Environmental Management and Co-ordination Act",
+    "citation": "No. 8 of 1999",
+    "year": 1999,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Environmental%20Management%20and%20Co-ordination%20Act&stp=1",
+    "excerpt": "An Act to establish a framework for environmental management and to create NEMA.",
+    "topics": [
+      "environmental law",
+      "NEMA",
+      "environmental protection",
+      "EMCA"
+    ]
+  },
+  {
+    "title": "Companies Act",
+    "citation": "No. 17 of 2015",
+    "year": 2015,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Companies%20Act&stp=1",
+    "excerpt": "An Act to provide for the registration, regulation, and dissolution of companies in Kenya.",
+    "topics": [
+      "company law",
+      "corporate governance",
+      "registration",
+      "business"
+    ]
+  },
+  {
+    "title": "Income Tax Act",
+    "citation": "Cap. 470",
+    "cap_number": "Cap. 470",
+    "year": 1973,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Income%20Tax%20Act&stp=1",
+    "excerpt": "An Act to provide for the charging and collection of income tax in Kenya.",
+    "topics": [
+      "tax law",
+      "income tax",
+      "taxation",
+      "revenue"
+    ]
+  },
+  {
+    "title": "Value Added Tax Act",
+    "citation": "No. 35 of 2013",
+    "year": 2013,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Value%20Added%20Tax%20Act&stp=1",
+    "excerpt": "An Act to impose and provide for the collection of value added tax.",
+    "topics": [
+      "VAT",
+      "tax law",
+      "consumption tax",
+      "taxation"
+    ]
+  },
+  {
+    "title": "Family Protection Act",
+    "citation": "No. 21 of 2019",
+    "year": 2019,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Family%20Protection%20Act&stp=1",
+    "excerpt": "An Act to provide for the protection of family members from domestic violence.",
+    "topics": [
+      "domestic violence",
+      "family protection",
+      "family law",
+      "women rights"
+    ]
+  },
+  {
+    "title": "Children Act",
+    "citation": "No. 12 of 2022",
+    "year": 2022,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Children%20Act&stp=1",
+    "excerpt": "An Act to give effect to Article 53 of the Constitution on the rights of children.",
+    "topics": [
+      "children rights",
+      "child protection",
+      "family law",
+      "children welfare"
+    ]
+  },
+  {
+    "title": "Public Finance Management Act",
+    "citation": "No. 18 of 2012",
+    "year": 2012,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Public%20Finance%20Management%20Act&stp=1",
+    "excerpt": "An Act to give effect to Article 201 to 209 of the Constitution on public finance management.",
+    "topics": [
+      "public finance",
+      "budget",
+      "financial management",
+      "public expenditure"
+    ]
+  },
+  {
+    "title": "Access to Information Act",
+    "citation": "No. 31 of 2016",
+    "year": 2016,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Access%20to%20Information%20Act&stp=1",
+    "excerpt": "An Act to give effect to Article 35 of the Constitution on the right of access to information.",
+    "topics": [
+      "access to information",
+      "freedom of information",
+      "transparency",
+      "public records"
+    ]
+  },
+  {
+    "title": "Anti-Corruption and Economic Crimes Act",
+    "citation": "No. 3 of 2003",
+    "year": 2003,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Anti-Corruption%20and%20Economic%20Crimes%20Act&stp=1",
+    "excerpt": "An Act to give effect to Chapter Six of the Constitution on leadership and integrity.",
+    "topics": [
+      "anti-corruption",
+      "economic crimes",
+      "leadership integrity",
+      "EACC"
+    ]
+  },
+  {
+    "title": "National Land Commission Act",
+    "citation": "No. 5 of 2012",
+    "year": 2012,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=National%20Land%20Commission%20Act&stp=1",
+    "excerpt": "An Act to give effect to Article 67 of the Constitution on the functions and powers of the National Land Commission.",
+    "topics": [
+      "land law",
+      "NLC",
+      "land reform",
+      "historical land injustice"
+    ]
+  },
+  {
+    "title": "Intergovernmental Relations Act",
+    "citation": "No. 5 of 2012",
+    "year": 2012,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Intergovernmental%20Relations%20Act&stp=1",
+    "excerpt": "An Act to provide for the framework of intergovernmental relations between national and county governments.",
+    "topics": [
+      "intergovernmental relations",
+      "devolution",
+      "county government",
+      "federalism"
+    ]
+  },
+  {
+    "title": "Elections Act",
+    "citation": "No. 24 of 2011",
+    "year": 2011,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Elections%20Act&stp=1",
+    "excerpt": "An Act to provide for the conduct of elections and referenda in Kenya.",
+    "topics": [
+      "election law",
+      "voting",
+      "IEBC",
+      "electoral process"
+    ]
+  },
+  {
+    "title": "Public Procurement and Asset Disposal Act",
+    "citation": "No. 33 of 2015",
+    "year": 2015,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Public%20Procurement%20and%20Asset%20Disposal%20Act&stp=1",
+    "excerpt": "An Act to provide for the regulation of public procurement and asset disposal by public entities.",
+    "topics": [
+      "public procurement",
+      "government contracts",
+      "tendering",
+      "PPRA"
+    ]
+  },
+  {
+    "title": "Data Protection Act",
+    "citation": "No. 24 of 2019",
+    "year": 2019,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Data%20Protection%20Act&stp=1",
+    "excerpt": "An Act to give effect to Article 31(c) and (d) of the Constitution on the right to privacy.",
+    "topics": [
+      "data protection",
+      "privacy",
+      "personal data",
+      "ODPC"
+    ]
+  },
+  {
+    "title": "Consumer Protection Act",
+    "citation": "No. 46 of 2012",
+    "year": 2012,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Consumer%20Protection%20Act&stp=1",
+    "excerpt": "An Act to provide for the protection of consumers of goods and services.",
+    "topics": [
+      "consumer protection",
+      "consumer rights",
+      "product liability",
+      "unfair practices"
+    ]
+  },
+  {
+    "title": "Insolvency Act",
+    "citation": "No. 18 of 2015",
+    "year": 2015,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Insolvency%20Act&stp=1",
+    "excerpt": "An Act to consolidate and amend the law relating to insolvency of individuals and companies.",
+    "topics": [
+      "insolvency",
+      "bankruptcy",
+      "company liquidation",
+      "debt restructuring"
+    ]
+  },
+  {
+    "title": "Limited Liability Partnerships Act",
+    "citation": "No. 17 of 2011",
+    "year": 2011,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Limited%20Liability%20Partnerships%20Act&stp=1",
+    "excerpt": "An Act to provide for the registration and regulation of limited liability partnerships.",
+    "topics": [
+      "partnership",
+      "limited liability",
+      "business structure",
+      "registration"
+    ]
+  },
+  {
+    "title": "Competition Act",
+    "citation": "No. 12 of 2010",
+    "year": 2010,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Competition%20Act&stp=1",
+    "excerpt": "An Act to make provision for the promotion and enforcement of competition in the market.",
+    "topics": [
+      "competition law",
+      "antitrust",
+      "market regulation",
+      "CAKE"
+    ]
+  },
+  {
+    "title": "Mutual Legal Assistance Act",
+    "citation": "No. 6 of 2011",
+    "year": 2011,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Mutual%20Legal%20Assistance%20Act&stp=1",
+    "excerpt": "An Act to provide for mutual legal assistance in criminal matters between Kenya and other states.",
+    "topics": [
+      "mutual legal assistance",
+      "international cooperation",
+      "criminal law",
+      "extradition"
+    ]
+  }
+]

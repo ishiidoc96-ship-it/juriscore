@@ -85,6 +85,7 @@ try:
         cause_list,
         parliament,
         publications,
+        chat,
     )
 except Exception as e:
     _import_errors["routers"] = str(e)
@@ -476,31 +477,36 @@ async def root():
 
 API_PREFIX = "/api/v1"
 
-_routers = [
-    (cases, "cases", "Cases"),
-    (statutes, "statutes", "Statutes"),
-    (constitution, "constitution", "Constitution"),
-    (notebook, "notebook", "Notebook"),
-    (flashcards, "flashcards", "Flashcards"),
-    (study, "study", "Study"),
-    (export, "export", "Export"),
-    (search, "search", "Search"),
-    (bookmarks, "bookmarks", "Bookmarks"),
-    (gazettes, "gazettes", "Gazettes"),
-    (tribunals, "tribunals", "Tribunals"),
-    (auth, "auth", "Auth"),
-    (workspaces, "workspaces", "Workspaces"),
-    (history, "history", "History"),
-    (student_workspace, "student", "Student Workspace"),
-    (treaties, "treaties", "Treaties"),
-    (eac, "eac", "EAC Legislation"),
-    (counties, "counties", "Counties"),
-    (cause_list, "cause-list", "Cause Lists"),
-    (parliament, "parliament", "Parliament"),
-    (publications, "publications", "Publications"),
+_router_specs = [
+    ("cases", "cases", "Cases"),
+    ("statutes", "statutes", "Statutes"),
+    ("constitution", "constitution", "Constitution"),
+    ("notebook", "notebook", "Notebook"),
+    ("flashcards", "flashcards", "Flashcards"),
+    ("study", "study", "Study"),
+    ("export", "export", "Export"),
+    ("search", "search", "Search"),
+    ("bookmarks", "bookmarks", "Bookmarks"),
+    ("gazettes", "gazettes", "Gazettes"),
+    ("tribunals", "tribunals", "Tribunals"),
+    ("auth", "auth", "Auth"),
+    ("workspaces", "workspaces", "Workspaces"),
+    ("history", "history", "History"),
+    ("student_workspace", "student", "Student Workspace"),
+    ("treaties", "treaties", "Treaties"),
+    ("eac", "eac", "EAC Legislation"),
+    ("counties", "counties", "Counties"),
+    ("cause_list", "cause-list", "Cause Lists"),
+    ("parliament", "parliament", "Parliament"),
+    ("publications", "publications", "Publications"),
+    ("chat", "chat", "Chat"),
 ]
-for mod, prefix, tag in _routers:
+for mod_name, prefix, tag in _router_specs:
     try:
-        app.include_router(mod.router, prefix=f"{API_PREFIX}/{prefix}", tags=[tag])
+        mod = globals().get(mod_name)
+        if mod is not None and hasattr(mod, "router"):
+            app.include_router(mod.router, prefix=f"{API_PREFIX}/{prefix}", tags=[tag])
+        else:
+            logger.warning(f"Router module '{mod_name}' not available, skipping")
     except Exception as e:
         logger.warning(f"Router {tag} not loaded", error=str(e))

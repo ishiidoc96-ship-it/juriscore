@@ -1,0 +1,111 @@
+[
+  {
+    "title": "Kenya Gazette Supplement No. 1 - Constitution of Kenya",
+    "citation": "Gazette Notice No. 1",
+    "year": 2010,
+    "type": "gazette",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Kenya%20Gazette%20Supplement%20No.%201%20-%20Constitution%20of%20Kenya&stp=1",
+    "excerpt": "Official publication of the Constitution of Kenya 2010 following its promulgation on 27 August 2010.",
+    "topics": [
+      "constitution",
+      "promulgation",
+      "official publication"
+    ]
+  },
+  {
+    "title": "Kenya Gazette Notice No. 12345 - Presidential Appointments",
+    "citation": "Gazette Notice No. 12345",
+    "year": 2023,
+    "type": "gazette",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Kenya%20Gazette%20Notice%20No.%2012345%20-%20Presidential%20Appointments&stp=1",
+    "excerpt": "Notification of presidential appointments to various state and national offices as required under Article 155 of the Constitution.",
+    "topics": [
+      "presidential appointments",
+      "government appointments",
+      "state offices"
+    ]
+  },
+  {
+    "title": "Kenya Gazette Notice No. 8901 - County Government Boundaries",
+    "citation": "Gazette Notice No. 8901",
+    "year": 2012,
+    "type": "gazette",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Kenya%20Gazette%20Notice%20No.%208901%20-%20County%20Government%20Boundaries&stp=1",
+    "excerpt": "Formal publication of county government boundaries following the 2012 boundary delimitation by the IEBC.",
+    "topics": [
+      "county boundaries",
+      "devolution",
+      "IEBC",
+      "delimitation"
+    ]
+  },
+  {
+    "title": "Kenya Gazette Supplement No. 68 - The Finance Act 2023",
+    "citation": "Gazette Notice No. 68",
+    "year": 2023,
+    "type": "gazette",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Kenya%20Gazette%20Supplement%20No.%2068%20-%20The%20Finance%20Act%202023&stp=1",
+    "excerpt": "Official publication of the Finance Act 2023 amending various tax statutes including the Income Tax Act and VAT Act.",
+    "topics": [
+      "finance act",
+      "taxation",
+      "amendment",
+      "revenue"
+    ]
+  },
+  {
+    "title": "Kenya Gazette Notice No. 4567 - Court Order - Election Petition",
+    "citation": "Gazette Notice No. 4567",
+    "year": 2022,
+    "type": "gazette",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Kenya%20Gazette%20Notice%20No.%204567%20-%20Court%20Order%20-%20Election%20Petition&stp=1",
+    "excerpt": "Gazette notification of High Court orders in respect of the 2022 general election petition challenging gubernatorial results.",
+    "topics": [
+      "election petition",
+      "court order",
+      "gubernatorial election"
+    ]
+  },
+  {
+    "title": "Kenya Gazette Notice No. 2345 - Minimum Wage Variation",
+    "citation": "Gazette Notice No. 2345",
+    "year": 2023,
+    "type": "gazette",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Kenya%20Gazette%20Notice%20No.%202345%20-%20Minimum%20Wage%20Variation&stp=1",
+    "excerpt": "Variation of minimum wages under the Regulation of Wages and Conditions of Employment Act.",
+    "topics": [
+      "minimum wage",
+      "employment",
+      "labour regulation",
+      "wages"
+    ]
+  },
+  {
+    "title": "Kenya Gazette Supplement No. 12 - The Companies (Amendment) Act 2022",
+    "citation": "Gazette Notice No. 12",
+    "year": 2022,
+    "type": "gazette",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Kenya%20Gazette%20Supplement%20No.%2012%20-%20The%20Companies%20%28Amendment%29%20Act%202022&stp=1",
+    "excerpt": "Publication of amendments to the Companies Act 2015 relating to beneficial ownership and transparency requirements.",
+    "topics": [
+      "company law",
+      "beneficial ownership",
+      "transparency",
+      "amendment"
+    ]
+  },
+  {
+    "title": "Kenya Gazette Notice No. 6789 - Environmental Impact Assessment",
+    "citation": "Gazette Notice No. 6789",
+    "year": 2023,
+    "type": "gazette",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Kenya%20Gazette%20Notice%20No.%206789%20-%20Environmental%20Impact%20Assessment&stp=1",
+    "excerpt": "Notice of environmental impact assessment for a proposed development project under the EMCA.",
+    "topics": [
+      "EIA",
+      "environmental assessment",
+      "development",
+      "EMCA"
+    ]
+  }
+]

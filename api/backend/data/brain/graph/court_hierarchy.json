@@ -1,0 +1,63 @@
+{
+  "Supreme Court": {
+    "level": 1,
+    "description": "Highest court in Kenya. Handles constitutional matters and appeals from the Court of Appeal.",
+    "jurisdiction": "National",
+    "presiding_officer": "Chief Justice",
+    "established": 2011,
+    "appeals_from": "Court of Appeal",
+    "handles": ["constitutional interpretation", "presidential election petitions", "final appeals"]
+  },
+  "Court of Appeal": {
+    "level": 2,
+    "description": "Intermediate appellate court hearing appeals from the High Court.",
+    "jurisdiction": "National",
+    "presiding_officer": "President of the Court of Appeal",
+    "established": 1977,
+    "appeals_from": "High Court",
+    "handles": ["civil appeals", "criminal appeals", "constitutional appeals"]
+  },
+  "High Court": {
+    "level": 3,
+    "description": "Superior court of record with unlimited original jurisdiction in civil and criminal matters.",
+    "jurisdiction": "National",
+    "established": 1977,
+    "appeals_from": "Subordinate Courts",
+    "handles": ["original jurisdiction", "constitutional petitions", "judicial review", "election petitions", "capital offences"]
+  },
+  "Employment and Labour Relations Court": {
+    "level": 3,
+    "description": "Specialized court handling employment and labour disputes.",
+    "jurisdiction": "National",
+    "established": 2011,
+    "handles": ["employment disputes", "labour relations", "trade union matters", "workplace discrimination"]
+  },
+  "Environment and Land Court": {
+    "level": 3,
+    "description": "Specialized court handling environmental and land matters.",
+    "jurisdiction": "National",
+    "established": 2011,
+    "handles": ["land disputes", "environmental cases", "planning disputes", "boundary disputes"]
+  },
+  "Tax Appeals Tribunal": {
+    "level": 4,
+    "description": "Tribunal handling tax disputes between taxpayers and KRA.",
+    "jurisdiction": "National",
+    "established": 2015,
+    "handles": ["tax disputes", "VAT appeals", "income tax disputes", "tax assessments"]
+  },
+  "Magistrate's Court": {
+    "level": 4,
+    "description": "Subordinate court handling civil and criminal cases within its jurisdiction.",
+    "jurisdiction": "County",
+    "handles": ["civil suits", "criminal trials", "small claims", "family matters"]
+  },
+  "Nairobi City County": {
+    "level": 5,
+    "type": "county_government",
+    "description": "County government responsible for Nairobi City County.",
+    "jurisdiction": "County",
+    "established": 2013,
+    "handles": ["county services", "local planning", "county health", "market regulation"]
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "constitutional law": [
+    {"title": "Constitution of Kenya, 2010", "citation": "Cap. 16", "year": 2010}
+  ],
+  "criminal law": [
+    {"title": "Penal Code", "citation": "Cap. 63", "year": 1930},
+    {"title": "Criminal Procedure Code", "citation": "Cap. 75", "year": 1930}
+  ],
+  "civil procedure": [
+    {"title": "Civil Procedure Act", "citation": "Cap. 21", "year": 1924}
+  ],
+  "employment law": [
+    {"title": "Employment Act", "citation": "No. 11 of 2007", "year": 2007}
+  ],
+  "land law": [
+    {"title": "Land Act", "citation": "No. 6 of 2012", "year": 2012},
+    {"title": "National Land Commission Act", "citation": "No. 5 of 2012", "year": 2012}
+  ],
+  "environmental law": [
+    {"title": "Environmental Management and Co-ordination Act", "citation": "No. 8 of 1999", "year": 1999}
+  ],
+  "tax law": [
+    {"title": "Income Tax Act", "citation": "Cap. 470", "year": 1973},
+    {"title": "Value Added Tax Act", "citation": "No. 35 of 2013", "year": 2013}
+  ],
+  "family law": [
+    {"title": "Family Protection Act", "citation": "No. 21 of 2019", "year": 2019},
+    {"title": "Children Act", "citation": "No. 12 of 2022", "year": 2022}
+  ],
+  "company law": [
+    {"title": "Companies Act", "citation": "No. 17 of 2015", "year": 2015}
+  ],
+  "public finance": [
+    {"title": "Public Finance Management Act", "citation": "No. 18 of 2012", "year": 2012}
+  ],
+  "access to information": [
+    {"title": "Access to Information Act", "citation": "No. 31 of 2016", "year": 2016}
+  ],
+  "anti-corruption": [
+    {"title": "Anti-Corruption and Economic Crimes Act", "citation": "No. 3 of 2003", "year": 2003}
+  ],
+  "devolution": [
+    {"title": "Intergovernmental Relations Act", "citation": "No. 5 of 2012", "year": 2012}
+  ],
+  "election law": [
+    {"title": "Elections Act", "citation": "No. 24 of 2011", "year": 2011}
+  ],
+  "public procurement": [
+    {"title": "Public Procurement and Asset Disposal Act", "citation": "No. 33 of 2015", "year": 2015}
+  ],
+  "data protection": [
+    {"title": "Data Protection Act", "citation": "No. 24 of 2019", "year": 2019}
+  ],
+  "consumer protection": [
+    {"title": "Consumer Protection Act", "citation": "No. 46 of 2012", "year": 2012}
+  ],
+  "insolvency": [
+    {"title": "Insolvency Act", "citation": "No. 18 of 2015", "year": 2015}
+  ],
+  "competition law": [
+    {"title": "Competition Act", "citation": "No. 12 of 2010", "year": 2010}
+  ]
+}

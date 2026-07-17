@@ -1,0 +1,52 @@
+{
+  "constitutional law": [
+    {"title": "Okiya Omtatah Okoiti v. Attorney General", "citation": "[2023] eKLR", "year": 2023},
+    {"title": "Katiba Institute v. Attorney General", "citation": "[2022] eKLR", "year": 2022},
+    {"title": "Kenya National Commission on Human Rights v. Attorney General", "citation": "[2017] eKLR", "year": 2017}
+  ],
+  "human rights": [
+    {"title": "Kenya National Commission on Human Rights v. Attorney General", "citation": "[2017] eKLR", "year": 2017},
+    {"title": "Centre for Rights Education and Awareness v. Attorney General", "citation": "[2017] eKLR", "year": 2017},
+    {"title": "Communications Authority of Kenya v. Kenya Human Rights Commission", "citation": "[2020] eKLR", "year": 2020}
+  ],
+  "criminal law": [
+    {"title": "Republic v. Job Kipkorir Arap Chumba", "citation": "[2023] eKLR", "year": 2023},
+    {"title": "Republic v. Chief Magistrate's Court at Milimani", "citation": "[2023] eKLR", "year": 2023}
+  ],
+  "tax law": [
+    {"title": "Safaricom PLC v. Commissioner of Domestic Taxes", "citation": "[2023] eKLR", "year": 2023},
+    {"title": "Standard Chartered Bank v. Kenya Revenue Authority", "citation": "[2022] eKLR", "year": 2022},
+    {"title": "Societe Internationale de Telecommunications Aeronautiques v. Kenya Revenue Authority", "citation": "[2021] eKLR", "year": 2021}
+  ],
+  "election law": [
+    {"title": "Mathew Mwangi Mutiso v. IEBC", "citation": "[2023] eKLR", "year": 2023},
+    {"title": "Wiper Democratic Movement v. Jubilee Party", "citation": "[2022] eKLR", "year": 2022}
+  ],
+  "employment law": [
+    {"title": "Kenya Railways Corporation v. Federation of Kenya Employers", "citation": "[2020] eKLR", "year": 2020},
+    {"title": "Kenya Airports Authority v. KAA Workers Union", "citation": "[2021] eKLR", "year": 2021}
+  ],
+  "environmental law": [
+    {"title": "Oxygen House Limited v. Attorney General", "citation": "[2023] eKLR", "year": 2023}
+  ],
+  "family law": [
+    {"title": "Centre for Rights Education and Awareness v. Attorney General", "citation": "[2017] eKLR", "year": 2017},
+    {"title": "Federation of Women Lawyers Kenya v. Attorney General", "citation": "[2014] eKLR", "year": 2014}
+  ],
+  "land law": [
+    {"title": "Nairobi City County v. Attorney General", "citation": "[2021] eKLR", "year": 2021}
+  ],
+  "devolution": [
+    {"title": "Nairobi City County v. Attorney General", "citation": "[2021] eKLR", "year": 2021},
+    {"title": "Mombasa Cement Ltd v. County Government of Mombasa", "citation": "[2022] eKLR", "year": 2022}
+  ],
+  "public health": [
+    {"title": "British American Tobacco v. Cabinet Secretary for the National Treasury", "citation": "[2019] eKLR", "year": 2019}
+  ],
+  "consumer protection": [
+    {"title": "Maurice Onyango Oluoch v. Nairobi City Water & Sewerage Company", "citation": "[2019] eKLR", "year": 2019}
+  ],
+  "privacy": [
+    {"title": "Communications Authority of Kenya v. Kenya Human Rights Commission", "citation": "[2020] eKLR", "year": 2020}
+  ]
+}
