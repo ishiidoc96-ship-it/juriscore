@@ -56,12 +56,5 @@
       "src": "/",
       "dest": "/public/app.html"
     }
-  ],
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "JWT_SECRET": "@jwt_secret",
-    "REDIS_URL": "@redis_url",
-    "OPENAI_API_KEY": "@openai_api_key",
-    "CORS_ORIGINS": "@cors_origins"
-  }
+  ]
 }
