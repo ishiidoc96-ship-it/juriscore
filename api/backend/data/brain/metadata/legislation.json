@@ -354,5 +354,528 @@
       "criminal law",
       "extradition"
     ]
+  },
+  {
+    "title": "Traffic Act",
+    "citation": "Cap. 403",
+    "cap_number": "Cap. 403",
+    "year": 1968,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Traffic%20Act&stp=1",
+    "excerpt": "An Act to make provision for the regulation of motor vehicles, the conduct of persons using roads, and for matters connected therewith.",
+    "topics": [
+      "traffic law",
+      "motor vehicles",
+      "road safety",
+      "driving offences",
+      "traffic violations"
+    ]
+  },
+  {
+    "title": "Evidence Act",
+    "citation": "Cap. 80",
+    "cap_number": "Cap. 80",
+    "year": 1930,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Evidence%20Act&stp=1",
+    "excerpt": "An Act to consolidate and amend the law relating to the law of evidence in Kenya.",
+    "topics": [
+      "evidence law",
+      "burden of proof",
+      "admissibility",
+      "witness testimony",
+      "hearsay"
+    ]
+  },
+  {
+    "title": "Law of Contract Act",
+    "citation": "Cap. 23",
+    "cap_number": "Cap. 23",
+    "year": 1961,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Law%20of%20Contract%20Act&stp=1",
+    "excerpt": "An Act to make provision for the law relating to contracts in Kenya.",
+    "topics": [
+      "contract law",
+      "agreement",
+      "consideration",
+      "breach of contract",
+      "privity"
+    ]
+  },
+  {
+    "title": "Sale of Goods Act",
+    "citation": "Cap. 31",
+    "cap_number": "Cap. 31",
+    "year": 1930,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Sale%20of%20Goods%20Act&stp=1",
+    "excerpt": "An Act to make provision for the law relating to the sale of goods.",
+    "topics": [
+      "sale of goods",
+      "commercial law",
+      "warranty",
+      "condition",
+      "title"
+    ]
+  },
+  {
+    "title": "Law of Succession Act",
+    "citation": "Cap. 160",
+    "cap_number": "Cap. 160",
+    "year": 1981,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Law%20of%20Succession%20Act&stp=1",
+    "excerpt": "An Act to consolidate and amend the law relating to intestate and testamentary succession and the administration of estates of deceased persons.",
+    "topics": [
+      "succession",
+      "inheritance",
+      "wills",
+      "estate administration",
+      "probate"
+    ]
+  },
+  {
+    "title": "Matrimonial Causes Act",
+    "citation": "Cap. 152",
+    "cap_number": "Cap. 152",
+    "year": 1984,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Matrimonial%20Causes%20Act&stp=1",
+    "excerpt": "An Act to make provision for the law relating to matrimonial causes, including dissolution of marriage, separation, and nullity.",
+    "topics": [
+      "divorce",
+      "matrimonial causes",
+      "separation",
+      "nullity of marriage",
+      "family law"
+    ]
+  },
+  {
+    "title": "Sexual Offences Act",
+    "citation": "No. 3 of 2006",
+    "year": 2006,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Sexual%20Offences%20Act&stp=1",
+    "excerpt": "An Act to make provision for the prevention and punishment of sexual offences and for connected purposes.",
+    "topics": [
+      "sexual offences",
+      "rape",
+      "defilement",
+      "sexual assault",
+      "victim protection"
+    ]
+  },
+  {
+    "title": "Limitation of Actions Act",
+    "citation": "Cap. 22",
+    "cap_number": "Cap. 22",
+    "year": 1968,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Limitation%20of%20Actions%20Act&stp=1",
+    "excerpt": "An Act to consolidate and amend the law relating to the limitation of actions.",
+    "topics": [
+      "limitation periods",
+      "prescription",
+      "time bar",
+      "statute of limitations"
+    ]
+  },
+  {
+    "title": "Negotiable Instruments Act",
+    "citation": "Cap. 488",
+    "cap_number": "Cap. 488",
+    "year": 1930,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Negotiable%20Instruments%20Act&stp=1",
+    "excerpt": "An Act to define and amend the law relating to bills of exchange, cheques, promissory notes, and other negotiable instruments.",
+    "topics": [
+      "bills of exchange",
+      "cheques",
+      "promissory notes",
+      "negotiable instruments",
+      "banking law"
+    ]
+  },
+  {
+    "title": "Partnership Act",
+    "citation": "Cap. 24",
+    "cap_number": "Cap. 24",
+    "year": 1930,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Partnership%20Act&stp=1",
+    "excerpt": "An Act to define and amend the law relating to partnerships.",
+    "topics": [
+      "partnership",
+      "business partnership",
+      "partnership liability",
+      "partnership dissolution"
+    ]
+  },
+  {
+    "title": "Arbitration Act",
+    "citation": "No. 4 of 1995",
+    "year": 1995,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Arbitration%20Act&stp=1",
+    "excerpt": "An Act to make provision for arbitration, including international commercial arbitration.",
+    "topics": [
+      "arbitration",
+      "alternative dispute resolution",
+      "ADR",
+      "commercial arbitration"
+    ]
+  },
+  {
+    "title": "Advocates Act",
+    "citation": "Cap. 16",
+    "cap_number": "Cap. 16",
+    "year": 1982,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Advocates%20Act&stp=1",
+    "excerpt": "An Act to regulate the profession of advocates, including admission, practice, and discipline.",
+    "topics": [
+      "legal profession",
+      "advocates",
+      "law society",
+      "legal practice",
+      "admission to bar"
+    ]
+  },
+  {
+    "title": "County Governments Act",
+    "citation": "No. 17 of 2012",
+    "year": 2012,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=County%20Governments%20Act&stp=1",
+    "excerpt": "An Act to make provision for the governance and management of county governments.",
+    "topics": [
+      "county government",
+      "devolution",
+      "county assembly",
+      "governor",
+      "county planning"
+    ]
+  },
+  {
+    "title": "Leadership and Integrity Act",
+    "citation": "No. 1 of 2012",
+    "year": 2012,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Leadership%20and%20Integrity%20Act&stp=1",
+    "excerpt": "An Act to give effect to Chapter Six of the Constitution on leadership and integrity of state officers.",
+    "topics": [
+      "leadership",
+      "integrity",
+      "state officers",
+      "ethics",
+      "Chapter Six"
+    ]
+  },
+  {
+    "title": "Judicial Service Act",
+    "citation": "No. 1 of 2011",
+    "year": 2011,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Judicial%20Service%20Act&stp=1",
+    "excerpt": "An Act to make provision for the administration of the Judiciary and the Judicial Service Commission.",
+    "topics": [
+      "judiciary",
+      "judicial service",
+      "JSC",
+      "judicial appointments",
+      "court administration"
+    ]
+  },
+  {
+    "title": "Supreme Court Act",
+    "citation": "No. 7 of 2011",
+    "year": 2011,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Supreme%20Court%20Act&stp=1",
+    "excerpt": "An Act to make provision for the jurisdiction, powers, and procedures of the Supreme Court of Kenya.",
+    "topics": [
+      "supreme court",
+      "appellate jurisdiction",
+      "constitutional interpretation",
+      "advisory opinions"
+    ]
+  },
+  {
+    "title": "Fair Administrative Action Act",
+    "citation": "No. 4 of 2015",
+    "year": 2015,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Fair%20Administrative%20Action%20Act&stp=1",
+    "excerpt": "An Act to give effect to Article 47 of the Constitution on the right to fair administrative action.",
+    "topics": [
+      "administrative law",
+      "fair action",
+      "judicial review",
+      "administrative justice"
+    ]
+  },
+  {
+    "title": "Prevention of Terrorism Act",
+    "citation": "No. 30 of 2012",
+    "year": 2012,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Prevention%20of%20Terrorism%20Act&stp=1",
+    "excerpt": "An Act to give effect to international obligations relating to the prevention of terrorism.",
+    "topics": [
+      "terrorism",
+      "national security",
+      "anti-terrorism",
+      "money laundering"
+    ]
+  },
+  {
+    "title": "National Police Service Act",
+    "citation": "No. 11A of 2011",
+    "year": 2011,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=National%20Police%20Service%20Act&stp=1",
+    "excerpt": "An Act to make provision for the organization, administration, and functions of the National Police Service.",
+    "topics": [
+      "police service",
+      "law enforcement",
+      "police conduct",
+      "internal affairs"
+    ]
+  },
+  {
+    "title": "Banking Act",
+    "citation": "Cap. 488",
+    "cap_number": "Cap. 488",
+    "year": 1986,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Banking%20Act&stp=1",
+    "excerpt": "An Act to regulate the business of banking in Kenya.",
+    "topics": [
+      "banking",
+      "financial institutions",
+      "Central Bank",
+      "banking regulation"
+    ]
+  },
+  {
+    "title": "Insurance Act",
+    "citation": "Cap. 487",
+    "cap_number": "Cap. 487",
+    "year": 1986,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Insurance%20Act&stp=1",
+    "excerpt": "An Act to consolidate and amend the law relating to insurance.",
+    "topics": [
+      "insurance",
+      "insurance regulation",
+      "policy",
+      "claims",
+      "insurance authority"
+    ]
+  },
+  {
+    "title": "Capital Markets Act",
+    "citation": "Cap. 485A",
+    "cap_number": "Cap. 485A",
+    "year": 1989,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Capital%20Markets%20Act&stp=1",
+    "excerpt": "An Act to make provision for the regulation of capital markets in Kenya.",
+    "topics": [
+      "capital markets",
+      "securities",
+      "stock exchange",
+      "CMA",
+      "investor protection"
+    ]
+  },
+  {
+    "title": "Stamp Duty Act",
+    "citation": "Cap. 480",
+    "cap_number": "Cap. 480",
+    "year": 1971,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Stamp%20Duty%20Act&stp=1",
+    "excerpt": "An Act to provide for the collection of stamp duty on instruments and transactions.",
+    "topics": [
+      "stamp duty",
+      "taxation",
+      "property transfer",
+      "instruments"
+    ]
+  },
+  {
+    "title": "Land Registration Act",
+    "citation": "No. 3 of 2012",
+    "year": 2012,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Land%20Registration%20Act&stp=1",
+    "excerpt": "An Act to consolidate and amend the law relating to the registration of interests in land.",
+    "topics": [
+      "land registration",
+      "title deeds",
+      "land ownership",
+      "encumbrances"
+    ]
+  },
+  {
+    "title": "Physical and Land Use Planning Act",
+    "citation": "No. 13 of 2019",
+    "year": 2019,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Physical%20and%20Land%20Use%20Planning%20Act&stp=1",
+    "excerpt": "An Act to make provision for physical and land use planning and development management.",
+    "topics": [
+      "town planning",
+      "development control",
+      "zoning",
+      "land use planning"
+    ]
+  },
+  {
+    "title": "Community Land Act",
+    "citation": "No. 27 of 2016",
+    "year": 2016,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Community%20Land%20Act&stp=1",
+    "excerpt": "An Act to give effect to Article 63 of the Constitution on community land.",
+    "topics": [
+      "community land",
+      "customary land",
+      "community land rights",
+      "pastoral land"
+    ]
+  },
+  {
+    "title": "Public Health Act",
+    "citation": "Cap. 242",
+    "cap_number": "Cap. 242",
+    "year": 1986,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Public%20Health%20Act&stp=1",
+    "excerpt": "An Act to make provision for the prevention and suppression of diseases and for the control of public health.",
+    "topics": [
+      "public health",
+      "disease prevention",
+      "sanitation",
+      "health regulation"
+    ]
+  },
+  {
+    "title": "Mental Health Act",
+    "citation": "Cap. 248",
+    "cap_number": "Cap. 248",
+    "year": 1989,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Mental%20Health%20Act&stp=1",
+    "excerpt": "An Act to consolidate and amend the law relating to the care, treatment, and protection of persons with mental disorders.",
+    "topics": [
+      "mental health",
+      "psychiatric care",
+      "mental disorder",
+      "involuntary admission"
+    ]
+  },
+  {
+    "title": "Interpretation and General Provisions Act",
+    "citation": "Cap. 2",
+    "cap_number": "Cap. 2",
+    "year": 1930,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Interpretation%20and%20General%20Provisions%20Act&stp=1",
+    "excerpt": "An Act to make provision for the interpretation of written laws and for related matters.",
+    "topics": [
+      "statutory interpretation",
+      "general provisions",
+      "definitions",
+      "construction of statutes"
+    ]
+  },
+  {
+    "title": "Government Proceedings Act",
+    "citation": "Cap. 40",
+    "cap_number": "Cap. 40",
+    "year": 1969,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Government%20Proceedings%20Act&stp=1",
+    "excerpt": "An Act to make provision for the institution of legal proceedings by and against the Government.",
+    "topics": [
+      "government liability",
+      "state proceedings",
+      "tort claims",
+      "government contracts"
+    ]
+  },
+  {
+    "title": "Work Injury Benefits Act",
+    "citation": "No. 13 of 2007",
+    "year": 2007,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Work%20Injury%20Benefits%20Act&stp=1",
+    "excerpt": "An Act to provide for compensation for work-related injuries and diseases and for connected purposes.",
+    "topics": [
+      "work injury",
+      "occupational health",
+      "workers compensation",
+      "workplace safety"
+    ]
+  },
+  {
+    "title": "Trade Disputes Act",
+    "citation": "No. 22 of 2007",
+    "year": 2007,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Trade%20Disputes%20Act&stp=1",
+    "excerpt": "An Act to make provision for the resolution of trade disputes and for connected purposes.",
+    "topics": [
+      "trade disputes",
+      "collective bargaining",
+      "labour relations",
+      "conciliation"
+    ]
+  },
+  {
+    "title": "Proceeds of Crime and Anti-Money Laundering Act",
+    "citation": "No. 9 of 2009",
+    "year": 2009,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Proceeds%20of%20Crime%20and%20Anti-Money%20Laundering%20Act&stp=1",
+    "excerpt": "An Act to make provision for the confiscation and forfeiture of proceeds of crime and for anti-money laundering measures.",
+    "topics": [
+      "money laundering",
+      "proceeds of crime",
+      "asset forfeiture",
+      "financial crimes"
+    ]
+  },
+  {
+    "title": "Witness Protection Act",
+    "citation": "No. 11 of 2016",
+    "year": 2016,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Witness%20Protection%20Act&stp=1",
+    "excerpt": "An Act to make provision for the protection of witnesses in criminal proceedings.",
+    "topics": [
+      "witness protection",
+      "criminal proceedings",
+      "witness safety",
+      "testimony"
+    ]
+  },
+  {
+    "title": "Criminal Procedure Code",
+    "citation": "Cap. 75",
+    "cap_number": "Cap. 75",
+    "year": 1930,
+    "type": "legislation",
+    "url": "https://www.kenyalaw.org/kl/search/#stq=Criminal%20Procedure%20Code&stp=1",
+    "excerpt": "An Act to regulate criminal procedure in the courts, including arrest, bail, trials, and sentencing.",
+    "topics": [
+      "criminal procedure",
+      "bail",
+      "trial",
+      "sentencing"
+    ]
   }
 ]

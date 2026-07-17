@@ -954,61 +954,46 @@
         </div>
       </div>
 
-      <!-- STUDENT WORKSPACE SCREEN -->
-<div id="screen-student-workspace" class="screen">
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <h1 class="text-2xl md:text-3xl font-bold text-on-background">Student Workspace</h1>
-      <p class="text-sm text-on-muted mt-1">Organised reference materials for your studies</p>
+      <!-- STUDENT WORKSPACE / LEGAL REPO SCREEN -->
+<div id="screen-student-workspace" class="screen" style="height: calc(100vh - 180px); min-height: 500px;">
+  <!-- Header bar -->
+  <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center gap-2">
+      <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+      <h1 class="text-lg font-bold text-on-background">Legal Repo</h1>
+      <span class="text-xs text-on-muted" id="repo-info"></span>
     </div>
-    <div class="flex gap-2">
-      <button onclick="filterWorkspace('all')" class="workspace-filter active px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary/10 text-primary" data-filter="all">All</button>
-      <button onclick="filterWorkspace('constitution')" class="workspace-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface-alt text-on-muted" data-filter="constitution">Constitution</button>
-      <button onclick="filterWorkspace('statute')" class="workspace-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface-alt text-on-muted" data-filter="statute">Statutes</button>
-      <button onclick="filterWorkspace('case')" class="workspace-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface-alt text-on-muted" data-filter="case">Cases</button>
-      <button onclick="filterWorkspace('note')" class="workspace-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface-alt text-on-muted" data-filter="note">Notes</button>
+    <div class="flex items-center gap-2">
+      <input type="text" id="repo-search" placeholder="Filter files..." class="px-3 py-1.5 rounded-lg bg-surface border border-border text-xs focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none w-40 md:w-56" oninput="filterLegalRepo(this.value)">
     </div>
   </div>
 
-  <!-- Search -->
-  <div class="mb-6">
-    <input type="text" id="workspace-search" placeholder="Search your documents..." class="w-full px-4 py-3 rounded-xl bg-surface border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-sm" oninput="searchWorkspace(this.value)">
-  </div>
+  <!-- Split layout: sidebar + content -->
+  <div class="flex rounded-xl border border-border overflow-hidden" style="height: calc(100% - 48px);">
+    <!-- LEFT: File tree sidebar -->
+    <div class="w-64 md:w-72 bg-surface border-r border-border overflow-y-auto flex-shrink-0" id="legal-repo-sidebar">
+      <div class="p-3 text-center">
+        <div class="animate-spin w-5 h-5 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+        <p class="text-xs text-on-muted">Loading files...</p>
+      </div>
+    </div>
 
-  <!-- Stats -->
-  <div id="workspace-stats" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-    <div class="p-3 rounded-xl bg-surface border border-border text-center">
-      <p class="text-2xl font-bold text-primary" id="stat-total">0</p>
-      <p class="text-xs text-on-muted">Total Documents</p>
-    </div>
-    <div class="p-3 rounded-xl bg-surface border border-border text-center">
-      <p class="text-2xl font-bold text-secondary" id="stat-const">0</p>
-      <p class="text-xs text-on-muted">Constitution</p>
-    </div>
-    <div class="p-3 rounded-xl bg-surface border border-border text-center">
-      <p class="text-2xl font-bold text-accent" id="stat-statutes">0</p>
-      <p class="text-xs text-on-muted">Statutes</p>
-    </div>
-    <div class="p-3 rounded-xl bg-surface border border-border text-center">
-      <p class="text-2xl font-bold text-purple-600" id="stat-cases">0</p>
-      <p class="text-xs text-on-muted">Cases</p>
-    </div>
-  </div>
-
-  <!-- Document Grid -->
-  <div id="workspace-documents" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    <div class="text-center py-12 col-span-full">
-      <div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-      <p class="text-sm text-on-muted">Loading workspace...</p>
+    <!-- RIGHT: Content viewer -->
+    <div class="flex-1 bg-background overflow-y-auto" id="legal-repo-content">
+      <div class="p-6 text-center">
+        <svg class="w-12 h-12 text-on-muted/30 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <p class="text-sm text-on-muted">Select a file from the Legal Repo to view its contents</p>
+        <p class="text-xs text-on-muted/60 mt-1">Browse folders on the left, then click any document</p>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- STUDENT WORKSPACE DETAIL SCREEN -->
+<!-- LEGAL REPO DETAIL SCREEN -->
 <div id="screen-workspace-detail" class="screen">
   <button onclick="showScreen('student-workspace')" class="flex items-center gap-2 text-sm font-semibold text-on-muted hover:text-on-surface mb-4 transition-colors">
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-    Back to Workspace
+    Back to Legal Repo
   </button>
   <div id="workspace-detail-content">
     <!-- Populated dynamically -->
@@ -1710,8 +1695,8 @@
               Ask a Researcher
             </a>
             <a href="#student-workspace" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="student-workspace">
-              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-              Student Workspace
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+              Legal Repo
             </a>
             <a href="#kabarak-law" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" data-screen="kabarak-law">
               <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-8H7v8M7 3v5h8"/></svg>
@@ -1754,8 +1739,8 @@
               <span class="text-[10px] font-medium">Research</span>
             </a>
             <a href="#student-workspace" class="nav-item flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl min-w-[56px]" data-screen="student-workspace">
-              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-              <span class="text-[10px] font-medium">Workspace</span>
+              <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+              <span class="text-[10px] font-medium">Legal Repo</span>
             </a>
             <a href="#profile" class="nav-item flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl min-w-[56px]" data-screen="profile">
               <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -1767,119 +1752,198 @@
     }
 
     /* ===========================
-       STUDENT WORKSPACE
+       LEGAL REPO (file tree sidebar)
        =========================== */
 
-    let workspaceData = null;
-    let currentWorkspaceFilter = 'all';
+    let legalRepoData = null;
+    let expandedFolders = {};
 
-    async function loadStudentWorkspace(filter = 'all', search = '') {
-      var container = document.getElementById('workspace-documents');
-      if (!container) return;
+    async function loadLegalRepo() {
+      var sidebar = document.getElementById('legal-repo-sidebar');
+      var infoEl = document.getElementById('repo-info');
+      if (!sidebar) return;
 
       try {
-        var workspaces = await apiFetch('/api/v1/student/');
-        if (!Array.isArray(workspaces)) workspaces = [];
+        var data = await apiFetch('/api/v1/student/academic');
+        legalRepoData = data;
+        if (infoEl) infoEl.textContent = data.institution || '';
 
-        document.getElementById('stat-total').textContent = workspaces.length;
-        document.getElementById('stat-const').textContent = '0';
-        document.getElementById('stat-statutes').textContent = '0';
-        document.getElementById('stat-cases').textContent = '0';
+        var html = '';
+        html += '<div class="p-2">';
+        html += '<div class="flex items-center gap-2 px-2 py-1.5 mb-1 rounded-lg bg-primary/5">';
+        html += '<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>';
+        html += '<span class="text-xs font-bold text-primary">' + (data.title || 'Law_School') + '</span>';
+        html += '</div>';
 
-        if (!workspaces.length) {
-          container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">No workspaces yet</p><button onclick="createWorkspace()" class="mt-4 px-6 py-2 rounded-xl bg-primary text-on-primary text-sm font-semibold hover:bg-primary-dark transition-colors">Create Workspace</button></div>';
-          return;
+        // Group courses by year
+        var courses = data.courses || [];
+        var yearGroups = {};
+        courses.forEach(function(c) {
+          var y = c.year || 1;
+          if (!yearGroups[y]) yearGroups[y] = [];
+          yearGroups[y].push(c);
+        });
+
+        // Year 1 courses
+        var yearLabels = { 1: 'Year 1', 2: 'Year 2', 3: 'Year 3', 4: 'Year 4' };
+        [1, 2, 3, 4].forEach(function(year) {
+          var yrCourses = yearGroups[year];
+          if (!yrCourses || !yrCourses.length) return;
+          var folderId = 'year-' + year;
+          var isOpen = expandedFolders[folderId];
+          html += '<div class="tree-folder">';
+          html += '<div class="flex items-center gap-1.5 px-2 py-1 cursor-pointer hover:bg-surface-alt rounded-lg text-xs" onclick="toggleRepoFolder(\'' + folderId + '\')">';
+          html += '<svg class="w-3 h-3 text-on-muted transition-transform ' + (isOpen ? 'rotate-90' : '') + '" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>';
+          html += '<svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>';
+          html += '<span class="font-semibold text-on-surface">' + (yearLabels[year] || ('Year ' + year)) + '</span>';
+          html += '</div>';
+          if (isOpen) {
+            html += '<div class="ml-4">';
+            yrCourses.forEach(function(c) { html += buildCourseTreeItem(c); });
+            html += '</div>';
+          }
+          html += '</div>';
+        });
+
+        // General materials
+        var gm = data.general_materials;
+        if (gm && Object.keys(gm).length) {
+          var gmId = 'general-materials';
+          var gmOpen = expandedFolders[gmId];
+          html += '<div class="tree-folder">';
+          html += '<div class="flex items-center gap-1.5 px-2 py-1 cursor-pointer hover:bg-surface-alt rounded-lg text-xs" onclick="toggleRepoFolder(\'' + gmId + '\')">';
+          html += '<svg class="w-3 h-3 text-on-muted transition-transform ' + (gmOpen ? 'rotate-90' : '') + '" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>';
+          html += '<svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>';
+          html += '<span class="font-semibold text-on-surface">General Materials</span>';
+          html += '</div>';
+          if (gmOpen) {
+            html += '<div class="ml-4">';
+            Object.keys(gm).forEach(function(key) {
+              var items = gm[key];
+              if (!items || !items.length) return;
+              html += '<div class="flex items-center gap-1.5 px-2 py-1 text-xs text-on-muted"><svg class="w-3 h-3 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg>' + key.replace(/_/g, ' ') + ' (' + items.length + ')</div>';
+            });
+            html += '</div>';
+          }
+          html += '</div>';
         }
 
-        container.innerHTML = workspaces.map(function(ws) {
-          return '<div onclick="showWorkspaceDetail(\'' + ws.id + '\')" class="bg-surface border border-border rounded-2xl p-5 hover:shadow-md cursor-pointer transition-all">' +
-            '<div class="flex items-start justify-between mb-3">' +
-              '<div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">' +
-                '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>' +
-              '</div>' +
-            '</div>' +
-            '<h3 class="text-sm font-bold text-on-surface mb-1 line-clamp-2">' + (ws.title || 'Untitled') + '</h3>' +
-            '<p class="text-xs text-on-muted mb-3 line-clamp-2">' + (ws.description || 'No description') + '</p>' +
-            '<div class="flex items-center justify-between">' +
-              '<span class="text-[10px] text-on-muted font-medium">' + (ws.created_at ? new Date(ws.created_at).toLocaleDateString() : '') + '</span>' +
-            '</div>' +
-          '</div>';
-        }).join('');
+        html += '</div>';
+        sidebar.innerHTML = html;
       } catch(e) {
-        container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-sm text-on-muted">Failed to load workspace</p></div>';
+        sidebar.innerHTML = '<div class="p-4 text-center"><p class="text-xs text-on-muted">Failed to load Legal Repo</p></div>';
       }
     }
 
-    function filterWorkspace(filter) {
-      currentWorkspaceFilter = filter;
-      document.querySelectorAll('.workspace-filter').forEach(function(btn) {
-        btn.classList.remove('active', 'bg-primary/10', 'text-primary');
-        btn.classList.add('bg-surface-alt', 'text-on-muted');
+    function buildCourseTreeItem(course) {
+      var id = 'course-' + course.code;
+      var isOpen = expandedFolders[id];
+      var matCount = course.material_count || 0;
+      var html = '<div class="tree-folder">';
+      html += '<div class="flex items-center gap-1.5 px-2 py-1 cursor-pointer hover:bg-surface-alt rounded-lg text-xs" onclick="toggleRepoFolder(\'' + id + '\')">';
+      html += '<svg class="w-3 h-3 text-on-muted transition-transform ' + (isOpen ? 'rotate-90' : '') + '" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>';
+      html += '<svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>';
+      html += '<span class="font-medium text-on-surface truncate">' + course.code + '</span>';
+      if (matCount > 0) html += '<span class="text-[10px] text-on-muted ml-auto">' + matCount + '</span>';
+      html += '</div>';
+      if (isOpen) {
+        html += '<div class="ml-4">';
+        var mat = course.materials || {};
+        var categories = [
+          { key: 'course_outlines', label: 'Course Outlines', icon: 'text-blue-500' },
+          { key: 'lecture_notes', label: 'Lecture Notes', icon: 'text-green-500' },
+          { key: 'assignments', label: 'Assignments', icon: 'text-orange-500' },
+          { key: 'group_work', label: 'Group Work', icon: 'text-purple-500' },
+          { key: 'research_materials', label: 'Research Materials', icon: 'text-rose-500' }
+        ];
+        categories.forEach(function(cat) {
+          var items = mat[cat.key];
+          if (!items || !items.length) return;
+          var catId = 'cat-' + course.code + '-' + cat.key;
+          var catOpen = expandedFolders[catId];
+          html += '<div class="tree-folder">';
+          html += '<div class="flex items-center gap-1.5 px-2 py-1 cursor-pointer hover:bg-surface-alt rounded-lg text-xs" onclick="toggleRepoFolder(\'' + catId + '\')">';
+          html += '<svg class="w-3 h-3 text-on-muted transition-transform ' + (catOpen ? 'rotate-90' : '') + '" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>';
+          html += '<svg class="w-3 h-3 ' + cat.icon + '" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>';
+          html += '<span class="text-on-surface">' + cat.label + '</span>';
+          html += '</div>';
+          if (catOpen) {
+            html += '<div class="ml-4">';
+            items.forEach(function(item) {
+              html += '<div class="flex items-center gap-1.5 px-2 py-1 cursor-pointer hover:bg-surface-alt rounded-lg text-xs text-on-muted" onclick="showRepoItem(\'' + escapeHtml(course.code) + '\', \'' + escapeHtml(cat.key) + '\', \'' + escapeHtml(item.name || 'Untitled') + '\')">';
+              html += '<svg class="w-3 h-3 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg>';
+              html += '<span class="truncate">' + (item.name || 'Untitled') + '</span>';
+              html += '</div>';
+            });
+            html += '</div>';
+          }
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    function toggleRepoFolder(id) {
+      expandedFolders[id] = !expandedFolders[id];
+      loadLegalRepo();
+    }
+
+    function showRepoItem(courseCode, category, itemName) {
+      var content = document.getElementById('legal-repo-content');
+      if (!content) return;
+      var mat = (legalRepoData.courses || []).find(function(c) { return c.code === courseCode; });
+      var items = mat && mat.materials ? (mat.materials[category] || []) : [];
+      var item = items.find(function(i) { return i.name === itemName; });
+      if (!item) { content.innerHTML = '<div class="p-6 text-center text-sm text-on-muted">Item not found</div>'; return; }
+
+      var html = '<div class="p-6">';
+      html += '<div class="flex items-center gap-2 mb-4">';
+      html += '<svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>';
+      html += '<h2 class="text-lg font-bold text-on-background">' + escapeHtml(item.name || 'Untitled') + '</h2>';
+      html += '</div>';
+      html += '<p class="text-sm text-on-muted mb-4">' + escapeHtml(item.description || 'No description') + '</p>';
+      html += '<div class="text-xs text-on-muted mb-2">' + courseCode + ' / ' + category.replace(/_/g, ' ') + '</div>';
+      if (item.source_files && item.source_files.length) {
+        html += '<div class="mt-4">';
+        html += '<h3 class="text-sm font-semibold text-on-surface mb-2">Source Files</h3>';
+        item.source_files.forEach(function(f) {
+          html += '<div class="flex items-center gap-2 p-2 rounded-lg bg-surface border border-border mb-1">';
+          html += '<svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg>';
+          html += '<span class="text-xs text-on-surface">' + escapeHtml(f) + '</span>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+      if (item.url) {
+        html += '<a href="' + item.url + '" target="_blank" class="inline-flex items-center gap-1 mt-4 px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-semibold hover:bg-primary/20 transition-colors">View on KenyaLaw <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>';
+      }
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function filterLegalRepo(query) {
+      if (!query) { loadLegalRepo(); return; }
+      var sidebar = document.getElementById('legal-repo-sidebar');
+      if (!sidebar || !legalRepoData) return;
+      var q = query.toLowerCase();
+      var html = '<div class="p-2">';
+      (legalRepoData.courses || []).forEach(function(c) {
+        var match = c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q);
+        if (!match) {
+          var mats = c.materials || {};
+          Object.values(mats).forEach(function(items) {
+            if (!items) return;
+            items.forEach(function(it) {
+              if ((it.name || '').toLowerCase().includes(q)) match = true;
+            });
+          });
+        }
+        if (match) html += buildCourseTreeItem(c);
       });
-      document.querySelector('.workspace-filter[data-filter="' + filter + '"]').classList.add('active', 'bg-primary/10', 'text-primary');
-      document.querySelector('.workspace-filter[data-filter="' + filter + '"]').classList.remove('bg-surface-alt', 'text-on-muted');
-      loadStudentWorkspace(filter, document.getElementById('workspace-search').value);
-    }
-
-    function searchWorkspace(query) {
-      loadStudentWorkspace(currentWorkspaceFilter, query);
-    }
-
-    async function createWorkspace() {
-      var title = prompt('Workspace name:');
-      if (!title) return;
-      try {
-        var result = await apiFetch('/api/v1/student/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: title, description: '' })
-        });
-        showToast('Workspace created');
-        loadStudentWorkspace();
-      } catch(e) {
-        showToast('Failed to create workspace', 'error');
-      }
-    }
-
-    async function showWorkspaceDetail(wsId) {
-      try {
-        var notes = await apiFetch('/api/v1/student/' + wsId + '/notes');
-        if (!Array.isArray(notes)) notes = [];
-
-        var notesHtml = notes.length ? notes.map(function(n) {
-          return '<div class="bg-surface border border-border rounded-xl p-4">' +
-            '<h4 class="text-sm font-bold text-on-surface mb-1">' + (n.title || 'Untitled') + '</h4>' +
-            '<p class="text-xs text-on-muted line-clamp-3">' + (n.content || '') + '</p>' +
-          '</div>';
-        }).join('') : '<p class="text-sm text-on-muted text-center py-8">No notes yet</p>';
-
-        document.getElementById('workspace-detail-content').innerHTML =
-          '<div class="bg-surface border border-border rounded-2xl p-6 mb-6">' +
-            '<h1 class="text-2xl font-bold text-on-background mb-2">Workspace Notes</h1>' +
-            '<button onclick="createNote(\'' + wsId + '\')" class="px-4 py-2 rounded-xl bg-primary text-on-primary text-sm font-semibold hover:bg-primary-dark transition-colors">Add Note</button>' +
-          '</div>' +
-          '<div class="grid gap-4">' + notesHtml + '</div>';
-
-        showScreen('workspace-detail');
-      } catch(e) {
-        showToast('Failed to load workspace details', 'error');
-      }
-    }
-
-    async function createNote(wsId) {
-      var title = prompt('Note title:');
-      if (!title) return;
-      try {
-        await apiFetch('/api/v1/student/' + wsId + '/notes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: title, content: '' })
-        });
-        showToast('Note created');
-        showWorkspaceDetail(wsId);
-      } catch(e) {
-        showToast('Failed to create note', 'error');
-      }
+      html += '</div>';
+      sidebar.innerHTML = html;
     }
 
     /* ===========================
@@ -2089,7 +2153,7 @@
           loadHistory();
           break;
         case 'student-workspace':
-          loadStudentWorkspace();
+          loadLegalRepo();
           break;
         case 'profile':
           loadProfile();
