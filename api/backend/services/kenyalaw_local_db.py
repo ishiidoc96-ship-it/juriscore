@@ -133,7 +133,7 @@ async def sync_live_results_to_db(results: List[Dict]):
                     )
                     session.add(leg)
 
-            elif doc_type in ("article", "law_report", "legal_news"):
+            elif doc_type in ("article", "law_report", "legal_news", "case_digest", "publication", "gazette"):
                 existing = await session.get(KenyaLawArticle, doc_id)
                 if not existing:
                     article = KenyaLawArticle(

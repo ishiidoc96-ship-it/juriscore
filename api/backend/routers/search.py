@@ -64,7 +64,20 @@ async def universal_search(
         all_results = []
         sources_used = []
 
-        # Layer 1a: KenyaLaw crawled database (instant, full-text search of downloaded content)
+        # Layer 1a: Vector search (semantic + keyword hybrid via zvec)
+        try:
+            from api.backend.services.vector_search import vector_search as zvec_search
+            vec_results = zvec_search(q, doc_type=doc_type, court=court, top_k=limit)
+            if vec_results:
+                for r in vec_results:
+                    r["source"] = "vector_search"
+                all_results.extend(vec_results)
+                sources_used.append("vector_search")
+                logger.info(f"Vector search returned {len(vec_results)} results for '{q}'")
+        except Exception as e:
+            logger.debug(f"Vector search unavailable: {e}")
+
+        # Layer 1b: KenyaLaw crawled database (instant, full-text search of downloaded content)
         try:
             from api.backend.services.kenyalaw_local_db import search_local
             crawled = await search_local(q, doc_type=doc_type, court=court, limit=limit)
