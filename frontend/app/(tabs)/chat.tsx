@@ -9,10 +9,10 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { sendChatMessage, ChatResponse, SearchResult } from '../../lib/api';
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -52,6 +52,7 @@ export default function ChatScreen() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | undefined>();
+  const router = useRouter();
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
@@ -109,9 +110,9 @@ export default function ChatScreen() {
     }
   };
 
-  const openLink = (url: string) => {
+  const openLink = (url: string, title?: string) => {
     if (url) {
-      Linking.openURL(url);
+      router.push(`/document/${encodeURIComponent(url)}?title=${encodeURIComponent(title || 'Document')}`);
     }
   };
 
@@ -134,7 +135,7 @@ export default function ChatScreen() {
               <TouchableOpacity
                 key={index}
                 style={styles.resultCard}
-                onPress={() => openLink(result.url || result.search_url || '')}
+                onPress={() => openLink(result.url || result.search_url || '', result.title)}
               >
                 <View style={styles.resultTitleRow}>
                   <Text style={styles.resultTitle} numberOfLines={2}>
