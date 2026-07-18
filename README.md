@@ -41,7 +41,7 @@ All case law and statutes are sourced from [kenyalaw.org](https://www.kenyalaw.o
 - Node.js 18+
 - Python 3.11+
 - A [Supabase](https://supabase.com) account
-- No external AI APIs required
+- No external API keys required
 
 ### 1. Backend
 
@@ -134,7 +134,7 @@ juriscore/
 ├── backend/
 │   ├── main.py              # FastAPI entry point
 │   ├── routers/             # API route handlers
-│   ├── services/            # AI, scraper, business logic
+│   ├── services/            # Scraper, business logic
 │   ├── models/              # Database models & schemas
 │   ├── middleware/           # Auth middleware
 │   ├── database/            # Seed data
