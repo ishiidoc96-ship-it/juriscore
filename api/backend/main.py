@@ -367,6 +367,17 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning("Local database not loaded", error=str(e))
 
+    # Auto-start KenyaLaw.org crawler (resumes from last progress)
+    try:
+        from api.backend.services.kenyalaw_crawler import start_full_crawl
+        import os
+        # Only auto-start if not on Vercel (serverless can't run long tasks)
+        if not os.getenv("VERCEL"):
+            result = await start_full_crawl()
+            logger.info(f"KenyaLaw crawler: {result['status']}")
+    except Exception as e:
+        logger.warning(f"KenyaLaw crawler auto-start failed: {e}")
+
     logger.info("Juriscore API ready")
     yield
 

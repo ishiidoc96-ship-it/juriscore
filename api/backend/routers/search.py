@@ -647,9 +647,29 @@ async def stop_crawl():
 
 @router.get("/sync/progress")
 async def crawl_progress():
-    """Get crawl progress and statistics."""
+    """Get crawl progress, statistics, and completion notification."""
     from api.backend.services.kenyalaw_crawler import get_crawl_progress
     return await get_crawl_progress()
+
+
+@router.post("/sync/clear")
+async def clear_crawl_state():
+    """Clear all crawl progress for a fresh start."""
+    from api.backend.services.kenyalaw_crawler import clear_crawl_state
+    return await clear_crawl_state()
+
+
+@router.get("/sync/notify")
+async def check_notification():
+    """Check if the crawl has completed (for frontend polling)."""
+    from api.backend.services.kenyalaw_crawler import NOTIFICATION_FILE
+    import json as _json
+    if NOTIFICATION_FILE.exists():
+        try:
+            return _json.loads(NOTIFICATION_FILE.read_text())
+        except Exception:
+            pass
+    return {"status": "none", "message": "No notifications"}
 
 
 @router.get("/daily-updates")
