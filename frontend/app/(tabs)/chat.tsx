@@ -112,7 +112,7 @@ export default function ChatScreen() {
 
   const openLink = (url: string, title?: string) => {
     if (url) {
-      router.push(`/document/${encodeURIComponent(url)}?title=${encodeURIComponent(title || 'Document')}`);
+      router.push({ pathname: '/document', params: { url, title: title || 'Document' } });
     }
   };
 
