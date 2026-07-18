@@ -542,6 +542,103 @@ async def clear_search_history(user_id: str = Query(...)):
         logger.error(f"Failed to clear search history: {e}")
 
 
+# ---------- Local Database Sync ----------
+
+@router.get("/stats")
+async def search_stats():
+    """Return search statistics including local database status."""
+    try:
+        total = await _get_total_count()
+        stats = {"total_documents": total, "services": ["kenyalaw", "africanlii", "worldlii"]}
+
+        try:
+            from api.backend.services.kenyalaw_local_db import get_database_stats, get_sync_status
+            local_stats = await get_database_stats()
+            sync_status = await get_sync_status()
+            stats["local_database"] = local_stats
+            if sync_status:
+                stats["last_sync"] = sync_status
+        except Exception as e:
+            stats["local_database"] = {"error": str(e)}
+
+        return {"status": "healthy", **stats, "last_updated": "live"}
+    except Exception as e:
+        logger.error(f"Stats check failed: {e}")
+        return {"status": "degraded", "error": str(e)}
+
+
+@router.post("/sync")
+async def sync_local_database():
+    """Sync live search results to local database for instant access."""
+    from api.backend.services.kenyalaw_local_db import get_database_stats, update_sync_status
+    from api.backend.services.scraper import search_kenyalaw
+
+    await update_sync_status(status="syncing")
+
+    try:
+        popular_queries = [
+            "constitutional law", "criminal law", "contract law",
+            "employment law", "family law", "land law", "tax law",
+            "judicial review", "human rights", "election law",
+            "marriage", "divorce", "custody", "inheritance",
+            "murder", "theft", "fraud", "corruption",
+            "Nairobi", "Mombasa", "Kisumu", "Nakuru",
+            "Supreme Court", "High Court", "Court of Appeal",
+        ]
+
+        total_synced = 0
+        for query in popular_queries:
+            try:
+                data = await search_kenyalaw(query=query, limit=50)
+                if data.get("results"):
+                    from api.backend.services.kenyalaw_local_db import sync_live_results_to_db
+                    await sync_live_results_to_db(data["results"])
+                    total_synced += len(data["results"])
+            except Exception as e:
+                logger.warning(f"Failed to sync query '{query}': {e}")
+
+        stats = await get_database_stats()
+        await update_sync_status(
+            total_cases=stats["total_cases"],
+            total_legislation=stats["total_legislation"],
+            total_articles=stats["total_articles"],
+            status="idle"
+        )
+
+        return {
+            "status": "completed",
+            "total_synced": total_synced,
+            "database_stats": stats,
+        }
+    except Exception as e:
+        await update_sync_status(status="error", error_message=str(e))
+        raise HTTPException(status_code=500, detail=f"Sync failed: {e}")
+
+
+@router.post("/sync/full")
+async def start_full_sync():
+    """Start full KenyaLaw.org download in background."""
+    from api.backend.services.kenyalaw_batch_downloader import start_background_sync
+    result = await start_background_sync()
+    return result
+
+
+@router.post("/sync/stop")
+async def stop_full_sync():
+    """Stop the full download process."""
+    from api.backend.services.kenyalaw_batch_downloader import stop_background_sync
+    result = await stop_background_sync()
+    return result
+
+
+@router.get("/sync/progress")
+async def get_sync_progress():
+    """Get current download progress."""
+    from api.backend.services.kenyalaw_batch_downloader import get_sync_progress
+    result = await get_sync_progress()
+    return result
+
+
 @router.get("/daily-updates")
 async def get_daily_updates(
     court: Optional[str] = Query(None),

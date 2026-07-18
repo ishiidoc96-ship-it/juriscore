@@ -228,3 +228,86 @@ Index("ix_workspace_acts_workspace", WorkspaceAct.workspace_id)
 Index("ix_workspace_notes_workspace", WorkspaceNote.workspace_id)
 Index("ix_workspace_files_workspace", WorkspaceFile.workspace_id)
 Index("ix_workspace_activity_workspace", WorkspaceActivity.workspace_id)
+
+
+# --- KenyaLaw Local Database (cached from live searches) ---
+class KenyaLawCase(Base):
+    __tablename__ = "kenyalaw_cases"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    title: Mapped[str]
+    citation: Mapped[str] = mapped_column(String, default="")
+    court: Mapped[str] = mapped_column(String, default="")
+    year: Mapped[int] = mapped_column(Integer, default=0)
+    doc_type: Mapped[str] = mapped_column(String, default="judgment")
+    excerpt: Mapped[str] = mapped_column(String, default="")
+    url: Mapped[str] = mapped_column(String, default="")
+    search_url: Mapped[str] = mapped_column(String, default="")
+    topics: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    judges: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    case_number: Mapped[str] = mapped_column(String, default="")
+    full_text: Mapped[str] = mapped_column(String, default="")
+    score: Mapped[float] = mapped_column(Float, default=0.0)
+    last_synced: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class KenyaLawLegislation(Base):
+    __tablename__ = "kenyalaw_legislation"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    title: Mapped[str]
+    citation: Mapped[str] = mapped_column(String, default="")
+    act_number: Mapped[str] = mapped_column(String, default="")
+    year: Mapped[int] = mapped_column(Integer, default=0)
+    doc_type: Mapped[str] = mapped_column(String, default="legislation")
+    excerpt: Mapped[str] = mapped_column(String, default="")
+    url: Mapped[str] = mapped_column(String, default="")
+    full_text: Mapped[str] = mapped_column(String, default="")
+    last_synced: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class KenyaLawArticle(Base):
+    __tablename__ = "kenyalaw_articles"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    title: Mapped[str]
+    author: Mapped[str] = mapped_column(String, default="")
+    date: Mapped[str] = mapped_column(String, default="")
+    doc_type: Mapped[str] = mapped_column(String, default="article")
+    excerpt: Mapped[str] = mapped_column(String, default="")
+    url: Mapped[str] = mapped_column(String, default="")
+    full_text: Mapped[str] = mapped_column(String, default="")
+    last_synced: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class SearchCache(Base):
+    __tablename__ = "search_cache"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
+    query_hash: Mapped[str] = mapped_column(String, index=True)
+    query_text: Mapped[str] = mapped_column(String)
+    results_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    result_count: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    expires_at: Mapped[datetime] = mapped_column(DateTime)
+
+
+class SyncStatus(Base):
+    __tablename__ = "sync_status"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_str)
+    last_sync: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    total_cases: Mapped[int] = mapped_column(Integer, default=0)
+    total_legislation: Mapped[int] = mapped_column(Integer, default=0)
+    total_articles: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String, default="idle")
+    error_message: Mapped[str | None] = mapped_column(String, nullable=True)
+
+
+Index("ix_kenyalaw_cases_title", KenyaLawCase.title)
+Index("ix_kenyalaw_cases_court", KenyaLawCase.court)
+Index("ix_kenyalaw_cases_year", KenyaLawCase.year)
+Index("ix_kenyalaw_cases_doc_type", KenyaLawCase.doc_type)
+Index("ix_kenyalaw_legislation_title", KenyaLawLegislation.title)
+Index("ix_kenyalaw_articles_title", KenyaLawArticle.title)
+Index("ix_search_cache_query_hash", SearchCache.query_hash)
+Index("ix_search_cache_expires", SearchCache.expires_at)

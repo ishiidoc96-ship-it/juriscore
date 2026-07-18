@@ -586,7 +586,7 @@ async def search_cases(query: Optional[str], filters: Optional[Dict] = None) -> 
 
 
 async def search_all(query: Optional[str], filters: Optional[Dict] = None) -> Dict[str, Any]:
-    """Universal search across all content types with Kenyan KB fallback."""
+    """Universal search with local DB cache for instant results + live fallback."""
     if not query:
         return {"count": 0, "results": [], "facets": {}}
 
@@ -596,6 +596,22 @@ async def search_all(query: Optional[str], filters: Optional[Dict] = None) -> Di
     ordering = filters.get("ordering", "-score") if filters else "-score"
     limit = filters.get("limit", 50) if filters else 50
 
+    # Step 1: Try local database cache first (instant, no network)
+    try:
+        from api.backend.services.kenyalaw_local_db import search_local, get_cached_search, cache_search_results, sync_live_results_to_db
+        cached = await get_cached_search(query, filters)
+        if cached and cached.get("results") and len(cached["results"]) >= 3:
+            logger.info(f"Cache hit for: {query[:50]}")
+            return cached
+
+        local_results = await search_local(query, doc_type, court, limit)
+        if local_results.get("results") and local_results["count"] >= 3:
+            await cache_search_results(query, filters, local_results)
+            return local_results
+    except Exception as e:
+        logger.warning(f"Local DB search failed: {e}")
+
+    # Step 2: Try live KenyaLaw search (with timeout)
     try:
         data = await asyncio.wait_for(
             search_kenyalaw(
@@ -608,9 +624,17 @@ async def search_all(query: Optional[str], filters: Optional[Dict] = None) -> Di
         logger.warning(f"Live search failed/timeout for '{query}': {e}")
         data = {"count": 0, "results": [], "facets": {}}
 
-    # If live search returned nothing, use fallback chain
+    # Step 3: Save live results to local DB for future instant access
+    if data.get("results"):
+        try:
+            await sync_live_results_to_db(data["results"])
+            await cache_search_results(query, filters, data)
+        except Exception as e:
+            logger.warning(f"Failed to sync to local DB: {e}")
+
+    # Step 4: Fallback chain if live search returned nothing
     if not data.get("results") or len(data["results"]) == 0:
-        # 1. Try brain data (instant, local)
+        # 4a. Try brain data (instant, local)
         try:
             from api.backend.services.brain import brain_search
             brain_result = brain_search(query, doc_type=doc_type, court=court, limit=limit)
@@ -620,7 +644,7 @@ async def search_all(query: Optional[str], filters: Optional[Dict] = None) -> Di
         except Exception as e:
             logger.warning(f"Brain fallback failed: {e}")
 
-        # 2. Try Kenyan KB (curated, reliable)
+        # 4b. Try Kenyan KB (curated, reliable)
         kb_results = _search_kenyan_kb(query, limit=limit)
         if kb_results:
             data["results"] = kb_results
