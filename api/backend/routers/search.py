@@ -64,7 +64,20 @@ async def universal_search(
         all_results = []
         sources_used = []
 
-        # Layer 1: Local database (instant, 12,000+ real cases — if available)
+        # Layer 1a: KenyaLaw crawled database (instant, full-text search of downloaded content)
+        try:
+            from api.backend.services.kenyalaw_local_db import search_local
+            crawled = await search_local(q, doc_type=doc_type, court=court, limit=limit)
+            if crawled.get("count", 0) > 0:
+                for r in crawled["results"]:
+                    r["source"] = "crawled_db"
+                all_results.extend(crawled["results"])
+                sources_used.append("crawled_db")
+                logger.info(f"Crawled DB returned {crawled['count']} results for '{q}'")
+        except Exception as e:
+            logger.debug(f"Crawled DB search failed (not initialized yet): {e}")
+
+        # Layer 1b: Local JSON database (instant, brain data)
         local_results = search_local_db(q, doc_type=doc_type, court=court, limit=limit)
         if local_results:
             for r in local_results:
@@ -616,27 +629,27 @@ async def sync_local_database():
 
 
 @router.post("/sync/full")
-async def start_full_sync():
-    """Start full KenyaLaw.org download in background."""
-    from api.backend.services.kenyalaw_batch_downloader import start_background_sync
-    result = await start_background_sync()
+async def start_full_crawl():
+    """Start full KenyaLaw.org site crawl in background.
+    Downloads every document: judgments, legislation, articles, bills, etc."""
+    from api.backend.services.kenyalaw_crawler import start_full_crawl
+    result = await start_full_crawl()
     return result
 
 
 @router.post("/sync/stop")
-async def stop_full_sync():
-    """Stop the full download process."""
-    from api.backend.services.kenyalaw_batch_downloader import stop_background_sync
-    result = await stop_background_sync()
+async def stop_crawl():
+    """Stop the site crawl."""
+    from api.backend.services.kenyalaw_crawler import stop_crawl
+    result = await stop_crawl()
     return result
 
 
 @router.get("/sync/progress")
-async def get_sync_progress():
-    """Get current download progress."""
-    from api.backend.services.kenyalaw_batch_downloader import get_sync_progress
-    result = await get_sync_progress()
-    return result
+async def crawl_progress():
+    """Get crawl progress and statistics."""
+    from api.backend.services.kenyalaw_crawler import get_crawl_progress
+    return await get_crawl_progress()
 
 
 @router.get("/daily-updates")
