@@ -25,13 +25,32 @@ export interface ChatResponse {
 export interface SearchResult {
   id: string;
   title: string;
-  citation: string;
-  court: string;
-  year: number;
-  doc_type: string;
+  citation?: string;
+  court?: string;
+  year?: number;
+  doc_type?: string;
   excerpt: string;
-  url: string;
+  url?: string;
   search_url?: string;
+  score?: number;
+  source?: string;
+}
+
+export interface SearchResponse {
+  count: number;
+  results: SearchResult[];
+  jurisdiction?: string;
+  source?: string;
+  sources_used?: string[];
+  facets?: Record<string, any>;
+}
+
+export interface SearchFilters {
+  doc_type?: string;
+  court?: string;
+  jurisdiction?: string;
+  source?: string;
+  limit?: number;
 }
 
 export async function sendChatMessage(message: string, sessionId?: string): Promise<ChatResponse> {
@@ -43,7 +62,6 @@ export async function sendChatMessage(message: string, sessionId?: string): Prom
     return response.data;
   } catch (error) {
     console.warn('Chat endpoint failed, falling back to search:', error);
-    // Return a fallback ChatResponse structure for when chat endpoint is not available
     throw error;
   }
 }
@@ -53,10 +71,18 @@ export async function getChatHistory(sessionId: string) {
   return response.data;
 }
 
-export async function searchCases(query: string, limit: number = 20) {
-  const response = await api.get('/search/', {
-    params: { q: query, limit },
-  });
+export async function searchCases(
+  query: string,
+  filters: SearchFilters = {},
+): Promise<SearchResponse> {
+  const params: Record<string, any> = { q: query };
+  if (filters.doc_type) params.doc_type = filters.doc_type;
+  if (filters.court) params.court = filters.court;
+  if (filters.jurisdiction) params.jurisdiction = filters.jurisdiction;
+  if (filters.source) params.source = filters.source;
+  if (filters.limit) params.limit = filters.limit;
+
+  const response = await api.get<SearchResponse>('/search', { params });
   return response.data;
 }
 

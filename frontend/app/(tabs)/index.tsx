@@ -14,21 +14,56 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { sendChatMessage, ChatResponse, searchCases } from '../../lib/api';
+import { sendChatMessage, ChatResponse, searchCases, SearchResult, SearchFilters } from '../../lib/api';
+
+const SOURCE_LABELS: Record<string, string> = {
+  vector_search: 'Vector',
+  crawled_db: 'Crawled',
+  local_db: 'Local',
+  brain: 'AI',
+  kenyalaw: 'KenyaLaw',
+};
+
+const DOC_TYPE_LABELS: Record<string, string> = {
+  case: 'Case',
+  statute: 'Statute',
+  constitution: 'Constitution',
+  case_digest: 'Digest',
+  publication: 'Publication',
+  gazette: 'Gazette',
+  law_report: 'Law Report',
+  bench_bulletin: 'Bulletin',
+  annual_report: 'Annual Report',
+  commission_report: 'Commission',
+  journal: 'Journal',
+  law_related_article: 'Article',
+};
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
-  results?: any[];
+  results?: SearchResult[];
+  sourcesUsed?: string[];
+  resultCount?: number;
   timestamp: Date;
 }
+
+const FILTER_OPTIONS: { label: string; value: string }[] = [
+  { label: 'All', value: '' },
+  { label: 'Cases', value: 'case' },
+  { label: 'Statutes', value: 'statute' },
+  { label: 'Digests', value: 'case_digest' },
+  { label: 'Reports', value: 'law_report' },
+  { label: 'Gazettes', value: 'gazette' },
+];
 
 export default function SearchScreen() {
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | undefined>();
+  const [activeFilter, setActiveFilter] = useState('');
   const flatListRef = useRef<FlatList>(null);
 
   const handleSearch = async () => {
@@ -64,13 +99,20 @@ export default function SearchScreen() {
     } catch (error) {
       // If chat endpoint fails, try the regular search endpoint as fallback
       try {
-        const searchResponse = await searchCases(query.trim());
+        const filters: SearchFilters = { jurisdiction: 'kenya' };
+        if (activeFilter) filters.doc_type = activeFilter;
+        const searchResponse = await searchCases(query.trim(), filters);
         if (searchResponse && searchResponse.results) {
+          const sourceInfo = searchResponse.sources_used?.length
+            ? ` Sources: ${searchResponse.sources_used.map(s => SOURCE_LABELS[s] || s).join(', ')}.`
+            : '';
           const assistantMessage: Message = {
             id: (Date.now() + 1).toString(),
             role: 'assistant',
-            content: `Found ${searchResponse.results.length} results for your search:`,
+            content: `Found ${searchResponse.count || searchResponse.results.length} results for your search:${sourceInfo}`,
             results: searchResponse.results,
+            sourcesUsed: searchResponse.sources_used,
+            resultCount: searchResponse.count,
             timestamp: new Date(),
           };
           setMessages(prev => [...prev, assistantMessage]);
@@ -118,15 +160,22 @@ export default function SearchScreen() {
         {item.results && item.results.length > 0 && (
           <View style={styles.resultsContainer}>
             <Text style={styles.resultsHeader}>Related Sources</Text>
-            {item.results.slice(0, 5).map((result, index) => (
+            {item.results.slice(0, 8).map((result, index) => (
               <TouchableOpacity
                 key={index}
                 style={styles.resultCard}
-                onPress={() => openLink(result.url || result.search_url)}
+                onPress={() => openLink(result.url || result.search_url || '')}
               >
-                <Text style={styles.resultTitle} numberOfLines={2}>
-                  {result.title}
-                </Text>
+                <View style={styles.resultTitleRow}>
+                  <Text style={styles.resultTitle} numberOfLines={2}>
+                    {result.title}
+                  </Text>
+                  {result.score != null && result.score > 0 && (
+                    <View style={styles.scoreBadge}>
+                      <Text style={styles.scoreText}>{Math.round(result.score * 100)}%</Text>
+                    </View>
+                  )}
+                </View>
                 {result.citation ? (
                   <Text style={styles.resultCitation} numberOfLines={1}>
                     {result.citation}
@@ -140,7 +189,14 @@ export default function SearchScreen() {
                     <Text style={styles.resultYear}>{result.year}</Text>
                   ) : null}
                   {result.doc_type ? (
-                    <Text style={styles.resultType}>{result.doc_type}</Text>
+                    <View style={styles.docTypeBadge}>
+                      <Text style={styles.docTypeText}>{DOC_TYPE_LABELS[result.doc_type] || result.doc_type}</Text>
+                    </View>
+                  ) : null}
+                  {result.source ? (
+                    <View style={styles.sourceBadge}>
+                      <Text style={styles.sourceText}>{SOURCE_LABELS[result.source] || result.source}</Text>
+                    </View>
                   ) : null}
                 </View>
                 {result.excerpt ? (
@@ -161,6 +217,25 @@ export default function SearchScreen() {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Juriscore</Text>
         <Text style={styles.headerSubtitle}>Legal Research</Text>
+      </View>
+
+      <View style={styles.filterBar}>
+        <FlatList
+          data={FILTER_OPTIONS}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item.value}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[styles.filterChip, activeFilter === item.value && styles.filterChipActive]}
+              onPress={() => setActiveFilter(item.value)}
+            >
+              <Text style={[styles.filterChipText, activeFilter === item.value && styles.filterChipTextActive]}>
+                {item.label}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
       </View>
 
       {messages.length === 0 ? (
@@ -235,6 +310,33 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#666',
     marginTop: 2,
+  },
+  filterBar: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1a1a2e',
+  },
+  filterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    backgroundColor: '#14142a',
+    borderWidth: 1,
+    borderColor: '#2a2a4a',
+    marginRight: 8,
+  },
+  filterChipActive: {
+    backgroundColor: '#1a2a4a',
+    borderColor: '#4a9eff',
+  },
+  filterChipText: {
+    fontSize: 12,
+    color: '#888',
+    fontWeight: '500',
+  },
+  filterChipTextActive: {
+    color: '#4a9eff',
   },
   emptyState: {
     flex: 1,
@@ -327,11 +429,29 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#1a1a2e',
   },
+  resultTitleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 4,
+  },
   resultTitle: {
     fontSize: 14,
     fontWeight: '600',
     color: '#e0e0e0',
-    marginBottom: 4,
+    flex: 1,
+    marginRight: 8,
+  },
+  scoreBadge: {
+    backgroundColor: '#1a3a2a',
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  scoreText: {
+    fontSize: 10,
+    color: '#4ade80',
+    fontWeight: '600',
   },
   resultCitation: {
     fontSize: 12,
@@ -355,6 +475,28 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#6a6aaa',
     textTransform: 'capitalize',
+  },
+  docTypeBadge: {
+    backgroundColor: '#2a1a4a',
+    borderRadius: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  docTypeText: {
+    fontSize: 10,
+    color: '#a78bfa',
+    fontWeight: '500',
+  },
+  sourceBadge: {
+    backgroundColor: '#1a2a3a',
+    borderRadius: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  sourceText: {
+    fontSize: 10,
+    color: '#60a5fa',
+    fontWeight: '500',
   },
   resultExcerpt: {
     fontSize: 13,
